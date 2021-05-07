@@ -22,7 +22,7 @@
 &nbsp;
 
 # Introduction
-This guide will guide you through the installation process for the HIAS.
+This guide will guide you through the installation process for the HIASCDI.
 
 &nbsp;
 
@@ -41,6 +41,81 @@ First you need to install the required software. Below are the available install
 <details><summary><b>View file contents</b></summary>
 <p>
 ```
+{
+    "identifier": "",
+    "auth": "",
+    "program": "HIASCDI",
+    "version": "v1",
+    "address": "context/v2",
+    "host": "",
+    "port": 3524,
+    "acceptTypes": [
+        "application/json",
+        "text/plain"
+    ],
+    "brokerDetails": {
+        "entities_url": "/v1/entities",
+        "types_url": "/v1/types",
+        "subscriptions_url": "/v1/subscriptions",
+        "registrations_url": "/v1/registrations"
+    },
+    "contentType": "application/json",
+    "contentTypes": [
+        "application/json",
+        "text/plain"
+    ],
+    "endpoints": {
+        "entities_url": "/v1/entities",
+        "types_url": "/v1/types",
+        "subscriptions_url": "/v1/subscriptions",
+        "registrations_url": "/v1/registrations"
+    },
+    "methods": [
+        "POST",
+        "GET",
+        "PUT",
+        "PATCH",
+        "DELETE"
+    ],
+    "successMessage": {
+        "200": {
+            "Description": "OK"
+        },
+        "204": {
+            "Description": "No content"
+        }
+    },
+    "errorMessages": {
+        "400": {
+            "Error": "Bad Request",
+            "Description": "Request not supported!"
+        },
+        "404": {
+            "Error": "Not Found",
+            "Description": "Resource not found!"
+        },
+        "405": {
+            "Error": "Method Not Allowed",
+            "Description": "Requested method not supported!"
+        },
+        "406": {
+            "Error": "Not Acceptable",
+            "Description": "Accepted content type not supported!"
+        },
+        "409": {
+            "Error": "Conflict",
+            "Description": "The request could not be completed due to a conflict with the current state of the resource."
+        },
+        "415": {
+            "Error": "Unsupported Media Type",
+            "Description": "Request content type not supported!"
+        },
+        "501": {
+            "Error": "Not Implemented",
+            "Description": "Request not supported!"
+        }
+    }
+}
 ```
 </p>
 </details><br />

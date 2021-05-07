@@ -11,6 +11,7 @@
 
 - [Introduction](#introduction)
 - [Prerequisites](#prerequisites)
+	- [HIAS Server](#hias-server)
 - [Installation](#installation)
 - [Continue](#continue)
 - [Contributing](#contributing)
@@ -20,47 +21,53 @@
 - [Bugs/Issues](#bugs-issues)
 
 # Introduction
-This guide will guide you through the installation process for the HIAS.
+This guide will guide you through the installation process for the HIASCDI.
 
 # Prerequisites
 You will need to ensure you have the following prerequisites installed and setup.
 
+## HIAS Server
+
+HIASCDI is a core component of the [HIAS - Hospital Intelligent Automation Server](https://github.com/AIIAL/HIAS-Server). Before beginning this tutorial you should complete the HIAS installation guide and have a HIAS server online.
+
 # Installation
-You are now ready to install the HIAS software.
+You are now ready to install the HIASCDI software.
 
 ## Clone the repository
 
-Clone the [HIAS](https://github.com/AIIAL/HIASCDI " HIAS") repository from the [Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss](https://github.com/AIIAL "Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss") Github Organization.
+Clone the [HIASCDI](https://github.com/AIIAL/HIASCDI " HIASCDI") repository from the [Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss](https://github.com/AIIAL "Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss") Github Organization.
 
-To clone the repository and install the project, make sure you have Git installed. Now navigate to the a directory on your device using commandline, and then use the following command.
+To clone the repository and install the project, make sure you have Git installed. Now navigate to your HIAS installation project root and then use the following command.
 
 ```
  git clone https://github.com/AIIAL/HIASCDI.git
+ mv HIASCDI components/hiascdi/
 ```
 
-Once you have used the command above you will see a directory called **HIASCDI** in your home directory.
+This will clone the HIASCDI repository and move the cloned repository to the components directory in the HIAS project (components/hiascdi/).
 
 ```
+ cd components/
  ls
 ```
 
 Using the ls command in your home directory should show you the following.
 
 ```
- HIASCDI
+ hiascdi
 ```
 
-Navigate to the **HIASCDI** directory, this is your project root directory for this tutorial.
+Navigate to the **components/hiascdi/** directory in your HIAS project root, this is your project root directory for this tutorial.
 
 ### Developer Forks
 
 Developers from the Github community that would like to contribute to the development of this project should first create a fork, and clone that repository. For detailed information please view the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") guide. You should pull the latest code from the development branch.
 
 ```
- git clone -b "1.0.0" https://github.com/AIIAL/HIASCDI.git
+ git clone -b "2.0.0" https://github.com/AIIAL/HIASCDI.git
 ```
 
-The **-b "1.0.0"** parameter ensures you get the code from the latest master branch. Before using the below command please check our latest master branch in the button at the top of the project README.
+The **-b "2.0.0"** parameter ensures you get the code from the latest master branch. Before using the below command please check our latest master branch in the button at the top of the project README.
 
 ## Setup File
 

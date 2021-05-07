@@ -12,7 +12,7 @@
 
 - [Introduction](#introduction)
   - [HIAS](#hias)
-  - [FIWARE NGSI V2](#fiware-ngsi-v2)
+  - [Connecting Europe Facility](#connecting-europe-facility)
 - [GETTING STARTED](#getting-started)
 - [Contributing](#contributing)
   - [Contributors](#contributors)
@@ -48,9 +48,9 @@ HIAS devices and applications are also the **contextual data consumers**. Device
 
 ![CEF Context Broker](assets/images/cef-context-broker.jpg)
 
-We are proud to be collaborating with the [Connecting Europe Facility (CEF/CEF Digital)](https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/CEF+Digital+Home) for the HIAS project. CEF is a European Union initiative facilitating the delivery of digital public services across Europe.
+We are proud to be collaborating with the [Connecting Europe Facility (CEF/CEF Digital)](https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/CEF+Digital+Home) for the HIAS/HIASCDI project. CEF is a European Union initiative facilitating the delivery of digital public services across Europe.
 
-With the support and guidance of CEF and FIWARE we are working towards interoperability and EU-compliance for HIAS, specifically focusing for the moment on HIASCDI.
+HIASCDI has been developed to be compliant with the [NGSI v2 specification](https://fiware.github.io/specifications/ngsiv2/stable/). With the support and guidance of CEF and FIWARE we are working towards interoperability and EU-compliance for HIAS/HIASCDI.
 
 &nbsp;
 

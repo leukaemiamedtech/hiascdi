@@ -22,6 +22,19 @@
 	- [API Reference](#api-reference)
 		- [API Entry Point](#api-entry-point)
 			- [Retrieve API Resources](#retrieve-api-resources)
+		- [Entities](#entities)
+			- [List Entities](#list-entities)
+			- [Create Entity](#create-entity)
+			- [Entity by ID](#entity-by-id)
+				- [Retrieve Entity](#retrieve-entity)
+				- [Retrieve Entity Attributes](#retrieve-entity-attributes)
+				- [Update or Append Entity Attributes](#update-or-append-entity-attributes)
+				- [Replace All Entity Attributes](#replace-all-entity-attributes)
+				- [Remove Entity](#remove-entity)
+		- [Attributes](#attributes)
+			- [Get Attribute Data](#get-attribute-data)
+			- [Update Attribute Data](#update-attribute-data)
+			- [Remove A Single Attribute](#remove-a-single-attribute)
 - [Contributing](#contributing)
   - [Contributors](#contributors)
 - [Versioning](#versioning)
@@ -132,17 +145,12 @@ Retrieves a list of entities that match different criteria by id, type, pattern 
 
 The response payload is an array containing one object per matching entity. Each entity follows the JSON entity representation format (described in "JSON Entity Representation" section of the FIWARE NGSI-V2 specification).
 
-**Response code:**
-
-- Successful operation uses 200 OK
-- Errors use a non-2xx and (optionally) an error payload.
-
 `GET` https://YourHIAS/hiascdi/v1/entities?id=00000000-0000-0000-0000-000000000000000&type=Robotics&idPattern=00000000-.\*&typePattern=Room_.*&q=temperature%3E40&mq=temperature.accuracy%3C0.9&georel=near&geometry=point&coords=41.390205%2C2.154007%3B48.8566%2C2.3522&limit=20&offset=20&attrs=seatNumber&metadata=accuracy&orderBy=temperature%2C!speed&options=
 
 | Parameters  |  |  | Compliant |
 | ------------- | ------------- | ------------- | ------------- |
 | id | A comma-separated list of elements. Retrieve entities whose ID matches one of the elements in the list. Incompatible with idPattern.<br />_**Example:**_ `00000000-0000-0000-0000-000000000000000`. | String | &#9745; |
-| type | A comma-separated list of elements. Retrieve entities whose type matches one of the elements in the list. Incompatible with typePattern.<br />_**Example:**_ `Robotics`. | String |  |
+| type | A comma-separated list of elements. Retrieve entities whose type matches one of the elements in the list. Incompatible with typePattern.<br />_**Example:**_ `Robotics`. | String | &#9745;  |
 | idPattern | A correctly formated regular expression. Retrieve entities whose ID matches the regular expression. Incompatible with **id**.<br />_**Example:**_ `00000000-.*`. | String | &#9745;  |
 | typePattern | A correctly formated regular expression. Retrieve entities whose type matches the regular expression. Incompatible with **type**.<br />_**Example:**_ `Robot.*`. | String | &#9745;  |
 | q | A query expression, composed of a list of statements separated by ;, i.e., q=statement1;statement2;statement3. See Simple Query Language specification.<br />_**Example:**_ `temperature>40`. | String | &#9745;  |
@@ -151,16 +159,15 @@ The response payload is an array containing one object per matching entity. Each
 | geometry | Geografical area to which the query is restricted. See Geographical Queries specification.<br />_**Example:**_ `point`. | String | &#9745; |
 | coords | List of latitude-longitude pairs of coordinates separated by ';'. See Geographical Queries specification.<br />_**Example:**_ `41.390205,2.154007;48.8566,2.3522`. | String | &#9745; |
 | limit | Limits the number of entities to be retrieved.<br />_**Example:**_ `20`. | Number | &#9745; |
-| offset | Establishes the offset from where entities are retrieved.<br />_**Example:**_ `20`. | Number | |
+| offset | Establishes the offset from where entities are retrieved.<br />_**Example:**_ `20`. | Number | &#9745; |
 | metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section of specifications for more detail.<br />_**Example:**_ `accuracy`. | String | |
 | orderBy | Criteria for ordering results. See "Ordering Results" section of specifications for details.<br />_**Example:**_ `temperature,!speed`. | String | &#9745; |
 | Options | Options dictionary.<br />_**Possible values:**_ `count`, `keyValues` , `values` , `unique`. | String | |
 
 #### Response
 
-| Attributes  |  |
-| ------------- | ------------- |
-| id | A comma-separated list of elements. Retrieve entities whose ID matches one of the elements in the list. Incompatible with idPattern. Example: Boe_Idearium. |
+- Successful operation uses 200 OK
+- Errors use a non-2xx and (optionally) an error payload.
 
 ## Create Entity
 
@@ -292,6 +299,62 @@ Delete the entity.
 | type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; |
 
 #### Response:
+
+- Successful operation uses 204 No Content
+- Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
+
+## Attributes
+
+### Attribute by Entity ID
+
+#### Get Attribute Data
+
+Returns a JSON object with the attribute data of the attribute. The object follows the JSON representation for attributes (described in "JSON Attribute Representation" section).
+
+`GET` https://YourHIAS/hiascdi/v1/entityId/attrs/attrName?type=&metadata=accuracy
+
+| Parameters  |  |  | Compliant |
+| ------------- | ------------- | ------------- | ------------- |
+| entityId | Id of the entity. **(REQUIRED)** | String | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | |
+| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | |
+| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `accuracy` | String | |
+
+##### Response:
+
+- Successful operation uses 200 OK.
+- Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
+
+#### Update Attribute Data
+
+The request payload is an object representing the new attribute data. Previous attribute data is replaced by the one in the request. The object follows the JSON representation for attributes (described in "JSON Attribute Representation" section).
+
+`PUT` https://YourHIAS/hiascdi/v1/entityId/attrs/attrName?type=
+
+| Parameters  |  |  | Compliant |
+| ------------- | ------------- | ------------- | ------------- |
+| entityId | Id of the entity. **(REQUIRED)** | String | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | |
+| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | |
+
+##### Response:
+
+- Successful operation uses 204 No Content
+- Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
+
+#### Remove A Single Attribute
+
+Removes an entity attribute.
+
+`DELETE` https://YourHIAS/hiascdi/v1/entityId/attrs/attrName?type=
+
+| Parameters  |  |  | Compliant |
+| ------------- | ------------- | ------------- | ------------- |
+| entityId | Id of the entity. **(REQUIRED)** | String | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | |
+| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | |
+
+##### Response:
 
 - Successful operation uses 204 No Content
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.

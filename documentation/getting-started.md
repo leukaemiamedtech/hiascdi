@@ -3,7 +3,7 @@
 ## HIASCDI - HIAS Contextual Data Interface
 ### Getting Started
 
-![HIAS - Hospital Intelligent Automation Server](../assets/images/HIASCDI.jpg)
+![HIASCDI - HIAS Contextual Data Interface](../../assets/images/HIASCDI.jpg)
 
 &nbsp;
 

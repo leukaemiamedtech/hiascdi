@@ -35,7 +35,7 @@ You are now ready to install the HIASCDI software.
 
 ## Clone the repository
 
-Clone the [HIASCDI](https://github.com/AIIAL/HIASCDI " HIASCDI") repository from the [Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss](https://github.com/AIIAL "Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss") Github Organization.
+Clone the [HIAS](https://github.com/AIIAL/HIASCDI " HIAS") repository from the [Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss](https://github.com/AIIAL "Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss") Github Organization.
 
 To clone the repository and install the project, make sure you have Git installed. Now navigate to your HIAS installation project root and then use the following command.
 

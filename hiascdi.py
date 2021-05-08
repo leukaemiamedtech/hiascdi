@@ -112,10 +112,10 @@ class HIASCDI():
 	def getBroker(self):
 
 		return {
-				"entities_url": "/v1/entities",
-				"types_url": "/v1/types",
-				"subscriptions_url": "/v1/subscriptions",
-				"registrations_url": "/v1/registrations",
+				"entities_url": self.confs["endpoints"]["entities_url"],
+				"types_url": self.confs["endpoints"]["types_url"],
+				"subscriptions_url": self.confs["endpoints"]["subscriptions_url"],
+				"registrations_url": self.confs["endpoints"]["registrations_url"],
 				"CPU": psutil.cpu_percent(),
 				"Memory": psutil.virtual_memory()[2],
 				"Diskspace": psutil.disk_usage('/').percent,
@@ -129,6 +129,10 @@ class HIASCDI():
 
 		if self.broker.checkContentType(request.headers) is not True:
 			return self.respond(415, self.confs["errorMessages"][str(415)])
+
+	def checkBody(self, body):
+
+		return self.broker.checkJSON(body)
 
 	def respond(self, responseCode, response, location=None):
 		""" Builds the request repsonse """
@@ -158,7 +162,7 @@ class HIASCDI():
 			"Longitude": float(location[1])
 		})
 
-		self.helpers.logger.info("HIASCDIlife statistics published.")
+		self.helpers.logger.info("HIASCDI life statistics published.")
 		threading.Timer(300.0, self.life).start()
 
 	def signal_handler(self, signal, frame):
@@ -183,10 +187,13 @@ def entitiesPost():
 
 	HIASCDI.processHeaders(request)
 
-	query = request.json
+	query=request.json
+
+	if query is None or not HIASCDI.checkBody(query):
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"])
 
 	if query["id"] is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"][str(400)])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
 
 	return HIASCDI.entities.createEntity(query)
 
@@ -205,7 +212,7 @@ def entityGet(_id):
 	HIASCDI.processHeaders(request)
 
 	if request.args.get('type') is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"][str(400)])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
 
 	if request.args.get('attrs') is None:
 		attrs = None
@@ -220,9 +227,13 @@ def entityPost(_id):
 
 	HIASCDI.processHeaders(request)
 
-	query = request.json
+	query=request.json
+
+	if query is None or not HIASCDI.checkBody(query):
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"])
+
 	if request.args.get('type') is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"][str(400)])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
 
 	return HIASCDI.entities.updateEntityPost(_id, request.args.get('type'), query)
 
@@ -233,8 +244,12 @@ def entityPatch(_id):
 	HIASCDI.processHeaders(request)
 
 	query = request.json
+
+	if query is None or not HIASCDI.checkBody(query):
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"])
+
 	if request.args.get('type') is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"][str(400)])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
 
 	return HIASCDI.entities.updateEntityPatch(_id, request.args.get('type'), query)
 
@@ -245,8 +260,12 @@ def entityPut(_id):
 	HIASCDI.processHeaders(request)
 
 	query = request.json
+
+	if query is None or not HIASCDI.checkBody(query):
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"])
+
 	if request.args.get('type') is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"][str(400)])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
 
 	return HIASCDI.entities.updateEntityPut(_id, request.args.get('type'), query)
 
@@ -257,7 +276,7 @@ def entityDelete(_id):
 	HIASCDI.processHeaders(request)
 
 	if _id is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"][str(400)])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
 
 	return HIASCDI.entities.deleteEntity(request.args.get('type'), _id)
 

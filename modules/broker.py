@@ -71,3 +71,16 @@ class broker():
 		if "Content-Type" not in headers or headers["Content-Type"] not in self.helpers.confs["contentTypes"]:
 			response = False
 		return response
+
+	def checkJSON(self, payload):
+		""" Checks the request Content-Type. """
+
+		response = False
+		try:
+			json_object = json.loads(payload)
+			response = True
+		except ValueError as e:
+			return False
+
+		return response
+

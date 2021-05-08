@@ -63,6 +63,10 @@ class entities():
 	def getEntities(self, arguments):
 		""" Gets entity data from the MongoDB.
 
+		You can access this endpoint by naviating your browser to https://YourServer/hiascdi/v1/entities
+		If you are not logged in to the HIAS network you will be shown an authentication pop up
+		where you should provide your HIAS network user and password.
+
 		References:
 			FIWARE-NGSI v2 Specification
 			https://fiware.github.io/specifications/ngsiv2/stable/
@@ -176,13 +180,13 @@ class entities():
 			if geotype == 'near':
 				# Near geospatial query
 				if geometry != "Point":
-					return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+					return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 				if georelslen < 2:
-					return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+					return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 				if coordslen > 1:
-					return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+					return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 				data = {"location.value": {
 					"$near": {
@@ -201,10 +205,10 @@ class entities():
 			elif geotype == 'intersects':
 				# Intersects geospatial query
 				if geometry != "Polygone":
-					return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+					return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 				if coordslen > 4:
-					return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+					return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 				polygone = []
 				for poly in coords:
@@ -221,10 +225,10 @@ class entities():
 			elif geotype == 'coveredBy':
 				# coveredBy geospatial query
 				if geometry != "Polygone":
-					return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+					return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 				if coordslen > 4:
-					return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+					return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 				polygone = []
 				for poly in coords:
@@ -252,7 +256,7 @@ class entities():
 				return self.respond(501, self.helpers.confs["errorMessages"][str(501)])
 			else:
 				# None supported geospatial query
-				return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+				return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 		# TO REMOVE
 		if arguments.get('values') is not None:

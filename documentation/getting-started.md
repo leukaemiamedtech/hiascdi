@@ -3,7 +3,7 @@
 ## HIASCDI - HIAS Contextual Data Interface
 ### Getting Started
 
-![HIASCDI - HIAS Contextual Data Interface](../../assets/images/HIASCDI.jpg)
+![HIASCDI - HIAS Contextual Data Interface](../assets/images/HIASCDI.jpg)
 
 &nbsp;
 

@@ -128,7 +128,7 @@ First you need to install the required software. Below are the available install
 
 The HIASCDI Console is a REST API client for HIASCDI that is built in to the HIAS UI. The console has been designed to provide the functionalty required to interact with HIASCDI using the methods provided in the [FIWARE-NGSI v2 Specification](https://fiware.github.io/specifications/ngsiv2/stable/).
 
-Now that you have your HIASCDI installed, you can test the context broker using the HIAS UI HIASCDI Interface. Follow the [HIASCDI Console useage guide](useage/console.md) to learn about the API calls available to authenticated HIAS devices and applications.
+Now that you have your HIASCDI installed, you can test the context broker using the HIAS UI HIASCDI Interface. Follow the [HIASCDI Console usage guide](usage/console.md) to learn about the API calls available to authenticated HIAS devices and applications.
 
 &nbsp;
 

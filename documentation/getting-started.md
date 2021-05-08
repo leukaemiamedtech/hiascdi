@@ -14,6 +14,7 @@
 - [Configuration](#configuration)
     - [Entity Configuration](#configuration)
 - [HIASCDI Console](#hiascdi-console)
+- [API Documentation](#api-documentation)
 - [Contributing](#contributing)
   - [Contributors](#contributors)
 - [Versioning](#versioning)

@@ -149,7 +149,7 @@ Now that you have your HIASCDI installed, you can test the context broker using 
 
 # API Documentation
 
-Please review the [HIASCDI API Usage Guide](api.md) for details on how to use the HIASCDI Console with the HIASCDI API.
+Please review the [HIASCDI API Usage Guide](usage/api.md) for details on how to use the HIASCDI API.
 
 &nbsp;
 

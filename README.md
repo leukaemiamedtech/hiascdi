@@ -24,7 +24,7 @@
 
 # Introduction
 
-**HIASCDI** is the **Hospital Intelligent Automation Server Contextual Data Interface**. HIASCDI is an implementation of a [CEF Context Broker (NGIS v2)](https://fiware.github.io/specifications/ngsiv2/stable/). A context broker stores contextual data and serves it to applications by exposing the data through a REST API and pushing data through subscriptions.
+**HIASCDI** is the **Hospital Intelligent Automation Server Contextual Data Interface**. HIASCDI is an implementation of a [CEF Context Broker (NGSI v2)](https://fiware.github.io/specifications/ngsiv2/stable/). A context broker stores contextual data and serves it to applications by exposing the data through a REST API and pushing data through subscriptions.
 
 &nbsp;
 

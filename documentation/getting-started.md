@@ -12,7 +12,7 @@
 - [Introduction](#introduction)
 - [Installation](#installation)
 - [Configuration](#configuration)
-- [Testing](#testing)
+- [HIASCDI Console](#hiascdi-console)
 - [Contributing](#contributing)
   - [Contributors](#contributors)
 - [Versioning](#versioning)
@@ -33,13 +33,12 @@ First you need to install the required software. Below are the available install
 
 &nbsp;
 
-&nbsp;
-
 # Configuration
 [configuration/config.json](../configuration/config.json "configuration/config.json")  holds the configuration for our application.
 
 <details><summary><b>View file contents</b></summary>
 <p>
+
 ```
 {
     "identifier": "",
@@ -117,20 +116,19 @@ First you need to install the required software. Below are the available install
     }
 }
 ```
+
 </p>
 </details><br />
 
 &nbsp;
 
-# Testing
+# HIASCDI Console
 
-<details><summary><b>View output</b></summary>
-<p>
-```
-```
-</p>
-</details><br />
-```
+![HIASCDI Console](../assets/images/HIASCDI-Console.jpg)
+
+The HIASCDI Console is a REST API client for HIASCDI that is built in to the HIAS UI. The console has been designed to provide the functionalty required to interact with HIASCDI using the methods provided in the [FIWARE-NGSI v2 Specification](https://fiware.github.io/specifications/ngsiv2/stable/).
+
+Now that you have your HIASCDI installed, you can test the context broker using the HIAS UI HIASCDI Interface. Follow the [HIASCDI Console useage guide](useage/console.md) to learn about the API calls available to authenticated HIAS devices and applications.
 
 &nbsp;
 

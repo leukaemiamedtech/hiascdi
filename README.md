@@ -61,7 +61,7 @@ Ready to get started ? Head over to the [Getting Started guide](documentation/ge
 
 &nbsp;
 
-# Documenation
+# Documentation
 
 - [Installation](installation/)
 	- [Ubuntu](installation/ubuntu.md)

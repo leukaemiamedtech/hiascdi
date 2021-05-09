@@ -14,6 +14,7 @@
   - [HIAS](#hias)
   - [Connecting Europe Facility](#connecting-europe-facility)
 - [GETTING STARTED](#getting-started)
+- [Documenation](#documentation)
 - [Contributing](#contributing)
   - [Contributors](#contributors)
 - [Versioning](#versioning)
@@ -57,6 +58,16 @@ HIASCDI has been developed to be compliant with the [NGSI v2 specification](http
 # GETTING STARTED
 
 Ready to get started ? Head over to the [Getting Started guide](documentation/getting-started.md) for instructions on how to download/install and setup the HIAS - Hospital Intelligent Automation Server.
+
+&nbsp;
+
+# Documenation
+
+- [Installation](installation/)
+	- [Ubuntu](installation/ubuntu.md)
+- [Usage](usage/)
+	- [API](usage/api.md)
+	- [Console](usage/console.md)
 
 &nbsp;
 

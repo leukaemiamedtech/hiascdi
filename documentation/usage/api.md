@@ -51,6 +51,14 @@
 				- [Retrieve Subscripton](#retrieve-subscription)
 				- [Update Subscripton](#update-subscription)
 				- [Delete Subscripton](#delete-subscription)
+		- [Registrations](#registrations)
+			- [Registration list](#registration-list)
+				- [List Registrations](#list-registrations)
+				- [Create Registrations](#create-registrations)
+			- [Registration By ID](#registration-by-id)
+				- [Retrieve Registration](#retrieve-registration)
+				- [Update Registration](#update-registration)
+				- [Delete Registration](#delete-registration)
 - [Contributing](#contributing)
   - [Contributors](#contributors)
 - [Versioning](#versioning)
@@ -672,6 +680,164 @@ Only the fields included in the request are updated in the subscription.
 Cancels subscription.
 
 `DELETE` https://YourHIAS/hiascdi/v1/subscriptions/subscriptionId
+
+###### Response:
+
+- Successful operation uses 204 No Content
+- Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
+
+&nbsp;
+
+### Registrations
+
+A Context Registration allows to bind external context information sources so that they can play the role of providers of certain subsets (entities, attributes) of the context information space, including those located at specific geographical areas.
+
+A NGSIv2 server implementation may implement query and/or update forwarding to context information sources. In particular, some of the following forwarding mechanisms could be implemented (not exahustive list):
+
+- Legacy forwarding (based on NGSIv1 operations)
+- NGSI Context Source Forwarding Specification
+
+Please check the corresponding specification in order to get the details.
+
+A context registration is represented by a JSON object with the following fields:
+
+- `id` : Unique identifier assigned to the registration. Automatically generated at creation time.
+
+- `description` : Description given to this registration. Optional.
+
+- `provider` : Object that describes the context source registered. Mandatory.
+
+- `dataProvided` : Object that describes the data provided by this source. Mandatory.
+
+- `status`: Enumerated field which captures the current status of this registration: Either active (for active registrations) or inactive (for inactive registrations). If this field is not provided at registration creation time, new registrations are created with the active status, which may be changed by clients afterwards. For expired registrations, this attribute is set to expired (no matter if the client updates it to active/inactive). Also, for registrations experiencing problems with forwarding operations, the status is set to failed. As soon as the forwarding operations start working again, the status is changed back to active.
+
+- `expires` : Registration expiration date in ISO8601 format. Permanent registrations must omit this field.
+
+- `forwardingInformation`: Information related to the forwarding operations made against the provider. Automatically provided by the implementation, in the case such implementation supports forwarding capabilities.
+
+The provider field contains the following subfields:
+
+- `http` : It is used to convey parameters for providers that deliver information through the HTTP protocol. (Only protocol supported nowadays). It must contain a subfield named url with the URL that serves as the endpoint that offers the providing interface. The endpoint must not include the protocol specific part (for instance /v2/entities).
+
+- `supportedForwardingMode` : It is used to convey the forwarding mode supported by this context provider. By default `all`. Allowed values are:
+
+	- `none` : This provider does not support request forwarding.
+
+	- `query` : This provider only supports request forwarding to query data.
+
+	- `update` : This provider only supports request forwarding to update data.
+
+	- `all` : This provider supports both query and update forwarding requests. (Default value)
+
+	The `dataProvided` field contains the following subfields:
+
+	- `entities`: A list of objects, each one composed of the following subfields:
+
+	- `id` or `idPattern`: Id or pattern of the affected entities. Both cannot be used at the same time, but one of them must be present.
+
+	- `type` or `typePattern`: Type or pattern of the affected entities. Both cannot be used at the same time. If omitted, it means "any entity type".
+
+	- `attrs`: List of attributes to be provided (if not specified, all attributes).
+
+	- `expression`: By means of a filtering expression, allows to express what is the scope of the data provided. Currently only geographical scopes are supported through the following subterms:
+
+	- `georel` : Any of the geographical relationships as specified by the Geoqueries section of this specification.
+
+	- `geometry` : Any of the supported geometries as specified by the Geoqueries section of this specification.
+
+	- `coords` : String representation of coordinates as specified by the Geoqueries section of this specification.
+
+	The `forwardingInformation` field contains the following subfields:
+
+	- `timesSent` (not editable, only present in GET operations): Number of request forwardings sent due to this registration.
+
+	- `lastForwarding` (not editable, only present in GET operations): Last forwarding timestamp in ISO8601 format.
+
+	- `lastFailure` (not editable, only present in GET operations): Last failure timestamp in ISO8601 format. Not present if registration has never had a problem with forwarding.
+
+	- `lastSuccess` (not editable, only present in GET operations): Timestamp in ISO8601 format for last successful request forwarding. Not present if registration has never had a successful notification.
+
+&nbsp;
+
+#### Registration list
+
+##### List Registrations
+
+Lists all the context provider registrations present in the system.
+
+`GET` https://YourHIAS/hiascdi/v1/registrations?limit=10&offset=20&options=
+
+| Parameters  |  |  | Compliant |
+| ------------- | ------------- | ------------- | ------------- |
+| limit | Limit the number of registrations to be retrieved.<br />_**Example:**_ `10` | Number | |
+| offset | Skip a number of records.<br />_**Example:**_ `20` | Number | |
+| Options | Options dictionary.<br />_**Possible values:**_ `count`. | String | |
+
+###### Response:
+
+- Successful operation uses 200 OK
+- Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
+
+&nbsp;
+
+##### Create Registration
+
+Creates a new context provider registration. This is typically used for binding context sources as providers of certain data. The registration is represented by a JSON object as described at the beginning of this section.
+
+`POST` https://YourHIAS/hiascdi/v1/registrations
+
+###### Response:
+
+- Successful operation uses 201 Created
+- Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
+
+&nbsp;
+
+#### Registration By ID
+
+##### Retrieve Registration
+
+The response is the registration represented by a JSON object as described at the beginning of this section.
+
+`GET` https://YourHIAS/hiascdi/v1/registrations/registrationId
+
+| Parameters  |  |  | Compliant |
+| ------------- | ------------- | ------------- | ------------- |
+| registrationId | Registration Id.<br />_**Example:**_ `abcdef` | String | |
+
+###### Response:
+
+- Successful operation uses 200 OK
+- Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
+
+&nbsp;
+
+##### Update Registration
+
+Only the fields included in the request are updated in the registration.
+
+`PATCH` https://YourHIAS/hiascdi/v1/registrations/registrationId
+
+| Parameters  |  |  | Compliant |
+| ------------- | ------------- | ------------- | ------------- |
+| registrationId | Registration Id.<br />_**Example:**_ `abcdef` | String | |
+
+###### Response:
+
+- Successful operation uses 204 No Content
+- Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
+
+&nbsp;
+
+##### Delete Registration
+
+Cancels a context provider registration.
+
+`DELETE` https://YourHIAS/hiascdi/v1/registrations/registrationId
+
+| Parameters  |  |  | Compliant |
+| ------------- | ------------- | ------------- | ------------- |
+| registrationId | Registration Id.<br />_**Example:**_ `abcdef` | String | |
 
 ###### Response:
 

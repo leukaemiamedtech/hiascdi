@@ -63,11 +63,11 @@ Ready to get started ? Head over to the [Getting Started guide](documentation/ge
 
 # Documentation
 
-- [Installation](installation/)
-	- [Ubuntu](installation/ubuntu.md)
-- [Usage](usage/)
-	- [API](usage/api.md)
-	- [Console](usage/console.md)
+- [Installation](documenatation/installation/)
+	- [Ubuntu](documenatation/installation/ubuntu.md)
+- [Usage](documenatation/usage/)
+	- [API](documenatation/usage/api.md)
+	- [Console](documenatation/usage/console.md)
 
 &nbsp;
 

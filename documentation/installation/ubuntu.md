@@ -81,7 +81,7 @@ All other software requirements are included in **scripts/install.sh**. You can 
 
 # API Documentation
 
-Please review the [HIASCDI API Usage Guide](usage/api.md) for details on how to use the HIASCDI API.
+Please review the [HIASCDI API Usage Guide](../usage/api.md) for details on how to use the HIASCDI API.
 
 &nbsp;
 

@@ -10,10 +10,11 @@
 # Table Of Contents
 
 - [Getting Started](getting-started.md)
-	- [Installation](nstallation/ubuntu.md)
+- [Installation](installation/)
+	- [Ubuntu](installation/ubuntu.md)
 - [Usage](usage/)
-	- [API](usage/api)
-	- [Console](usage/console)
+	- [API](usage/api.md)
+	- [Console](usage/console.md)
 - [Contributing](#contributing)
 	- [Contributors](#contributors)
 - [Versioning](#versioning)

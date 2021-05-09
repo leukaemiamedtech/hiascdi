@@ -38,6 +38,7 @@
 		- [Attribute Value](#attributes-value)
 			- [Get Attribute Value](#get-attribute-value)
 			- [Update Attribute Value](#update-attribute-value)
+		- [Types](#types)
 - [Contributing](#contributing)
   - [Contributors](#contributors)
 - [Versioning](#versioning)
@@ -421,6 +422,56 @@ The payload MIME type in the request is specified in the Content-Type HTTP heade
 ##### Response:
 
 - Successful operation uses 204 No Content
+- Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
+
+## Types
+
+### Entity types
+
+#### List Entity Types
+
+If the values option is not in use, this operation returns a JSON array with the entity types. Each element is a JSON object with information about the type:
+
+- type : the entity type name.
+- attrs : the set of attribute names along with all the entities of such type, represented in a JSON object whose keys are the attribute names and whose values contain information of such attributes (in particular a list of the types used by attributes with that name along with all the entities).
+- count : the number of entities belonging to that type.
+
+If the values option is used, the operation returns a JSON array with a list of entity type names as strings.
+
+Results are ordered by entity type in alphabetical order.
+
+`GET` https://YourHIAS/hiascdi/v1/types/?limit=10&offset=20&options=
+
+| Parameters  |  |  | Compliant |
+| ------------- | ------------- | ------------- | ------------- |
+| limit | Limit the number of types to be retrieved.<br />_**Example:**_ `10` | Number | |
+| offset | Skip a number of records.<br />_**Example:**_ `20` | Number | |
+| Options | Options dictionary.<br />_**Possible values:**_ `count`, `values`. | String | |
+
+##### Response code:
+
+- Successful operation uses 200 OK
+- Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
+
+### Entity Type
+
+#### Retrieve Entity Type
+
+This operation returns a JSON object with information about the type:
+
+- attrs : the set of attribute names along with all the entities of such type, represented in a JSON object whose keys are the attribute names and whose values contain information of such attributes (in particular a list of the types used by attributes with that name along with all the entities).
+
+- count : the number of entities belonging to that type.
+
+`GET` https://YourHIAS/hiascdi/v1/types/entityType
+
+| Parameters  |  |  | Compliant |
+| ------------- | ------------- | ------------- | ------------- |
+| entityType | Entity Type.<br />_**Example:**_ `Robot` | String | |
+
+##### Response code:
+
+- Successful operation uses 200 OK
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;

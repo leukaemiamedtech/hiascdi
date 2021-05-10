@@ -178,22 +178,22 @@ The response payload is an array containing one object per matching entity. Each
 
 `GET` https://YourHIAS/hiascdi/v1/entities?id=00000000-0000-0000-0000-000000000000000&type=Robotics&idPattern=00000000-.\*&typePattern=Room_.*&q=temperature%3E40&mq=temperature.accuracy%3C0.9&georel=near&geometry=point&coords=41.390205%2C2.154007%3B48.8566%2C2.3522&limit=20&offset=20&attrs=seatNumber&metadata=accuracy&orderBy=temperature%2C!speed&options=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| id | A comma-separated list of elements. Retrieve entities whose ID matches one of the elements in the list. Incompatible with idPattern.<br />_**Example:**_ `00000000-0000-0000-0000-000000000000000`. | String | &#9745; |
-| type | A comma-separated list of elements. Retrieve entities whose type matches one of the elements in the list. Incompatible with typePattern.<br />_**Example:**_ `Robotics`. | String | &#9745;  |
-| idPattern | A correctly formated regular expression. Retrieve entities whose ID matches the regular expression. Incompatible with **id**.<br />_**Example:**_ `00000000-.*`. | String | &#9745;  |
-| typePattern | A correctly formated regular expression. Retrieve entities whose type matches the regular expression. Incompatible with **type**.<br />_**Example:**_ `Robot.*`. | String | &#9745;  |
-| q | A query expression, composed of a list of statements separated by ;, i.e., q=statement1;statement2;statement3. See Simple Query Language specification.<br />_**Example:**_ `temperature>40`. | String | &#9745;  |
-| mq | A query expression for attribute metadata, composed of a list of statements separated by ;, i.e., mq=statement1;statement2;statement3. See Simple Query Language specification.<br />_**Example:**_ `temperature.accuracy<0.9`. | String |   |
-| georel | Spatial relationship between matching entities and a reference shape. See Geographical Queries specification.<br />_**Example:**_ `near`. | String | &#9745; |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| id | A comma-separated list of elements. Retrieve entities whose ID matches one of the elements in the list. Incompatible with idPattern.<br />_**Example:**_ `00000000-0000-0000-0000-000000000000000`. | String | &#9745; | |
+| type | A comma-separated list of elements. Retrieve entities whose type matches one of the elements in the list. Incompatible with typePattern.<br />_**Example:**_ `Robotics`. | String | &#9745;  | |
+| idPattern | A correctly formated regular expression. Retrieve entities whose ID matches the regular expression. Incompatible with **id**.<br />_**Example:**_ `00000000-.*`. | String | &#9745;  | |
+| typePattern | A correctly formated regular expression. Retrieve entities whose type matches the regular expression. Incompatible with **type**.<br />_**Example:**_ `Robot.*`. | String | &#9745;  | |
+| q | A query expression, composed of a list of statements separated by ;, i.e., q=statement1;statement2;statement3. See Simple Query Language specification.<br />_**Example:**_ `batteryLevel.value==0`. | String | &#9745;  | |
+| mq | A query expression for attribute metadata, composed of a list of statements separated by ;, i.e., mq=statement1;statement2;statement3. See Simple Query Language specification.<br />_**Example:**_ `batteryLevel.accuracy<0.9`. | String |   | |
+| georel | Spatial relationship between matching entities and a reference shape. See Geographical Queries specification.<br />_**Example:**_ `near`. | String | &#9745; | |
 | geometry | Geografical area to which the query is restricted. See Geographical Queries specification.<br />_**Example:**_ `point`. | String | &#9745; |
-| coords | List of latitude-longitude pairs of coordinates separated by ';'. See Geographical Queries specification.<br />_**Example:**_ `41.390205,2.154007;48.8566,2.3522`. | String | &#9745; |
-| limit | Limits the number of entities to be retrieved.<br />_**Example:**_ `20`. | Number | &#9745; |
-| offset | Establishes the offset from where entities are retrieved.<br />_**Example:**_ `20`. | Number | &#9745; |
-| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section of specifications for more detail.<br />_**Example:**_ `accuracy`. | String | |
-| orderBy | Criteria for ordering results. See "Ordering Results" section of specifications for details.<br />_**Example:**_ `temperature,!speed`. | String | &#9745; |
-| Options | Options dictionary.<br />_**Possible values:**_ `count`, `keyValues` , `values` , `unique`. | String | |
+| coords | List of latitude-longitude pairs of coordinates separated by ';'. See Geographical Queries specification.<br />_**Example:**_ `41.390205,2.154007;48.8566,2.3522`. | String | &#9745; | |
+| limit | Limits the number of entities to be retrieved.<br />_**Example:**_ `20`. | Number | &#9745; | |
+| offset | Establishes the offset from where entities are retrieved.<br />_**Example:**_ `20`. | Number | &#9745; | |
+| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section of specifications for more detail.<br />_**Example:**_ `accuracy`. | String | | |
+| orderBy | Criteria for ordering results. See "Ordering Results" section of specifications for details.<br />_**Example:**_ `temperature,!speed`. | String | &#9745; | |
+| Options | Options dictionary.<br />_**Possible values:**_ `count`, `keyValues` , `values` , `unique`. | String | &#9745; | |
 
 ##### Response
 
@@ -208,9 +208,9 @@ The payload is an object representing the entity to be created. The object follo
 
 `POST` https://YourHIAS/hiascdi/v1/entities?options=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`, `upsert`. | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`, `upsert`. | String | | |
 
 ##### Response:
 
@@ -230,12 +230,12 @@ This operation must return one entity element only, but there may be more than o
 
 `GET` https://YourHIAS/hiascdi/v1/entityId?type=&attrs=temperature%2Chumidity&metadata=accuracy&options=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
 | entityId | Id of the entity to be retrieved. **(REQUIRED)** | String | &#9745; |
-| type | Comma-separated list of attribute names whose data must be included in the response. The attributes are retrieved in the order specified by this parameter. See "Filtering out attributes and metadata" section for more detail. If this parameter is not included, the attributes are retrieved in arbitrary order, and all the attributes of the entity are included in the response.<br />_**Example:**_ `temperature,humidity` | String | &#9745; |
-| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `accuracy` | String | |
-| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`, `value`, `unique`. | String | |
+| type | Comma-separated list of attribute names whose data must be included in the response. The attributes are retrieved in the order specified by this parameter. See "Filtering out attributes and metadata" section for more detail. If this parameter is not included, the attributes are retrieved in arbitrary order, and all the attributes of the entity are included in the response.<br />_**Example:**_ `temperature,humidity` | String | &#9745; | |
+| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `accuracy` | String | | |
+| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`, `value`, `unique`. | String | &#9745; | |
 
 ##### Response:
 
@@ -253,13 +253,13 @@ Just like the general request of getting an entire entity, this operation must r
 
 `GET` https://YourHIAS/hiascdi/v1/entityId/attrs?type=&attrs=temperature%2Chumidity&metadata=accuracy&options=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
 | entityId | Id of the entity to be retrieved. **(REQUIRED)** | String | &#9745; |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; |
-| attrs | Comma-separated list of attribute names whose data are to be included in the response. The attributes are retrieved in the order specified by this parameter. If this parameter is not included, the attributes are retrieved in arbitrary order, and all the attributes of the entity are included in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `temperature,humidity` | String | &#9745; |
-| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `accuracy` | String | |
-| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`, `value`, `unique`. | String | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
+| attrs | Comma-separated list of attribute names whose data are to be included in the response. The attributes are retrieved in the order specified by this parameter. If this parameter is not included, the attributes are retrieved in arbitrary order, and all the attributes of the entity are included in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `temperature,humidity` | String | &#9745; | |
+| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `accuracy` | String | | |
+| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`, `value`, `unique`. | String | &#9745; | |
 
 ##### Response:
 
@@ -279,11 +279,11 @@ The entity attributes are updated with the ones in the payload, depending on whe
 
 `POST` https://YourHIAS/hiascdi/v1/entityId/attrs?type=&options=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| entityId | Id of the entity to be updated. **(REQUIRED)** | String | &#9745; |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; |
-| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`, `append`. | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| entityId | Id of the entity to be updated. **(REQUIRED)** | String | &#9745; | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
+| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`, `append`. | String | | |
 
 ##### Response:
 
@@ -298,11 +298,11 @@ The entity attributes are updated with the ones in the payload. In addition to t
 
 `PATCH` https://YourHIAS/hiascdi/v1/entityId/attrs?type=&options=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| entityId | Id of the entity to be updated. **(REQUIRED)** | String | &#9745; |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; |
-| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| entityId | Id of the entity to be updated. **(REQUIRED)** | String | &#9745; | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
+| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | | &#9745; |
 
 ##### Response:
 
@@ -319,11 +319,11 @@ The attributes previously existing in the entity are removed and replaced by the
 
 `PUT` https://YourHIAS/hiascdi/v1/entityId/attrs?type=&options=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| entityId | Id of the entity to be updated. **(REQUIRED)** | String | &#9745; |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; |
-| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| entityId | Id of the entity to be updated. **(REQUIRED)** | String | &#9745; | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
+| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | | |
 
 ##### Response:
 
@@ -338,10 +338,10 @@ Delete the entity.
 
 `DELETE` https://YourHIAS/hiascdi/v1/entityId?type=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
 | entityId | Id of the entity to be updated. **(REQUIRED)** | String | &#9745; |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
 
 ##### Response:
 
@@ -360,12 +360,12 @@ Returns a JSON object with the attribute data of the attribute. The object follo
 
 `GET` https://YourHIAS/hiascdi/v1/entityId/attrs/attrName?type=&metadata=accuracy
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| entityId | Id of the entity. **(REQUIRED)** | String | |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | |
-| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | |
-| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `accuracy` | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| entityId | Id of the entity. **(REQUIRED)** | String | | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | | |
+| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | | |
+| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `accuracy` | String | | |
 
 ###### Response:
 
@@ -380,11 +380,11 @@ The request payload is an object representing the new attribute data. Previous a
 
 `PUT` https://YourHIAS/hiascdi/v1/entityId/attrs/attrName?type=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| entityId | Id of the entity. **(REQUIRED)** | String | |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | |
-| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| entityId | Id of the entity. **(REQUIRED)** | String | | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | | |
+| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | | |
 
 ###### Response:
 
@@ -399,11 +399,11 @@ Removes an entity attribute.
 
 `DELETE` https://YourHIAS/hiascdi/v1/entityId/attrs/attrName?type=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| entityId | Id of the entity. **(REQUIRED)** | String | |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | |
-| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| entityId | Id of the entity. **(REQUIRED)** | String | | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | | |
+| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | | |
 
 ###### Response:
 
@@ -434,11 +434,11 @@ This operation returns the value property with the value of the attribute.
 
 `GET` https://YourHIAS/hiascdi/v1/entityId/attrs/attrName/value?type=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| entityId | Id of the entity. **(REQUIRED)** | String | |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | |
-| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| entityId | Id of the entity. **(REQUIRED)** | String | | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | | |
+| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | | |
 
 ###### Response:
 
@@ -464,11 +464,11 @@ The payload MIME type in the request is specified in the Content-Type HTTP heade
 
 `PUT` https://YourHIAS/hiascdi/v1/entityId/attrs/attrName/value?type=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| entityId | Id of the entity. **(REQUIRED)** | String | |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | |
-| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| entityId | Id of the entity. **(REQUIRED)** | String | | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | | |
+| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | | |
 
 ###### Response:
 
@@ -495,11 +495,11 @@ Results are ordered by entity type in alphabetical order.
 
 `GET` https://YourHIAS/hiascdi/v1/types/?limit=10&offset=20&options=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| limit | Limit the number of types to be retrieved.<br />_**Example:**_ `10` | Number | |
-| offset | Skip a number of records.<br />_**Example:**_ `20` | Number | |
-| Options | Options dictionary.<br />_**Possible values:**_ `count`, `values`. | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| limit | Limit the number of types to be retrieved.<br />_**Example:**_ `10` | Number | | |
+| offset | Skip a number of records.<br />_**Example:**_ `20` | Number | | |
+| Options | Options dictionary.<br />_**Possible values:**_ `count`, `values`. | String | &#9745; | |
 
 ###### Response code:
 
@@ -520,9 +520,9 @@ This operation returns a JSON object with information about the type:
 
 `GET` https://YourHIAS/hiascdi/v1/types/entityType
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| entityType | Entity Type.<br />_**Example:**_ `Robot` | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| entityType | Entity Type.<br />_**Example:**_ `Robot` | String | | |
 
 ###### Response code:
 
@@ -616,11 +616,11 @@ Returns a list of all the subscriptions present in the system.
 
 `GET` https://YourHIAS/hiascdi/v1/subscriptions?limit=10&offset=20&options=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| limit | Limit the number of subscriptions to be retrieved.<br />_**Example:**_ `10` | Number | |
-| offset | Skip a number of records.<br />_**Example:**_ `20` | Number | |
-| Options | Options dictionary.<br />_**Possible values:**_ `count`, `values`. | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| limit | Limit the number of subscriptions to be retrieved.<br />_**Example:**_ `10` | Number | | |
+| offset | Skip a number of records.<br />_**Example:**_ `20` | Number | | |
+| Options | Options dictionary.<br />_**Possible values:**_ `count`, `values`. | String | | |
 
 ###### Response:
 
@@ -650,9 +650,9 @@ The response is the subscription represented by a JSON object as described at th
 
 `GET` https://YourHIAS/hiascdi/v1/subscriptions/subscriptionId
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| subscriptionId | Subscription Id.<br />_**Example:**_ `abcdef` | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| subscriptionId | Subscription Id.<br />_**Example:**_ `abcdef` | String | | |
 
 ###### Response:
 
@@ -667,9 +667,9 @@ Only the fields included in the request are updated in the subscription.
 
 `PATCH` https://YourHIAS/hiascdi/v1/subscriptions/subscriptionId
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| subscriptionId | Subscription Id.<br />_**Example:**_ `abcdef` | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| subscriptionId | Subscription Id.<br />_**Example:**_ `abcdef` | String | | |
 
 ###### Response:
 
@@ -770,8 +770,8 @@ Lists all the context provider registrations present in the system.
 
 `GET` https://YourHIAS/hiascdi/v1/registrations?limit=10&offset=20&options=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
 | limit | Limit the number of registrations to be retrieved.<br />_**Example:**_ `10` | Number | |
 | offset | Skip a number of records.<br />_**Example:**_ `20` | Number | |
 | Options | Options dictionary.<br />_**Possible values:**_ `count`. | String | |
@@ -804,8 +804,8 @@ The response is the registration represented by a JSON object as described at th
 
 `GET` https://YourHIAS/hiascdi/v1/registrations/registrationId
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
 | registrationId | Registration Id.<br />_**Example:**_ `abcdef` | String | |
 
 ###### Response:
@@ -821,8 +821,8 @@ Only the fields included in the request are updated in the registration.
 
 `PATCH` https://YourHIAS/hiascdi/v1/registrations/registrationId
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
 | registrationId | Registration Id.<br />_**Example:**_ `abcdef` | String | |
 
 ###### Response:
@@ -838,8 +838,8 @@ Cancels a context provider registration.
 
 `DELETE` https://YourHIAS/hiascdi/v1/registrations/registrationId
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
 | registrationId | Registration Id.<br />_**Example:**_ `abcdef` | String | |
 
 ###### Response:
@@ -872,9 +872,9 @@ This operation is split in as many individual operations as entities in the `ent
 
 `POST` https://YourHIAS/hiascdi/v1/op/update
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | | |
 
 ##### Response:
 
@@ -899,12 +899,12 @@ The payload may contain the following elements (all of them optional):
 
 `POST` https://YourHIAS/hiascdi/v1/op/query?limit=10&offset=20&options=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| limit | Limit the number of entities to be retrieved.<br />_**Example:**_ `10` | Number | |
-| offset | Skip a number of records.<br />_**Example:**_ `20` | Number | |
-| offset | Criteria for ordering results. See "Ordering Results" section for details. <br />_**Example:**_ `temperature,!speed` | String | |
-| Options | Options dictionary.<br />_**Possible values:**_ `count`, `values`, `keyValues`, `unique`. | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| limit | Limit the number of entities to be retrieved.<br />_**Example:**_ `10` | Number | | |
+| offset | Skip a number of records.<br />_**Example:**_ `20` | Number | | |
+| offset | Criteria for ordering results. See "Ordering Results" section for details. <br />_**Example:**_ `temperature,!speed` | String | | |
+| Options | Options dictionary.<br />_**Possible values:**_ `count`, `values`, `keyValues`, `unique`. | String | | |
 
 ##### Response code:
 
@@ -919,9 +919,9 @@ This operation is intended to consume a notification payload so that all the ent
 
 `POST` https://YourHIAS/hiascdi/v1/op/notify?options=
 
-| Parameters  |  |  | Compliant |
-| ------------- | ------------- | ------------- | ------------- |
-| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | |
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | | |
 
 ##### Response code:
 

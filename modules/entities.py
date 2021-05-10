@@ -80,9 +80,31 @@ class entities():
 		cparams = []
 		sort = []
 		query = {}
+		headers = {}
 
-		# Removes the MongoDB ID
-		fields = {'_id': False}
+		keyValues_opt = False
+		count_opt = False
+		values_opt = False
+		unique_opt = False
+
+		options = arguments.get('options') if arguments.get('options') is not None else None
+		if options is not None:
+			options = options.split(",")
+			for option in options:
+				keyValues_opt = True if option == "keyValues" else keyValues_opt
+				values_opt = True if option == "values" else values_opt
+				unique_opt = True if option == "unique" else unique_opt
+				count_opt = True if option == "count" else count_opt
+
+		# Removes the MongoDB ID & builtin attributes
+		fields = {
+			'_id': False
+		}
+
+		if keyValues_opt or values_opt:
+			# Removes type
+			fields.update({'type': False})
+			fields.update({'metadata': False})
 
 		# Sets a type query
 		if arguments.get('type') is not None:
@@ -138,10 +160,19 @@ class entities():
 				params.append({"$or": eor})
 
 		# Sets a attrs query
+
 		if arguments.get('attrs') is not None:
 			attribs = arguments.get('attrs').split(",")
-			for attr in attribs:
-				fields.update({attr: True})
+			if '*' in attribs:
+				if 'dateCreated' not in attribs:
+					fields.update({'dateCreated': False})
+				if 'dateModified' not in attribs:
+					fields.update({'dateModified': False})
+				if 'dateExpired' not in attribs:
+					fields.update({'dateExpired': False})
+			else:
+				for attr in attribs:
+					fields.update({attr: True})
 
 		# Sets a q query
 		if arguments.get('q') is not None:
@@ -295,16 +326,22 @@ class entities():
 		try:
 			# Creates the full query
 			if len(sort) and offset:
-				entities = list(self.mongodb.mongoConn.Entities.find(
-					query, fields).skip(offset).sort(sort).limit(limit))
+				entities = self.mongodb.mongoConn.Entities.find(
+					query, fields).skip(offset).sort(sort).limit(limit)
 			elif offset:
-				entities = list(self.mongodb.mongoConn.Entities.find(
-					query, fields).skip(offset).limit(limit))
+				entities = self.mongodb.mongoConn.Entities.find(
+					query, fields).skip(offset).limit(limit)
 			elif len(sort):
-				entities = list(self.mongodb.mongoConn.Entities.find(
-					query, fields).sort(sort).limit(limit))
+				entities = self.mongodb.mongoConn.Entities.find(
+					query, fields).sort(sort).limit(limit)
 			else:
-				entities=list(self.mongodb.mongoConn.Entities.find(query, fields).limit(limit))
+				entities= self.mongodb.mongoConn.Entities.find(query, fields).limit(limit)
+
+			if count_opt:
+				# Sets count header
+				headers["Count"] = entities.count()
+
+			entities = list(entities)
 
 			if not len(entities):
 				self.helpers.logger.info(
@@ -312,17 +349,61 @@ class entities():
 
 				return self.respond(404, self.helpers.confs["errorMessages"][str(404)])
 			else:
+
+				if keyValues_opt:
+					newData = []
+					for i, entity in enumerate(entities):
+						dataHolder = {}
+						for attr in entity:
+							if isinstance(entity[attr], str):
+								dataHolder.update({attr: entity[attr]})
+							if isinstance(entity[attr], dict):
+								dataHolder.update({attr: entity[attr]["value"]})
+							if isinstance(entity[attr], list):
+								dataHolder.update({attr: entity[attr]})
+						newData.append(dataHolder)
+					entities = newData
+
+				elif values_opt:
+					newData = []
+					for i, entity in enumerate(entities):
+						dataHolder = []
+						for attr in entity:
+							if isinstance(entity[attr], str):
+								dataHolder.append(entity[attr])
+							if isinstance(entity[attr], dict):
+								dataHolder.append(entity[attr]["value"])
+							if isinstance(entity[attr], list):
+								dataHolder.append(entity[attr])
+						newData.append(dataHolder)
+					entities = newData
+
+				elif unique_opt:
+					newData = []
+					for i, entity in enumerate(entities):
+						dataHolder = []
+						for attr in entity:
+							if isinstance(entity[attr], str):
+								dataHolder.append(entity[attr])
+							if isinstance(entity[attr], dict):
+								dataHolder.append(entity[attr]["value"])
+							if isinstance(entity[attr], list):
+								dataHolder.append(entity[attr])
+						[newData.append(x) for x in dataHolder if x not in newData]
+					entities = newData
+
 				self.helpers.logger.info(
 					self.program + " 200: " + self.helpers.confs["successMessage"][str(200)]["Description"])
 
-				return self.respond(200, json.loads(json_util.dumps(entities)))
-		except:
+				return self.respond(200, json.loads(json_util.dumps(entities)), None, headers)
+		except Exception as e:
+			print(e)
 			self.helpers.logger.info(
 				self.program + " 404: " + self.helpers.confs["errorMessages"][str(404)]["Description"])
 
 			return self.respond(404, self.helpers.confs["errorMessages"][str(404)])
 
-	def getEntity(self, typeof, _id, attrs):
+	def getEntity(self, typeof, _id, attrs, options):
 		""" Gets a specific HIASCDI Entity.
 
 		References:
@@ -335,13 +416,37 @@ class entities():
 						- Retrieve Entity
 		"""
 
+		keyValues_opt = False
+		count_opt = False
+		values_opt = False
+		unique_opt = False
+
+		if options is not None:
+			options = options.split(",")
+			for option in options:
+				keyValues_opt = True if option == "keyValues" else keyValues_opt
+				values_opt = True if option == "values" else values_opt
+				unique_opt = True if option == "unique" else unique_opt
+
 		query = {'id': _id}
-		fields = {'_id': False}
+
+		# Removes the MongoDB ID
+		fields = {
+			'_id': False
+		}
 
 		if attrs is not None:
 			attribs = attrs.split(",")
-			for attr in attribs:
-				fields.update({attr: True})
+			if '*' in attribs:
+				if 'dateCreated' not in attribs:
+					fields.update({'dateCreated': False})
+				if 'dateModified' not in attribs:
+					fields.update({'dateModified': False})
+				if 'dateExpired' not in attribs:
+					fields.update({'dateExpired': False})
+			else:
+				for attr in attribs:
+					fields.update({attr: True})
 
 		if typeof is not None:
 			query.update({"type": typeof})
@@ -359,10 +464,46 @@ class entities():
 
 			return self.respond(409, self.helpers.confs["errorMessages"][str(409)])
 		else:
+			data = entity[0]
+
+			if keyValues_opt:
+				newData = {}
+				for attr in list(data):
+					if isinstance(data[attr], str):
+						newData.update({attr: data[attr]})
+					if isinstance(data[attr], dict):
+						newData.update({attr: data[attr]["value"]})
+					if isinstance(data[attr], list):
+						newData.update({attr: data[attr]})
+				data = newData
+
+			elif values_opt:
+				newData = []
+				for attr in list(data):
+					if isinstance(data[attr], str):
+						newData.append(data[attr])
+					if isinstance(data[attr], dict):
+						newData.append(data[attr]["value"])
+					if isinstance(data[attr], list):
+						newData.append(data[attr])
+				data = newData
+
+			elif unique_opt:
+				newData = []
+				for attr in list(data):
+					if isinstance(data[attr], str):
+						newData.append(data[attr])
+					if isinstance(data[attr], dict):
+						newData.append(data[attr]["value"])
+					if isinstance(data[attr], list):
+						newData.append(data[attr])
+				data = []
+				[data.append(x) for x in newData if x not in data]
+
 			self.helpers.logger.info(
 				self.program + " 200: " + self.helpers.confs["successMessage"][str(200)]["Description"])
 
-			return self.respond(200, json.loads(json_util.dumps(entity[0])))
+			return self.respond(200, json.loads(json_util.dumps(data)))
 
 	def createEntity(self, data):
 		""" Creates a new HIASCDI Entity.
@@ -382,14 +523,9 @@ class entities():
 		_id = self.insert(self.mongodb.mongoConn.Entities, data, data["type"])
 
 		if str(_id) is not False:
-			resp = {
-				"Response": "OK",
-				"ID": str(_id),
-				"Entity": json.loads(json_util.dumps(data))
-			}
-			return self.respond(201, resp, "v1/entities/" + data["id"] + "?type=" + data["type"])
+			return self.respond(201, {}, "v1/entities/" + data["id"] + "?type=" + data["type"])
 		else:
-			return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 	def updateEntityPost(self, _id, typeof, data):
 		""" Updates an HIASCDI Entity.
@@ -419,7 +555,7 @@ class entities():
 		if updated:
 			return self.respond(204, self.helpers.confs["successMessage"][str(204)])
 		else:
-			return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 	def updateEntityPatch(self, _id, typeof, data):
 		""" Updates an HIASCDI Entity.
@@ -448,7 +584,7 @@ class entities():
 				failed = True
 
 		if failed:
-			return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 		else:
 			return self.respond(204, self.helpers.confs["successMessage"][str(204)])
 
@@ -481,7 +617,7 @@ class entities():
 			updated = self.mongodb.mongoConn.Entities.update_one({"id" : _id}, {"$set": {update: data[update]}}, upsert=True);
 
 		if failed:
-			return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 		else:
 			return self.respond(204, self.helpers.confs["successMessage"][str(204)])
 
@@ -501,7 +637,7 @@ class entities():
 		if typeof in self.mongodb.collextions:
 			collection = self.mongodb.collextions[typeof]
 		else:
-			return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 		deleted = False
 		result = collection.delete_one({"id": _id});
@@ -511,7 +647,7 @@ class entities():
 			return self.respond(204, {})
 		else:
 			self.helpers.logger.info("Mongo data delete FAILED")
-			return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 	def insert(self, collection, doc, entity):
 		""" Creates an HIASCDI Entity.
@@ -551,8 +687,13 @@ class entities():
 			self.helpers.logger.info(str(e))
 			return False
 
-	def respond(self, responseCode, response, location=None):
+	def respond(self, responseCode, response, location=None, headers=[]):
 		""" Builds the request repsonse """
 
-		return Response(response=json.dumps(response, indent=4), status=responseCode,
-						mimetype="application/json")
+		response = Response(response=json.dumps(response, indent=4),
+						status=responseCode, mimetype="application/json")
+
+		if len(headers):
+			response.headers = headers
+
+		return response

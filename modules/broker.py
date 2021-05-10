@@ -33,6 +33,8 @@ Contributors:
 import json
 import requests
 
+import pandas as pd
+
 class broker():
 	""" HIASCDI Context Broker Module.
 
@@ -76,11 +78,23 @@ class broker():
 		""" Checks the request Content-Type. """
 
 		response = False
+		message = "valid"
+
 		try:
-			json_object = json.loads(payload)
+			json_object = json.loads(json.dumps(payload))
 			response = True
-		except ValueError as e:
-			return False
+		except TypeError as e:
+			response = False
+			message = "invalid"
+
+		self.helpers.logger.info("Request data " + message)
 
 		return response
+
+	def flattenData(self, payload):
+		""" Checks the request Content-Type. """
+
+		df = pd.json_normalize(payload)
+
+		return df.to_dict(orient='records')[0]
 

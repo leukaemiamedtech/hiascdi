@@ -63,11 +63,21 @@ Ready to get started ? Head over to the [Getting Started guide](documentation/ge
 
 # Documentation
 
+- [Getting Started](documentation/getting-started.md)
 - [Installation](documentation/installation/)
-	- [Ubuntu](documentation/installation/ubuntu.md)
-- [Usage](documentation/usage/)
-	- [API](documentation/usage/api.md)
-	- [Console](documentation/usage/console.md)
+	- [Ubuntu Installation Guide](documentation/installation/ubuntu.md)
+- [Usage](usage/)
+	- [API Guide](documentation/usage/api.md)
+	- [HIASCDI Console Guide](documentation/usage/console.md)
+	- [HIASCDI Data Schemas](documentation/usage/schemas/)
+		- [Details](documentation/usage/schemas/README.md)
+		- [HIASCDI Schema](documentation/usage/schemas/HIASCDI.json)
+		- [iotLocation Schema](documentation/usage/schemas/iotLocation.json)
+		- [iotZone Schema](documentation/usage/schemas/iotZone.json)
+		- [iotAgent Schema](documentation/usage/schemas/iotAgent.json)
+		- [iotDevice Schema](documentation/usage/schemas/iotDevice.json)
+		- [iotApplication Schema](documentation/usage/schemas/iotApplication.json)
+		- [roboticsUnit Schema](documentation/usage/schemas/roboticsUnit.json)
 
 &nbsp;
 

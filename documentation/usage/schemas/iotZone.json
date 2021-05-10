@@ -1,0 +1,51 @@
+{
+    "id": "00000000-0000-0000-0000-000000000000000",
+    "type": "Zone",
+    "category": {
+        "value": [
+            "Room"
+        ]
+    },
+    "name": {
+        "value": "Front Office"
+    },
+    "description": {
+        "value": "Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss Front Office"
+    },
+    "devices": {
+        "value": "0",
+        "type": "Number",
+        "metadata": {
+            "description": {
+                "value": "Number of devices connected to this zone"
+            }
+        }
+    },
+    "network_location": {
+        "value": "00000000-0000-0000-0000-000000000000000",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "Location entity ID"
+            }
+        }
+    },
+    "location": {
+        "type": "geo:json",
+        "value": {
+            "type": "Point",
+            "coordinates": [
+                41.5463,
+                2.1086
+            ]
+        }
+    },
+    "dateCreated": {
+        "type": "DateTime",
+        "value": "2021-02-12T02:13:33.3600Z"
+    },
+    "dateModified": {
+        "type": "DateTime",
+        "value": "2021-02-12T02:16:48.3600Z"
+    }
+}

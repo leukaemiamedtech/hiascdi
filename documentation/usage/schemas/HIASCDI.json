@@ -1,0 +1,269 @@
+{
+    "id": "00000000-0000-0000-0000-000000000000000",
+    "type": "HIASCDI",
+    "name": {
+        "value": "HIASCDI"
+    },
+    "description": {
+        "value": "HIAS Contextual Data Interface"
+    },
+    "version": {
+        "value": "v1"
+    },
+    "host": {
+        "value": ""
+    },
+    "port": {
+        "value": ""
+    },
+    "endpoint": {
+        "value": "hiascdi/v1"
+    },
+    "status": {
+        "value": "ONLINE",
+        "timestamp": "2021-02-11T21:03:00.323352"
+    },
+    "batteryLevel": {
+        "value": 0
+    },
+    "cpuUsage": {
+        "value": 54.4
+    },
+    "memoryUsage": {
+        "value": 18.6
+    },
+    "hddUsage": {
+        "value": 13.2
+    },
+    "temperature": {
+        "value": 76
+    },
+    "rssi": {
+        "value": 0
+    },
+    "deviceBrandName": {
+        "value": "Generic"
+    },
+    "deviceModel": {
+        "value": "Generic"
+    },
+    "deviceManufacturer": {
+        "value": "Generic"
+    },
+    "deviceSerialNumber": {
+        "value": "Generic"
+    },
+    "os": {
+        "value": "Ubuntu"
+    },
+    "osVersion": {
+        "value": "18.04"
+    },
+    "osManufacturer": {
+        "value": "Canonical "
+    },
+    "software": {
+        "value": "HIASCDI"
+    },
+    "softwareVersion": {
+        "value": "2.0.0"
+    },
+    "softwareManufacturer": {
+        "value": "Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss"
+    },
+    "location": {
+        "type": "geo:json",
+        "value": {
+            "type": "Point",
+            "coordinates": [
+                41.3888,
+                2.159
+            ]
+        }
+    },
+    "network_status": {
+        "value": "ONLINE",
+        "metadata": {
+            "timestamp": "2021-02-11T21:03:00.323352"
+        }
+    },
+    "network_location": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "Location entity ID"
+            }
+        }
+    },
+    "network_zone": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "Zone entity ID"
+            }
+        }
+    },
+    "ipAddress": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "IP address of entity"
+            }
+        }
+    },
+    "macAddress": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "MAC address of entity"
+            }
+        }
+    },
+    "bluetoothAddress": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "Bluetooth address of entity"
+            }
+        }
+    },
+    "protocols": [
+        "http",
+        "mqtt"
+    ],
+    "permissions_admin": {
+        "value": true,
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "Has admin permissions"
+            }
+        }
+    },
+    "permissions_patients": {
+        "value": true,
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "Has patients permissions"
+            }
+        }
+    },
+    "authentication_user": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "Public key for accessing the network APIs"
+            },
+            "timestamp": ""
+        }
+    },
+    "authentication_key": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "Public key for accessing the network APIs"
+            },
+            "timestamp": ""
+        }
+    },
+    "authentication_blockchain_user": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "Blockchain address"
+            },
+            "timestamp": ""
+        }
+    },
+    "authentication_blockchain_key": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "Blockchain password"
+            },
+            "timestamp": ""
+        }
+    },
+    "authentication_mqtt_user": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "MQTT user"
+            },
+            "timestamp": ""
+        }
+    },
+    "authentication_mqtt_key": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "MQTT password"
+            },
+            "timestamp": ""
+        }
+    },
+    "authentication_coap_user": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "CoAP user"
+            },
+            "timestamp": ""
+        }
+    },
+    "authentication_amqp_key": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "CoAP password"
+            },
+            "timestamp": ""
+        }
+    },
+    "authentication_amqp_user": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "AMQP user"
+            },
+            "timestamp": ""
+        }
+    },
+    "authentication_coap_key": {
+        "value": "",
+        "type": "Text",
+        "metadata": {
+            "description": {
+                "value": "AMQP password"
+            },
+            "timestamp": ""
+        }
+    },
+    "dateCreated": {
+        "type": "DateTime",
+        "value": "2020-12-24T00:04:09.3600Z"
+    },
+    "dateFirstUsed": {
+        "type": "DateTime",
+        "value": ""
+    },
+    "dateModified": {
+        "type": "DateTime",
+        "value": "2021-05-09T23:05:19.7200Z"
+    }
+}

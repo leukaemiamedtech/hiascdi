@@ -176,7 +176,7 @@ Retrieves a list of entities that match different criteria by id, type, pattern 
 
 The response payload is an array containing one object per matching entity. Each entity follows the JSON entity representation format (described in "JSON Entity Representation" section of the FIWARE NGSI-V2 specification).
 
-`GET` https://YourHIAS/hiascdi/v1/entities?id=00000000-0000-0000-0000-000000000000000&type=Robotics&idPattern=00000000-.\*&typePattern=Room_.*&q=temperature%3E40&mq=temperature.accuracy%3C0.9&georel=near&geometry=point&coords=41.390205%2C2.154007%3B48.8566%2C2.3522&limit=20&offset=20&attrs=seatNumber&metadata=accuracy&orderBy=temperature%2C!speed&options=
+`GET` https://YourHIAS/hiascdi/v1/entities?id=00000000-0000-0000-0000-000000000000000&type=Robotics&idPattern=00000000-.\*&typePattern=Room_.*&q=temperature%3E40&mq=temperature.accuracy%3C0.9&georel=near&geometry=point&coords=41.390205%2C2.154007%3B48.8566%2C2.3522&limit=20&offset=20&attrs=seatNumber&metadata=cpuUsage&orderBy=temperature%2C!speed&options=
 
 | Parameters  |  |  | Compliant | Verified |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
@@ -185,13 +185,14 @@ The response payload is an array containing one object per matching entity. Each
 | idPattern | A correctly formated regular expression. Retrieve entities whose ID matches the regular expression. Incompatible with **id**.<br />_**Example:**_ `00000000-.*`. | String | &#9745;  | |
 | typePattern | A correctly formated regular expression. Retrieve entities whose type matches the regular expression. Incompatible with **type**.<br />_**Example:**_ `Robot.*`. | String | &#9745;  | |
 | q | A query expression, composed of a list of statements separated by ;, i.e., q=statement1;statement2;statement3. See Simple Query Language specification.<br />_**Example:**_ `batteryLevel.value==0`. | String | &#9745;  | |
-| mq | A query expression for attribute metadata, composed of a list of statements separated by ;, i.e., mq=statement1;statement2;statement3. See Simple Query Language specification.<br />_**Example:**_ `batteryLevel.accuracy<0.9`. | String |   | |
+| mq | A query expression for attribute metadata, composed of a list of statements separated by ;, i.e., mq=statement1;statement2;statement3. See Simple Query Language specification.<br />_**Example:**_ `batteryLevel.accuracy<0.9`. | String | &#9745; | |
 | georel | Spatial relationship between matching entities and a reference shape. See Geographical Queries specification.<br />_**Example:**_ `near`. | String | &#9745; | |
 | geometry | Geografical area to which the query is restricted. See Geographical Queries specification.<br />_**Example:**_ `point`. | String | &#9745; |
 | coords | List of latitude-longitude pairs of coordinates separated by ';'. See Geographical Queries specification.<br />_**Example:**_ `41.390205,2.154007;48.8566,2.3522`. | String | &#9745; | |
 | limit | Limits the number of entities to be retrieved.<br />_**Example:**_ `20`. | Number | &#9745; | |
 | offset | Establishes the offset from where entities are retrieved.<br />_**Example:**_ `20`. | Number | &#9745; | |
-| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section of specifications for more detail.<br />_**Example:**_ `accuracy`. | String | | |
+| attrs | Comma-separated list of attribute names whose data are to be included in the response. The attributes are retrieved in the order specified by this parameter. If this parameter is not included, the attributes are retrieved in arbitrary order. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `name`. | String | &#9745; | |
+| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section of specifications for more detail.<br />_**Example:**_ `cpuUsage`. | String | &#9745; | |
 | orderBy | Criteria for ordering results. See "Ordering Results" section of specifications for details.<br />_**Example:**_ `temperature,!speed`. | String | &#9745; | |
 | Options | Options dictionary.<br />_**Possible values:**_ `count`, `keyValues` , `values` , `unique`. | String | &#9745; | |
 
@@ -228,13 +229,14 @@ The response is an object representing the entity identified by the ID. The obje
 
 This operation must return one entity element only, but there may be more than one entity with the same ID (e.g. entities with same ID but different types). In such case, an error message is returned, with the HTTP status code set to 409 Conflict.
 
-`GET` https://YourHIAS/hiascdi/v1/entityId?type=&attrs=temperature%2Chumidity&metadata=accuracy&options=
+`GET` https://YourHIAS/hiascdi/v1/entityId?type=&attrs=network_location%2network_status&metadata=cpuUsage&options=
 
 | Parameters  |  |  | Compliant | Verified |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | entityId | Id of the entity to be retrieved. **(REQUIRED)** | String | &#9745; |
-| type | Comma-separated list of attribute names whose data must be included in the response. The attributes are retrieved in the order specified by this parameter. See "Filtering out attributes and metadata" section for more detail. If this parameter is not included, the attributes are retrieved in arbitrary order, and all the attributes of the entity are included in the response.<br />_**Example:**_ `temperature,humidity` | String | &#9745; | |
-| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `accuracy` | String | | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
+| attrs | Comma-separated list of attribute names whose data must be included in the response. The attributes are retrieved in the order specified by this parameter. See "Filtering out attributes and metadata" section for more detail. If this parameter is not included, the attributes are retrieved in arbitrary order, and all the attributes of the entity are included in the response.<br />_**Example:**_ `network_location,network_status` | String | &#9745; | |
+| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `cpuUsage` | String | &#9745; | |
 | Options | Options dictionary.<br />_**Possible values:**_ `keyValues`, `value`, `unique`. | String | &#9745; | |
 
 ##### Response:
@@ -251,14 +253,14 @@ This request is similar to retreiving the whole entity, however this one omits t
 
 Just like the general request of getting an entire entity, this operation must return only one entity element. If more than one entity with the same ID is found (e.g. entities with same ID but different type), an error message is returned, with the HTTP status code set to 409 Conflict.
 
-`GET` https://YourHIAS/hiascdi/v1/entityId/attrs?type=&attrs=temperature%2Chumidity&metadata=accuracy&options=
+`GET` https://YourHIAS/hiascdi/v1/entityId/attrs?type=&attrs=network_location%2network_status&metadata=cpuUsage&options=
 
 | Parameters  |  |  | Compliant | Verified |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | entityId | Id of the entity to be retrieved. **(REQUIRED)** | String | &#9745; |
 | type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
-| attrs | Comma-separated list of attribute names whose data are to be included in the response. The attributes are retrieved in the order specified by this parameter. If this parameter is not included, the attributes are retrieved in arbitrary order, and all the attributes of the entity are included in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `temperature,humidity` | String | &#9745; | |
-| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `accuracy` | String | | |
+| attrs | Comma-separated list of attribute names whose data are to be included in the response. The attributes are retrieved in the order specified by this parameter. If this parameter is not included, the attributes are retrieved in arbitrary order, and all the attributes of the entity are included in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `network_location,network_status` | String | &#9745; | |
+| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `cpuUsage` | String | &#9745; | |
 | Options | Options dictionary.<br />_**Possible values:**_ `keyValues`, `value`, `unique`. | String | &#9745; | |
 
 ##### Response:
@@ -302,7 +304,7 @@ The entity attributes are updated with the ones in the payload. In addition to t
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | entityId | Id of the entity to be updated. **(REQUIRED)** | String | &#9745; | |
 | type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
-| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | &#9745; | |
+| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | | |
 
 ##### Response:
 

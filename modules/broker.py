@@ -75,7 +75,7 @@ class broker():
 		return response
 
 	def checkJSON(self, payload):
-		""" Checks the request Content-Type. """
+		""" Checks the request body is valid JSON. """
 
 		response = False
 		message = "valid"
@@ -91,10 +91,17 @@ class broker():
 
 		return response
 
-	def flattenData(self, payload):
-		""" Checks the request Content-Type. """
+	def checkFloat(self, value):
+		""" Checks if a value is a float. """
 
-		df = pd.json_normalize(payload)
+		try:
+			float(value)
+			return True
+		except ValueError:
+			return False
 
-		return df.to_dict(orient='records')[0]
+	def checkInteger(self, value):
+		""" Checks if a value is a float. """
+
+		return True if value.isdigit() else False
 

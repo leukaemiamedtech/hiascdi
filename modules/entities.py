@@ -87,6 +87,7 @@ class entities():
 		values_opt = False
 		unique_opt = False
 
+		# Processes the options parameter
 		options = arguments.get('options') if arguments.get('options') is not None else None
 		if options is not None:
 			options = options.split(",")
@@ -96,18 +97,13 @@ class entities():
 				unique_opt = True if option == "unique" else unique_opt
 				count_opt = True if option == "count" else count_opt
 
-		# Removes the MongoDB ID & builtin attributes
+		# Removes the MongoDB ID
 		fields = {
 			'_id': False
 		}
 
-		if keyValues_opt or values_opt:
-			# Removes type
-			fields.update({'type': False})
-			fields.update({'metadata': False})
-
-		# Sets a type query
 		if arguments.get('type') is not None:
+			# Sets a type query
 			eor = []
 			types = arguments.get('type').split(",")
 			if len(types) == 1:
@@ -125,8 +121,8 @@ class entities():
 					{'$regex': arguments.get('typePattern')}
 				})
 
-		# Sets a id query
 		if arguments.get('id') is not None:
+			# Sets a id query
 			eor = []
 			ids = arguments.get('id').split(",")
 			if len(ids) == 1:
@@ -144,8 +140,8 @@ class entities():
 					{'$regex': arguments.get('idPattern')}
 				})
 
-		# Sets a category query
 		if arguments.get('category') is not None:
+			# Sets a category query
 			eor = []
 			categories = arguments.get('category').split(",")
 			if len(categories) == 1:
@@ -159,11 +155,12 @@ class entities():
 						})
 				params.append({"$or": eor})
 
-		# Sets a attrs query
-
+		attribs = []
 		if arguments.get('attrs') is not None:
+			# Sets a attrs query
 			attribs = arguments.get('attrs').split(",")
 			if '*' in attribs:
+				# Removes builtin attributes
 				if 'dateCreated' not in attribs:
 					fields.update({'dateCreated': False})
 				if 'dateModified' not in attribs:
@@ -174,31 +171,214 @@ class entities():
 				for attr in attribs:
 					fields.update({attr: True})
 
-		# Sets a q query
+		mattribs = []
+		if arguments.get('metadata') is not None:
+			print("metadata")
+			# Sets a metadata query
+			mattribs = arguments.get('metadata').split(",")
+			if '*' in mattribs:
+				# Removes builtin attributes
+				if 'dateCreated' not in mattribs:
+					fields.update({'dateCreated': False})
+				if 'dateModified' not in mattribs:
+					fields.update({'dateModified': False})
+				if 'dateExpired' not in mattribs:
+					fields.update({'dateExpired': False})
+			else:
+				for attr in mattribs:
+					fields.update({attr: True})
+
 		if arguments.get('q') is not None:
-			qs = arguments.get('q').split(",")
+			# Sets a q query
+			qs = arguments.get('q').split(";")
 			for q in qs:
 				if "==" in q:
 					qp = q.split("==")
-					query.update({qp[0]: int(qp[1]) if qp[1].isdigit() else qp[1]})
-				if  ":" in q:
+					searcher = qp[1]
+
+					if self.broker.checkFloat(qp[1]):
+						searcher = float(searcher)
+
+					if self.broker.checkInteger(qp[1]):
+						searcher = int(searcher)
+
+					query.update({qp[0]:
+						{'$in': [searcher]}
+					})
+				elif  ":" in q:
 					qp = q.split(":")
-					query.update({qp[0]: int(qp[1]) if qp[1].isdigit() else qp[1]})
-				if "!=" in q:
+					searcher = qp[1]
+
+					if self.broker.checkFloat(qp[1]):
+						searcher = float(searcher)
+
+					if self.broker.checkInteger(qp[1]):
+						searcher = int(searcher)
+
+					query.update({qp[0]:
+						{'$in': [searcher]}
+					})
+				elif "!=" in q:
 					qp = q.split("!=")
-					query.update({qp[0]: {"$ne": int(qp[1]) if qp[1].isdigit() else qp[1]}})
-				if "<" in q:
-					qp = q.split("<")
-					query.update({qp[0]: {"$lt": int(qp[1])}})
-				if "<=" in q:
-					qp = q.split("<=")
-					query.update({qp[0]: {"$lte": int(qp[1])}})
-				if ">" in q:
-					qp = q.split("<")
-					query.update({qp[0]: {"$gt": int(qp[1])}})
-				if ">=" in q:
+					searcher = qp[1]
+
+					if self.broker.checkFloat(qp[1]):
+						searcher = float(searcher)
+
+					if self.broker.checkInteger(qp[1]):
+						searcher = int(searcher)
+
+					query.update({qp[0]:
+						{'$ne': searcher}
+					})
+				elif ">=" in q:
 					qp = q.split(">=")
-					query.update({qp[0]: {"$gte": int(qp[1])}})
+					searcher = qp[1]
+
+					if self.broker.checkFloat(qp[1]):
+						searcher = float(searcher)
+
+					if self.broker.checkInteger(qp[1]):
+						searcher = int(searcher)
+
+					query.update({qp[0]:
+						{'$gte': searcher}
+					})
+				elif "<=" in q:
+					qp = q.split("<=")
+					searcher = qp[1]
+
+					if self.broker.checkFloat(qp[1]):
+						searcher = float(searcher)
+
+					if self.broker.checkInteger(qp[1]):
+						searcher = int(searcher)
+
+					query.update({qp[0]:
+						{'$lte': searcher}
+					})
+				elif "<" in q:
+					qp = q.split("<")
+					searcher = qp[1]
+
+					if self.broker.checkFloat(qp[1]):
+						searcher = float(searcher)
+
+					if self.broker.checkInteger(qp[1]):
+						searcher = int(searcher)
+
+					query.update({qp[0]:
+						{'$lt': searcher}
+					})
+				elif ">" in q:
+					qp = q.split(">")
+					searcher = qp[1]
+
+					if self.broker.checkFloat(qp[1]):
+						searcher = float(searcher)
+
+					if self.broker.checkInteger(qp[1]):
+						searcher = int(searcher)
+
+					query.update({qp[0]:
+						{'$gt': searcher}
+					})
+
+		elif arguments.get('mq') is not None:
+			# Sets an mq query
+			qs = arguments.get('mq').split(";")
+			for q in qs:
+				if "==" in q:
+					qp = q.split("==")
+					searcher = qp[1]
+
+					if self.broker.checkFloat(qp[1]):
+						searcher = float(searcher)
+
+					if self.broker.checkInteger(qp[1]):
+						searcher = int(searcher)
+
+					query.update({qp[0]:
+						{'$in': [searcher]}
+					})
+				elif  ":" in q:
+					qp = q.split(":")
+					searcher = qp[1]
+
+					if self.broker.checkFloat(qp[1]):
+						searcher = float(searcher)
+
+					if self.broker.checkInteger(qp[1]):
+						searcher = int(searcher)
+
+					query.update({qp[0]:
+						{'$in': [searcher]}
+					})
+				elif "!=" in q:
+					qp = q.split("!=")
+					searcher = qp[1]
+
+					if self.broker.checkFloat(qp[1]):
+						searcher = float(searcher)
+
+					if self.broker.checkInteger(qp[1]):
+						searcher = int(searcher)
+
+					query.update({qp[0]:
+						{'$ne': searcher}
+					})
+				elif ">=" in q:
+					qp = q.split(">=")
+					searcher = qp[1]
+
+					if self.broker.checkFloat(qp[1]):
+						searcher = float(searcher)
+
+					if self.broker.checkInteger(qp[1]):
+						searcher = int(searcher)
+
+					query.update({qp[0]:
+						{'$gte': searcher}
+					})
+				elif "<=" in q:
+					qp = q.split("<=")
+					searcher = qp[1]
+
+					if self.broker.checkFloat(qp[1]):
+						searcher = float(searcher)
+
+					if self.broker.checkInteger(qp[1]):
+						searcher = int(searcher)
+
+					query.update({qp[0]:
+						{'$lte': searcher}
+					})
+				elif "<" in q:
+					qp = q.split("<")
+					searcher = qp[1]
+
+					if self.broker.checkFloat(qp[1]):
+						searcher = float(searcher)
+
+					if self.broker.checkInteger(qp[1]):
+						searcher = int(searcher)
+
+					query.update({qp[0]:
+						{'$lt': searcher}
+					})
+				elif ">" in q:
+					qp = q.split(">")
+					searcher = qp[1]
+
+					if self.broker.checkFloat(qp[1]):
+						searcher = float(searcher)
+
+					if self.broker.checkInteger(qp[1]):
+						searcher = int(searcher)
+
+					query.update({qp[0]:
+						{'$gt': searcher}
+					})
 
 		# Sets a geospatial query
 		if arguments.get('georel') is not None and arguments.get('geometry') is not None and arguments.get('coords') is not None:
@@ -286,7 +466,7 @@ class entities():
 				# Disjoint geospatial query
 				return self.respond(501, self.helpers.confs["errorMessages"][str(501)])
 			else:
-				# None supported geospatial query
+				# Non-supported geospatial query
 				return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 		# TO REMOVE
@@ -350,6 +530,7 @@ class entities():
 				return self.respond(404, self.helpers.confs["errorMessages"][str(404)])
 			else:
 
+				# Converts data to key -> value
 				if keyValues_opt:
 					newData = []
 					for i, entity in enumerate(entities):
@@ -364,6 +545,7 @@ class entities():
 						newData.append(dataHolder)
 					entities = newData
 
+				# Converts data to values
 				elif values_opt:
 					newData = []
 					for i, entity in enumerate(entities):
@@ -378,6 +560,7 @@ class entities():
 						newData.append(dataHolder)
 					entities = newData
 
+				# Converts data to unique values
 				elif unique_opt:
 					newData = []
 					for i, entity in enumerate(entities):
@@ -403,7 +586,7 @@ class entities():
 
 			return self.respond(404, self.helpers.confs["errorMessages"][str(404)])
 
-	def getEntity(self, typeof, _id, attrs, options):
+	def getEntity(self, typeof, _id, attrs, options, metadata, attributes = False):
 		""" Gets a specific HIASCDI Entity.
 
 		References:
@@ -413,7 +596,7 @@ class entities():
 			Reference
 				- Entities
 					- Entity by ID
-						- Retrieve Entity
+						- Retrieve Entity / Retrieve Entity Attributes
 		"""
 
 		keyValues_opt = False
@@ -421,6 +604,7 @@ class entities():
 		values_opt = False
 		unique_opt = False
 
+		# Processes the options parameter
 		if options is not None:
 			options = options.split(",")
 			for option in options:
@@ -435,9 +619,14 @@ class entities():
 			'_id': False
 		}
 
+		clear_builtin = False
+
+		attribs = []
 		if attrs is not None:
+			# Processes attrs parameter
 			attribs = attrs.split(",")
 			if '*' in attribs:
+				# Removes builtin attributes
 				if 'dateCreated' not in attribs:
 					fields.update({'dateCreated': False})
 				if 'dateModified' not in attribs:
@@ -445,7 +634,28 @@ class entities():
 				if 'dateExpired' not in attribs:
 					fields.update({'dateExpired': False})
 			else:
+				clear_builtin = True
 				for attr in attribs:
+					fields.update({attr: True})
+		else:
+			fields.update({'dateCreated': False})
+			fields.update({'dateModified': False})
+			fields.update({'dateExpired': False})
+
+		mattribs = []
+		if metadata is not None:
+			# Processes metadata parameter
+			mattribs = metadata.split(",")
+			if '*' in mattribs:
+				# Removes builtin attributes
+				if 'dateCreated' not in mattribs:
+					fields.update({'dateCreated': False})
+				if 'dateModified' not in mattribs:
+					fields.update({'dateModified': False})
+				if 'dateExpired' not in mattribs:
+					fields.update({'dateExpired': False})
+			else:
+				for attr in mattribs:
 					fields.update({attr: True})
 
 		if typeof is not None:
@@ -468,6 +678,7 @@ class entities():
 
 			if keyValues_opt:
 				newData = {}
+				# Converts data to key -> value
 				for attr in list(data):
 					if isinstance(data[attr], str):
 						newData.update({attr: data[attr]})
@@ -479,6 +690,7 @@ class entities():
 
 			elif values_opt:
 				newData = []
+				# Converts data to values
 				for attr in list(data):
 					if isinstance(data[attr], str):
 						newData.append(data[attr])
@@ -490,6 +702,7 @@ class entities():
 
 			elif unique_opt:
 				newData = []
+				# Converts data to unique values
 				for attr in list(data):
 					if isinstance(data[attr], str):
 						newData.append(data[attr])
@@ -499,6 +712,21 @@ class entities():
 						newData.append(data[attr])
 				data = []
 				[data.append(x) for x in newData if x not in data]
+
+			if clear_builtin:
+				# Clear builtin data
+				if "dateCreated" in data and 'dateCreated' not in attribs:
+					del data["dateCreated"]
+				if "dateModified" in data and 'dateModified' not in attribs:
+					del data["dateModified"]
+				if "dateExpired" in data and 'dateExpired' not in attribs:
+					del data["dateExpired"]
+
+			if attributes:
+				if "id" in data and 'id' not in attribs:
+					del data["id"]
+				if "type" in data and 'type' not in attribs:
+					del data["type"]
 
 			self.helpers.logger.info(
 				self.program + " 200: " + self.helpers.confs["successMessage"][str(200)]["Description"])
@@ -527,7 +755,7 @@ class entities():
 		else:
 			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
-	def updateEntityPost(self, _id, typeof, data):
+	def updateEntityPost(self, _id, typeof, data, options):
 		""" Updates an HIASCDI Entity.
 
 		References:
@@ -541,6 +769,9 @@ class entities():
 		"""
 
 		updated = False
+		error = False
+		_append = False
+		_keyValues = False
 
 		if "id" in data:
 			del data['id']
@@ -548,16 +779,31 @@ class entities():
 		if "type" in data:
 			del data['type']
 
-		for update in data:
-			self.mongodb.mongoConn.Entities.update_one({"id" : _id}, {"$set": {update: data[update]}}, upsert=True)
-			updated = True
+		if options is not None:
+			options = options.split(",")
+			for option in options:
+				_append = True if option == "append" else _append
+				_keyValues = True if option == "keyValues" else keyValues
 
-		if updated:
+		if _append:
+			entity = list(self.mongodb.mongoConn.Entities.find({'id': _id}))
+			for update in data:
+				if update in entity[0]:
+					error = True
+				else:
+					self.mongodb.mongoConn.Entities.update_one({"id" : _id}, {"$set": {update: data[update]}}, upsert=True)
+					updated = True
+		else:
+			for update in data:
+				updated = self.mongodb.mongoConn.Entities.update_one({"id" : _id}, {"$set": {update: data[update]}}, upsert=True)
+				updated = True
+
+		if updated and error is False:
 			return self.respond(204, self.helpers.confs["successMessage"][str(204)])
 		else:
 			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
-	def updateEntityPatch(self, _id, typeof, data):
+	def updateEntityPatch(self, _id, typeof, data, options):
 		""" Updates an HIASCDI Entity.
 
 		References:
@@ -570,7 +816,8 @@ class entities():
 						- Update Existing Entity Attributes
 		"""
 
-		failed = False
+		updated = False
+		error = False
 
 		if "id" in data:
 			del data['id']
@@ -578,17 +825,27 @@ class entities():
 		if "type" in data:
 			del data['type']
 
+		_keyValues = False
+
+		if options is not None:
+			options = options.split(",")
+			for option in options:
+				_keyValues = True if option == "keyValues" else keyValues
+
+		entity = list(self.mongodb.mongoConn.Entities.find({'id': _id}))
 		for update in data:
-			updated = self.mongodb.mongoConn.Entities.update_one({"id" : _id}, {"$set": {update: data[update]}});
-			if updated.matched_count == 0:
-				failed = True
+			if update not in entity[0]:
+				error = True
+			else:
+				self.mongodb.mongoConn.Entities.update_one({"id" : _id}, {"$set": {update: data[update]}})
+				updated = True
 
-		if failed:
-			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
-		else:
+		if updated and error is False:
 			return self.respond(204, self.helpers.confs["successMessage"][str(204)])
+		else:
+			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
-	def updateEntityPut(self, _id, typeof, data):
+	def updateEntityPut(self, _id, typeof, data, options):
 		""" Updates an HIASCDI Entity.
 
 		References:
@@ -601,25 +858,42 @@ class entities():
 					- Replace all entity attributes
 		"""
 
-		updated = False
-
 		if "id" in data:
 			del data['id']
 
 		if "type" in data:
 			del data['type']
 
-		entity = list(self.mongodb.mongoConn.Entities.find({"id" : _id}))
+		fields = {
+			'_id': False,
+			'id': False,
+			'type': False,
+			'dateCreated': False,
+			'dateModified': False,
+			'dateExpired': False
+		}
+
+		updated = False
+		_keyValues = False
+
+		if options is not None:
+			options = options.split(",")
+			for option in options:
+				_keyValues = True if option == "keyValues" else keyValues
+
+		entity = list(self.mongodb.mongoConn.Entities.find({"id": _id}, fields))
+
+		for e in entity:
+			self.mongodb.mongoConn.Entities.update({"id": _id}, {'$unset': {e: ""}})
 
 		for update in data:
-			if update in entity[0]:
-				self.mongodb.mongoConn.Entities.update({"id" : _id}, {'$unset': {update: ""}})
-			updated = self.mongodb.mongoConn.Entities.update_one({"id" : _id}, {"$set": {update: data[update]}}, upsert=True);
+			self.mongodb.mongoConn.Entities.update_one({"id" : _id}, {"$set": {update: data[update]}}, upsert=True)
+			updated = True
 
-		if failed:
-			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
-		else:
+		if updated:
 			return self.respond(204, self.helpers.confs["successMessage"][str(204)])
+		else:
+			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 	def deleteEntity(self, typeof, _id):
 		""" Deletes an HIASCDI Entity.
@@ -640,7 +914,7 @@ class entities():
 			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
 		deleted = False
-		result = collection.delete_one({"id": _id});
+		result = collection.delete_one({"id": _id})
 
 		if result.deleted_count is True:
 			self.helpers.logger.info("Mongo data delete OK")

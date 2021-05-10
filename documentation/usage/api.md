@@ -302,7 +302,7 @@ The entity attributes are updated with the ones in the payload. In addition to t
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | entityId | Id of the entity to be updated. **(REQUIRED)** | String | &#9745; | |
 | type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
-| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | | &#9745; |
+| Options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | &#9745; | |
 
 ##### Response:
 

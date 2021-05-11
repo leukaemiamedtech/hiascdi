@@ -173,7 +173,6 @@ class entities():
 
 		mattribs = []
 		if arguments.get('metadata') is not None:
-			print("metadata")
 			# Sets a metadata query
 			mattribs = arguments.get('metadata').split(",")
 			if '*' in mattribs:
@@ -586,6 +585,66 @@ class entities():
 
 			return self.respond(404, self.helpers.confs["errorMessages"][str(404)])
 
+	def createEntity(self, data):
+		""" Creates a new HIASCDI Entity.
+
+		References:
+			FIWARE-NGSI v2 Specification
+			https://fiware.github.io/specifications/ngsiv2/stable/
+
+			Reference
+				- Entities
+					- Create Entity
+		"""
+
+		if data["type"] not in self.mongodb.collextions:
+			data["type"] = "Thing"
+
+		_id = self.insert(self.mongodb.mongoConn.Entities, data, data["type"])
+
+		if str(_id) is not False:
+			return self.respond(201, {}, "v1/entities/" + data["id"] + "?type=" + data["type"])
+		else:
+			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
+
+	def insert(self, collection, doc, entity):
+		""" Creates an HIASCDI Entity.
+
+		References:
+			FIWARE-NGSI v2 Specification
+			https://fiware.github.io/specifications/ngsiv2/stable/
+
+			Reference
+				- Entities
+					- Create Entity
+						- Create Entity
+		"""
+
+		try:
+			_id = collection.insert(doc)
+			self.helpers.logger.info("Mongo data inserted OK")
+			if entity is "Device":
+				self.mongodb.Locations.find_one_and_update(
+						{"id": doc.lid.entity},
+						{'$inc': {'devices.value': 1}}
+					)
+				self.mongodb.Zones.find_one_and_update(
+						{"id": doc.zid.entity},
+						{'$inc': {'devices.value': 1}}
+					)
+			if entity is "Application":
+				self.mongodb.Locations.find_one_and_update(
+						{"id": doc.lid.entity},
+						{'$inc': {'applications.value': 1}}
+					)
+				self.helpers.logger.info("Mongo data update OK")
+			return _id
+		except:
+			e = sys.exc_info()
+			self.helpers.logger.info("Mongo data inserted FAILED!")
+			self.helpers.logger.info(str(e))
+			return False
+
 	def getEntity(self, typeof, _id, attrs, options, metadata, attributes = False):
 		""" Gets a specific HIASCDI Entity.
 
@@ -646,15 +705,8 @@ class entities():
 		if metadata is not None:
 			# Processes metadata parameter
 			mattribs = metadata.split(",")
-			if '*' in mattribs:
-				# Removes builtin attributes
-				if 'dateCreated' not in mattribs:
-					fields.update({'dateCreated': False})
-				if 'dateModified' not in mattribs:
-					fields.update({'dateModified': False})
-				if 'dateExpired' not in mattribs:
-					fields.update({'dateExpired': False})
-			else:
+			if '*' not in mattribs:
+				clear_builtin = True
 				for attr in mattribs:
 					fields.update({attr: True})
 
@@ -733,28 +785,6 @@ class entities():
 
 			return self.respond(200, json.loads(json_util.dumps(data)))
 
-	def createEntity(self, data):
-		""" Creates a new HIASCDI Entity.
-
-		References:
-			FIWARE-NGSI v2 Specification
-			https://fiware.github.io/specifications/ngsiv2/stable/
-
-			Reference
-				- Entities
-					- Create Entity
-		"""
-
-		if data["type"] not in self.mongodb.collextions:
-			data["type"] = "Thing"
-
-		_id = self.insert(self.mongodb.mongoConn.Entities, data, data["type"])
-
-		if str(_id) is not False:
-			return self.respond(201, {}, "v1/entities/" + data["id"] + "?type=" + data["type"])
-		else:
-			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
-
 	def updateEntityPost(self, _id, typeof, data, options):
 		""" Updates an HIASCDI Entity.
 
@@ -791,11 +821,13 @@ class entities():
 				if update in entity[0]:
 					error = True
 				else:
-					self.mongodb.mongoConn.Entities.update_one({"id" : _id}, {"$set": {update: data[update]}}, upsert=True)
+					self.mongodb.mongoConn.Entities.update_one({"id" : _id},
+											{"$set": {update: data[update]}}, upsert=True)
 					updated = True
 		else:
 			for update in data:
-				updated = self.mongodb.mongoConn.Entities.update_one({"id" : _id}, {"$set": {update: data[update]}}, upsert=True)
+				updated = self.mongodb.mongoConn.Entities.update_one({"id" : _id},
+														{"$set": {update: data[update]}}, upsert=True)
 				updated = True
 
 		if updated and error is False:
@@ -837,7 +869,8 @@ class entities():
 			if update not in entity[0]:
 				error = True
 			else:
-				self.mongodb.mongoConn.Entities.update_one({"id" : _id}, {"$set": {update: data[update]}})
+				self.mongodb.mongoConn.Entities.update_one({"id" : _id},
+												{"$set": {update: data[update]}})
 				updated = True
 
 		if updated and error is False:
@@ -855,7 +888,7 @@ class entities():
 			Reference
 				- Entities
 					- Entity by ID
-					- Replace all entity attributes
+						- Replace all entity attributes
 		"""
 
 		if "id" in data:
@@ -887,7 +920,8 @@ class entities():
 			self.mongodb.mongoConn.Entities.update({"id": _id}, {'$unset': {e: ""}})
 
 		for update in data:
-			self.mongodb.mongoConn.Entities.update_one({"id" : _id}, {"$set": {update: data[update]}}, upsert=True)
+			self.mongodb.mongoConn.Entities.update_one({"id" : _id},
+									{"$set": {update: data[update]}}, upsert=True)
 			updated = True
 
 		if updated:
@@ -905,7 +939,7 @@ class entities():
 			Reference
 				- Entities
 					- Entity by ID
-					- Remove entity
+						- Remove entity
 		"""
 
 		if typeof in self.mongodb.collextions:
@@ -923,43 +957,133 @@ class entities():
 			self.helpers.logger.info("Mongo data delete FAILED")
 			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
-	def insert(self, collection, doc, entity):
-		""" Creates an HIASCDI Entity.
+	def getEntityAttribute(self, typeof, _id, _attr, metadata):
+		""" Gets a specific HIASCDI Entity Attribute.
 
 		References:
 			FIWARE-NGSI v2 Specification
 			https://fiware.github.io/specifications/ngsiv2/stable/
 
 			Reference
-				- Entities
-					- Entity by ID
-					- Remove entity
+				- Attribute
+					- Attribute by Entity ID
+						- Get Attribute Data
 		"""
 
-		try:
-			_id = collection.insert(doc)
-			self.helpers.logger.info("Mongo data inserted OK")
-			if entity is "Device":
-				self.mongodb.Locations.find_one_and_update(
-						{"id": doc.lid.entity},
-						{'$inc': {'devices.value': 1}}
-					)
-				self.mongodb.Zones.find_one_and_update(
-						{"id": doc.zid.entity},
-						{'$inc': {'devices.value': 1}}
-					)
-			if entity is "Application":
-				self.mongodb.Locations.find_one_and_update(
-						{"id": doc.lid.entity},
-						{'$inc': {'applications.value': 1}}
-					)
-				self.helpers.logger.info("Mongo data update OK")
-			return _id
-		except:
-			e = sys.exc_info()
-			self.helpers.logger.info("Mongo data inserted FAILED!")
-			self.helpers.logger.info(str(e))
-			return False
+		query = {'id': _id}
+
+		# Removes the MongoDB ID
+		fields = {
+			'_id': False
+		}
+
+		mattribs = []
+		if metadata is not None:
+			# Processes metadata parameter
+			mattribs = metadata.split(",")
+			for attr in mattribs:
+				fields.update({_attr + "." + attr: True})
+
+		if typeof is not None:
+			query.update({"type": typeof})
+
+		entity = list(self.mongodb.mongoConn.Entities.find(query, fields))
+
+		if not entity:
+			self.helpers.logger.info(self.program + " 404: " + \
+							self.helpers.confs["errorMessages"][str(404)]["Description"])
+			return self.respond(404, self.helpers.confs["errorMessages"][str(404)])
+		elif len(entity) > 1:
+			self.helpers.logger.info(self.program + " 409: " + \
+							self.helpers.confs["errorMessages"][str(409)]["Description"])
+			return self.respond(409, self.helpers.confs["errorMessages"][str(409)])
+		else:
+			data = entity[0]
+
+			if _attr not in data:
+				self.helpers.logger.info(self.program + " 409: " + \
+					self.helpers.confs["errorMessages"][str(409)]["Description"])
+				return self.respond(409, self.helpers.confs["errorMessages"][str(409)])
+			data = data[_attr]
+
+			self.helpers.logger.info(
+				self.program + " 200: " + self.helpers.confs["successMessage"][str(200)]["Description"])
+
+			return self.respond(200, json.loads(json_util.dumps(data)))
+
+	def updateEntityAttrPut(self, _id, _attr, typeof, data):
+		""" Updates an HIASCDI Entity Attribute.
+
+		References:
+			FIWARE-NGSI v2 Specification
+			https://fiware.github.io/specifications/ngsiv2/stable/
+
+			Reference
+				- Attribute
+					- Attribute by Entity ID
+						- Update Attribute Data
+		"""
+
+		query = {"id": _id}
+
+		if typeof is not None:
+			query.update({"type": typeof})
+
+		entity = list(self.mongodb.mongoConn.Entities.find(query))
+
+		if not entity:
+			self.helpers.logger.info(self.program + " 404: " + \
+							self.helpers.confs["errorMessages"][str(404)]["Description"])
+			return self.respond(404, self.helpers.confs["errorMessages"][str(404)])
+		elif len(entity) > 1:
+			self.helpers.logger.info(self.program + " 409: " + \
+							self.helpers.confs["errorMessages"][str(409)]["Description"])
+			return self.respond(409, self.helpers.confs["errorMessages"][str(409)])
+		elif _attr not in entity[0]:
+			self.helpers.logger.info(self.program + " 404: " + \
+				self.helpers.confs["errorMessages"][str(404)]["Description"])
+			return self.respond(404, self.helpers.confs["errorMessages"][str(404)])
+		else:
+			self.mongodb.mongoConn.Entities.update_one({"id": _id},
+										{"$set": {_attr: data}}, upsert=True)
+			return self.respond(204, self.helpers.confs["successMessage"][str(204)])
+
+	def deleteEntityAttribute(self, _id, _attr, typeof):
+		""" Updates an HIASCDI Entity Attribute.
+
+		References:
+			FIWARE-NGSI v2 Specification
+			https://fiware.github.io/specifications/ngsiv2/stable/
+
+			Reference
+				- Attribute
+					- Attribute by Entity ID
+						- Update Attribute Data
+		"""
+
+		query = {"id": _id}
+
+		if typeof is not None:
+			query.update({"type": typeof})
+
+		entity = list(self.mongodb.mongoConn.Entities.find(query))
+
+		if not entity:
+			self.helpers.logger.info(self.program + " 404: " +
+							self.helpers.confs["errorMessages"][str(404)]["Description"])
+			return self.respond(404, self.helpers.confs["errorMessages"][str(404)])
+		elif len(entity) > 1:
+			self.helpers.logger.info(self.program + " 409: " +
+							self.helpers.confs["errorMessages"][str(409)]["Description"])
+			return self.respond(409, self.helpers.confs["errorMessages"][str(409)])
+		elif _attr not in entity[0]:
+			self.helpers.logger.info(self.program + " 404: " +
+							self.helpers.confs["errorMessages"][str(404)]["Description"])
+			return self.respond(404, self.helpers.confs["errorMessages"][str(404)])
+		else:
+			self.mongodb.mongoConn.Entities.update({"id": _id},
+											{'$unset': {_attr: ""}})
+			return self.respond(204, self.helpers.confs["successMessage"][str(204)])
 
 	def respond(self, responseCode, response, location=None, headers=[]):
 		""" Builds the request repsonse """

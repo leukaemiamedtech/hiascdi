@@ -360,14 +360,14 @@ Delete the entity.
 
 Returns a JSON object with the attribute data of the attribute. The object follows the JSON representation for attributes (described in "JSON Attribute Representation" section).
 
-`GET` https://YourHIAS/hiascdi/v1/entityId/attrs/attrName?type=&metadata=accuracy
+`GET` https://YourHIAS/hiascdi/v1/entityId/attrs/attrName?type=&metadata=cpuUsage
 
 | Parameters  |  |  | Compliant | Verified |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
-| entityId | Id of the entity. **(REQUIRED)** | String | | |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | | |
-| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | | |
-| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `accuracy` | String | | |
+| entityId | Id of the entity. **(REQUIRED)** | String | &#9745; | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
+| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | &#9745; | |
+| metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `cpuUsage` | String | &#9745; | |
 
 ###### Response:
 
@@ -384,9 +384,9 @@ The request payload is an object representing the new attribute data. Previous a
 
 | Parameters  |  |  | Compliant | Verified |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
-| entityId | Id of the entity. **(REQUIRED)** | String | | |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | | |
-| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | | |
+| entityId | Id of the entity. **(REQUIRED)** | String | &#9745; | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
+| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | &#9745; | |
 
 ###### Response:
 
@@ -403,9 +403,9 @@ Removes an entity attribute.
 
 | Parameters  |  |  | Compliant | Verified |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
-| entityId | Id of the entity. **(REQUIRED)** | String | | |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | | |
-| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | | |
+| entityId | Id of the entity. **(REQUIRED)** | String | &#9745; | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
+| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | &#9745; | |
 
 ###### Response:
 

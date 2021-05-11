@@ -88,6 +88,7 @@ class helpers():
 		self.logger.addHandler(consoleHandler)
 
 		if log is True:
+			self.logger.info("Configuration and credentials loaded.")
 			self.logger.info("Helpers class initialization complete.")
 
 	def loadConfs(self):
@@ -101,5 +102,3 @@ class helpers():
 
 		with open(os.path.dirname(os.path.abspath(__file__)) + '/../../../configuration/config.json') as confs:
 			self.confs_core = json.loads(confs.read())
-
-		self.logger.info("Configuration and credentials loaded.")

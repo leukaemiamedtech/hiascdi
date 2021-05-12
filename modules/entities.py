@@ -849,10 +849,10 @@ class entities():
 
 		if updated and error is False:
 			return self.respond(204, self.helpers.confs["successMessage"][str(204)],
-                       None, {}, False, accepted)
+						None, {}, False, accepted)
 		else:
 			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-                       None, {}, False, accepted)
+						None, {}, False, accepted)
 
 	def updateEntityPatch(self, _id, typeof, data, options, accepted=[]):
 		""" Updates an HIASCDI Entity.
@@ -894,10 +894,10 @@ class entities():
 
 		if updated and error is False:
 			return self.respond(204, self.helpers.confs["successMessage"][str(204)],
-                       None, {}, False, accepted)
+						None, {}, False, accepted)
 		else:
 			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-                       None, {}, False, accepted)
+						None, {}, False, accepted)
 
 	def updateEntityPut(self, _id, typeof, data, options, accepted=[]):
 		""" Updates an HIASCDI Entity.
@@ -942,7 +942,7 @@ class entities():
 
 		for update in data:
 			self.mongodb.mongoConn.Entities.update_one({"id" : _id},
-							{"$set": {update: data[update]}}, upsert=True)
+                                              {"$set": {update: data[update]}}, upsert=True)
 			updated = True
 
 		if updated:

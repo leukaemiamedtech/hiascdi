@@ -49,55 +49,61 @@ class broker():
 
 		self.mongodb = mongodb
 
-		self.accepted = []
-
 		self.headers = {
 			"content-type": self.helpers.confs["contentType"]
 		}
 
-		self.auth = (self.helpers.confs["identifier"],
-					self.helpers.confs["auth"])
+		self.auth = (self.helpers.credentials["identifier"],
+					self.helpers.credentials["auth"])
 
 		self.helpers.logger.info("HIASCDI initialization complete.")
 
 	def checkAcceptsType(self, headers):
 		""" Checks the request Accept types. """
 
-		self.accepted = headers.getlist('accept')
-		self.accepted = self.accepted[0].split(",")
+		accepted = headers.getlist('accept')
+		accepted = accepted[0].split(",")
 
 		if "Accept" not in headers:
 			return False
 
-		for i, ctype in enumerate(self.accepted):
-			if ctype not in self.helpers.confs["contentTypes"]:
-				self.accepted.pop(i)
+		for i, ctype in enumerate(accepted):
+			if ctype not in self.helpers.confs["acceptTypes"]:
+				accepted.pop(i)
 
-		if len(self.accepted):
-			return True
+		if len(accepted):
+			return accepted
 		else:
 			return False
 
 	def checkContentType(self, headers):
 		""" Checks the request Content-Type. """
 
-		response = True
-		if "Content-Type" not in headers or headers["Content-Type"] not in self.helpers.confs["contentTypes"]:
-			response = False
-		return response
+		content_type = headers["Content-Type"]
 
-	def checkJSON(self, payload):
-		""" Checks the request body is valid JSON. """
+		if "Content-Type" not in headers or content_type not in self.helpers.confs["contentTypes"]:
+			return False
+		return content_type
+
+	def checkBody(self, payload, text=False):
+		""" Checks the request body is valid. """
 
 		response = False
 		message = "valid"
 
-		try:
-			json_object = json.loads(json.dumps(payload))
-			response = True
-		except TypeError as e:
-			response = False
-			message = "invalid"
+		if text is False:
+			try:
+				json_object = json.loads(json.dumps(payload.json))
+				response = json_object
+			except TypeError as e:
+				response = False
+				message = "invalid"
+		else:
+			if payload.data == "":
+				response = False
+				message = "invalid"
+			else:
+				response = payload.data
 
 		self.helpers.logger.info("Request data " + message)
 
@@ -113,7 +119,25 @@ class broker():
 			return False
 
 	def checkInteger(self, value):
-		""" Checks if a value is a float. """
+		""" Checks if a value is a int. """
 
 		return True if value.isdigit() else False
+
+	def prepareResponse(self, response):
+		""" Converts response to bytes. """
+
+		if isinstance(response, dict):
+			response = json.dumps(response)
+		elif isinstance(response, list):
+			response = json.dumps(response)
+		elif isinstance(response, int):
+			response = str(response).encode(encoding='UTF-8')
+		elif isinstance(response, float):
+			response = str(response).encode(encoding='UTF-8')
+		elif isinstance(response, str):
+			response = response.encode(encoding='UTF-8')
+		elif isinstance(response, bool):
+			response = response.encode(encoding='UTF-8')
+
+		return response
 

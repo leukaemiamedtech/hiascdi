@@ -1,16 +1,16 @@
 {
-    "identifier": "",
-    "auth": "",
     "program": "HIASCDI",
     "version": "v1",
-    "address": "hascdi/v1",
+    "address": "context/v2",
     "host": "",
     "port": 3524,
     "acceptTypes": [
         "application/json",
         "text/plain"
     ],
-    "contentType": "application/json",
+    "contentType": [
+        "application/json"
+    ],
     "contentTypes": [
         "application/json",
         "text/plain"
@@ -30,51 +30,51 @@
     ],
     "successMessage": {
         "200": {
-            "Description": "OK"
+            "Description": "200 OK: Request successful"
         },
         "201": {
-            "Description": "Created"
+            "Description": "200 Created: Resource Created"
         },
         "204": {
-            "Description": "No content"
+            "Description": "204: Request successful, no content"
         }
     },
     "errorMessages": {
         "400b": {
             "Error": "ParseError",
-            "Description": "Incoming JSON payload cannot be parsed"
+            "Description": "400 Parse Error: Incoming JSON payload cannot be parsed"
         },
         "400p": {
             "Error": "BadRequest",
-            "Description": "Error in URL parameters or payload"
+            "Description": "400 Bad Request: Error in URL parameters or payload"
         },
         "404": {
             "Error": "NotFound",
-            "Description": "Resource identified by the request is not found"
+            "Description": "404 Not Found: Resource identified by the request is not found"
         },
         "405": {
             "Error": "MethodNotAlowed",
-            "Description": "Requested method not supported"
+            "Description": "405 Method Not Allowed: Requested method not supported"
         },
         "406": {
             "Error": "NotAcceptable",
-            "Description": "Request meme type not supported"
+            "Description": "406 Not Acceptable: Accepted MIME types: application/json, text/plain"
         },
         "409": {
             "Error": "TooManyResults",
-            "Description": "Request may refer to several resources"
+            "Description": "409 Too Many Results: Request may refer to several resources"
         },
         "413": {
             "Error": "NoResourceAvailable",
-            "Description": "Attemp to exceed spatial index limit results"
+            "Description": "413 No Resource Available: Attemp to exceed spatial index limit results"
         },
         "415": {
             "Error": "UnsupportedMediaType",
-            "Description": "Request media type not supported"
+            "Description": "415 Unsupported Media Type: Request media type not supported"
         },
         "501": {
             "Error": "NotImplemented",
-            "Description": "Request not supported"
+            "Description": "501 Not Implemented: Request not supported"
         }
     }
 }

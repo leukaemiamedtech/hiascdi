@@ -124,37 +124,29 @@ class HIASCDI():
 
 	def processHeaders(self, request):
 
-		if self.broker.checkAcceptsType(request.headers):
-			return self.respond(406, self.confs["errorMessages"][str(406)])
+		accepted = self.broker.checkAcceptsType(request.headers)
+		content_type = self.broker.checkContentType(request.headers)
 
-		if self.broker.checkContentType(request.headers) is not True:
-			return self.respond(415, self.confs["errorMessages"][str(415)])
+		return accepted, content_type
 
-	def checkBody(self, body):
+	def checkBody(self, body, text = False):
 
-		return self.broker.checkJSON(body)
+		return self.broker.checkBody(body, text)
 
-	def respond(self, responseCode, response):
+	def respond(self, responseCode, response, accepted):
 		""" Builds the request repsonse """
 
 		headers = {}
-
-		if "application/json" in self.broker.accepted:
+		if "application/json" in accepted:
 			response =  Response(response=response, status=responseCode,
 							mimetype="application/json")
 			headers['Content-Type'] = 'application/json'
-		elif "text/plain" in self.broker.accepted:
-			if isinstance(response, dict):
-				response = json.dumps(response)
-			if isinstance(response, list):
-				response = json.dumps(response)
+		elif "text/plain" in accepted:
+			response = self.broker.prepareResponse(response)
 			response = Response(response=response, status=responseCode,
-						mimetype="text/plain")
+							mimetype="text/plain")
 			headers['Content-Type'] = 'text/plain; charset=utf-8'
-
-		if len(headers):
-			response.headers = headers
-
+		response.headers = headers
 		return response
 
 	def life(self):
@@ -194,43 +186,57 @@ app = Flask(HIASCDI.component)
 def about():
 	""" Responds to GET requests sent to the /v1/ API endpoint. """
 
-	HIASCDI.processHeaders(request)
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
-	return HIASCDI.respond(200, HIASCDI.getBroker())
+	return HIASCDI.respond(200, HIASCDI.getBroker(), accepted)
 
 @app.route('/entities', methods=['POST'])
 def entitiesPost():
 	""" Responds to POST requests sent to the /v1/entities API endpoint. """
 
-	HIASCDI.processHeaders(request)
-	print(self.broker.accepted)
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
-	query=request.json
-
-	if query is None or not HIASCDI.checkBody(query):
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"])
+	query = HIASCDI.checkBody(request)
+	if query is False:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"], accepted)
 
 	if query["id"] is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
-	return HIASCDI.entities.createEntity(query)
+	return HIASCDI.entities.createEntity(query, accepted)
 
 @app.route('/entities', methods=['GET'])
 def entitiesGet():
 	""" Responds to GET requests sent to the /v1/entities API endpoint. """
 
-	HIASCDI.processHeaders(request)
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
-	return HIASCDI.entities.getEntities(request.args)
+	return HIASCDI.entities.getEntities(request.args, accepted)
 
 @app.route('/entities/<_id>', methods=['GET'])
 def entityGet(_id):
 	""" Responds to GET requests sent to the /v1/entities/<_id> API endpoint. """
 
-	HIASCDI.processHeaders(request)
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
 	if _id is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
 	if request.args.get('type') is None:
 		typeof = None
@@ -252,16 +258,20 @@ def entityGet(_id):
 	else:
 		metadata = request.args.get('metadata')
 
-	return HIASCDI.entities.getEntity(typeof, _id, attrs, options, metadata)
+	return HIASCDI.entities.getEntity(typeof, _id, attrs, options, metadata, accepted)
 
 @app.route('/entities/<_id>/attrs', methods=['GET'])
 def entityAttrsGet(_id):
 	""" Responds to GET requests sent to the /v1/entities/<_id>/attrs API endpoint. """
 
-	HIASCDI.processHeaders(request)
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
 	if _id is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
 	if request.args.get('type') is None:
 		typeof = None
@@ -283,21 +293,24 @@ def entityAttrsGet(_id):
 	else:
 		metadata = request.args.get('metadata')
 
-	return HIASCDI.entities.getEntity(typeof, _id, attrs, options, metadata, True)
+	return HIASCDI.entities.getEntity(typeof, _id, attrs, options, metadata, True, accepted)
 
 @app.route('/entities/<_id>/attrs', methods=['POST'])
 def entityPost(_id):
 	""" Responds to POST requests sent to the /v1/entities/<_id>/attrs API endpoint. """
 
-	HIASCDI.processHeaders(request)
-
-	query = request.json
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
 	if _id is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
-	if query is None or not HIASCDI.checkBody(query):
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"])
+	query = HIASCDI.checkBody(request)
+	if query is False:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"], accepted)
 
 	if request.args.get('type') is None:
 		typeof = None
@@ -309,21 +322,24 @@ def entityPost(_id):
 	else:
 		options = request.args.get('options')
 
-	return HIASCDI.entities.updateEntityPost(_id, typeof, query, options)
+	return HIASCDI.entities.updateEntityPost(_id, typeof, query, options, accepted)
 
 @app.route('/entities/<_id>/attrs', methods=['PATCH'])
 def entityPatch(_id):
 	""" Responds to PATCH requests sent to the /v1/entities/<_id>/attrs API endpoint. """
 
-	HIASCDI.processHeaders(request)
-
-	query = request.json
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
 	if _id is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
-	if query is None or not HIASCDI.checkBody(query):
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"])
+	query = HIASCDI.checkBody(request)
+	if query is False:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"], accepted)
 
 	if request.args.get('type') is None:
 		typeof = None
@@ -336,23 +352,26 @@ def entityPatch(_id):
 		options = request.args.get('options')
 
 	if request.args.get('type') is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
-	return HIASCDI.entities.updateEntityPatch(_id, typeof, query, options)
+	return HIASCDI.entities.updateEntityPatch(_id, typeof, query, options, accepted)
 
 @app.route('/entities/<_id>/attrs', methods=['PUT'])
 def entityPut(_id):
 	""" Responds to PUT requests sent to the /v1/entities/<_id>/attrs API endpoint. """
 
-	HIASCDI.processHeaders(request)
-
-	query = request.json
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
 	if _id is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
-	if query is None or not HIASCDI.checkBody(query):
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"])
+	query = HIASCDI.checkBody(request)
+	if query is False:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"], accepted)
 
 	if request.args.get('type') is None:
 		typeof = None
@@ -364,30 +383,38 @@ def entityPut(_id):
 	else:
 		options = request.args.get('options')
 
-	return HIASCDI.entities.updateEntityPut(_id, typeof, query, options)
+	return HIASCDI.entities.updateEntityPut(_id, typeof, query, options, accepted)
 
 @app.route('/entities/<_id>', methods=['DELETE'])
 def entityDelete(_id):
 	""" Responds to DELETE requests sent to the /v1/entities/<_id> API endpoint. """
 
-	HIASCDI.processHeaders(request)
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
 	if _id is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
-	return HIASCDI.entities.deleteEntity(request.args.get('type'), _id)
+	return HIASCDI.entities.deleteEntity(request.args.get('type'), _id, accepted)
 
 @app.route('/entities/<_id>/attrs/<_attr>', methods=['GET'])
 def entityAttrsGetAttr(_id, _attr):
 	""" Responds to GET requests sent to the /v1/entities/<_id>/attrs/<_attr> API endpoint. """
 
-	HIASCDI.processHeaders(request)
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
 	if _id is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
 	if _attr is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
 	if request.args.get('type') is None:
 		typeof = None
@@ -404,69 +431,107 @@ def entityAttrsGetAttr(_id, _attr):
 	else:
 		metadata = request.args.get('metadata')
 
-	return HIASCDI.entities.getEntityAttribute(typeof, _id, _attr, metadata)
+	return HIASCDI.entities.getEntityAttribute(typeof, _id, _attr, metadata, False, accepted)
 
 @app.route('/entities/<_id>/attrs/<_attr>', methods=['PUT'])
 def entityAttrPut(_id, _attr):
 	""" Responds to PUT requests sent to the /v1/entities/<_id>/attrs/<_attr> API endpoint. """
 
-	HIASCDI.processHeaders(request)
-
-	query = request.json
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
 	if _id is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
 	if _attr is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
-	if query is None or not HIASCDI.checkBody(query):
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"])
+	query = HIASCDI.checkBody(request)
+	if query is False:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"], accepted)
 
 	if request.args.get('type') is None:
 		typeof = None
 	else:
 		typeof = request.args.get('type')
 
-	return HIASCDI.entities.updateEntityAttrPut(_id, _attr, typeof, query)
+	return HIASCDI.entities.updateEntityAttrPut(_id, _attr, typeof, query, accepted)
 
 @app.route('/entities/<_id>/attrs/<_attr>', methods=['DELETE'])
 def entityAttrDelete(_id,_attr):
 	""" Responds to DELETE requests sent to the /v1/entities/<_id>/attrs/<_attr> API endpoint. """
 
-	HIASCDI.processHeaders(request)
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
 	if _id is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
 	if _attr is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
 	if request.args.get('type') is None:
 		typeof = None
 	else:
 		typeof = request.args.get('type')
 
-	return HIASCDI.entities.deleteEntityAttribute(_id, _attr, typeof)
+	return HIASCDI.entities.deleteEntityAttribute(_id, _attr, typeof, accepted)
 
 @app.route('/entities/<_id>/attrs/<_attr>/value', methods=['GET'])
 def entityAttrsGetAttrValue(_id, _attr):
 	""" Responds to GET requests sent to the /v1/entities/<_id>/attrs/<_attr>/value API endpoint. """
 
-	HIASCDI.processHeaders(request)
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
 	if _id is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
 	if _attr is None:
-		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
 	if request.args.get('type') is None:
 		typeof = None
 	else:
 		typeof = request.args.get('type')
 
-	return HIASCDI.entities.getEntityAttribute(typeof, _id, _attr, None, True)
+	return HIASCDI.entities.getEntityAttribute(typeof, _id, _attr, None, True, accepted)
+
+@app.route('/entities/<_id>/attrs/<_attr>/value', methods=['PUT'])
+def entityAttrsPutAttrValue(_id, _attr):
+	""" Responds to PUT requests sent to the /v1/entities/<_id>/attrs/<_attr>/value API endpoint. """
+
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
+
+	if _id is None:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
+
+	if _attr is None:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
+
+	query = HIASCDI.checkBody(request, True)
+	if query is False:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"], accepted)
+
+	if request.args.get('type') is None:
+		typeof = None
+	else:
+		typeof = request.args.get('type')
+
+	return HIASCDI.entities.updateEntityAttrPut(_id, _attr, typeof, query, True, accepted, content_type)
 
 def main():
 	signal.signal(signal.SIGINT, HIASCDI.signal_handler)

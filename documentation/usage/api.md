@@ -438,9 +438,9 @@ This operation returns the value property with the value of the attribute.
 
 | Parameters  |  |  | Compliant | Verified |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
-| entityId | Id of the entity. **(REQUIRED)** | String | | |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | | |
-| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | | |
+| entityId | Id of the entity. **(REQUIRED)** | String | &#9745; | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
+| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | &#9745; | |
 
 ###### Response:
 
@@ -468,9 +468,9 @@ The payload MIME type in the request is specified in the Content-Type HTTP heade
 
 | Parameters  |  |  | Compliant | Verified |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
-| entityId | Id of the entity. **(REQUIRED)** | String | | |
-| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | | |
-| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | | |
+| entityId | Id of the entity. **(REQUIRED)** | String | &#9745; | |
+| type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
+| attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | &#9745; | |
 
 ###### Response:
 

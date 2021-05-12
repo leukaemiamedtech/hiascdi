@@ -839,12 +839,12 @@ class entities():
 					error = True
 				else:
 					self.mongodb.mongoConn.Entities.update_one({"id" : _id},
-									{"$set": {update: data[update]}}, upsert=True)
+                                                {"$set": {update: data[update]}}, upsert=True)
 					updated = True
 		else:
 			for update in data:
 				updated = self.mongodb.mongoConn.Entities.update_one({"id" : _id},
-									{"$set": {update: data[update]}}, upsert=True)
+                                                         {"$set": {update: data[update]}}, upsert=True)
 				updated = True
 
 		if updated and error is False:

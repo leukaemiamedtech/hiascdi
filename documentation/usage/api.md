@@ -499,13 +499,47 @@ Results are ordered by entity type in alphabetical order.
 
 | Parameters  |  |  | Compliant | Verified |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
-| limit | Limit the number of types to be retrieved.<br />_**Example:**_ `10` | Number | | |
-| offset | Skip a number of records.<br />_**Example:**_ `20` | Number | | |
+| limit | Limit the number of types to be retrieved.<br />_**Example:**_ `10` | Number | &#9745; | |
+| offset | Skip a number of records.<br />_**Example:**_ `20` | Number | &#9745; | |
 | Options | Options dictionary.<br />_**Possible values:**_ `count`, `values`. | String | &#9745; | |
 
 ###### Response code:
 
-- Successful operation uses 200 OK
+- Successful operation uses 201 OK
+- Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
+
+&nbsp;
+
+##### Create Entity Types (CUSTOM)
+
+The request payload is a JSON object with the `type` type with information about the entity type:
+
+- type : the entity type name.
+- attrs : the set of attribute names along with all the entities of such type, represented in a JSON object whose keys are the attribute names and whose values contain information of such attributes (in particular a list of the types used by attributes with that name along with all the entities).
+- count : the number of entities belonging to that type.
+
+`POST` https://YourHIAS/hiascdi/v1/types/
+
+###### Response code:
+
+- Successful operation uses 201 Created
+- Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
+
+&nbsp;
+
+##### Update Entity Types (CUSTOM)
+
+The request payload is a JSON object with the `type` type with information about the entity type:
+
+- type : the entity type name.
+- attrs : the set of attribute names along with all the entities of such type, represented in a JSON object whose keys are the attribute names and whose values contain information of such attributes (in particular a list of the types used by attributes with that name along with all the entities).
+- count : the number of entities belonging to that type.
+
+`PATCH` https://YourHIAS/hiascdi/v1/types/
+
+###### Response code:
+
+- Successful operation uses 204 No Content
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
@@ -524,7 +558,7 @@ This operation returns a JSON object with information about the type:
 
 | Parameters  |  |  | Compliant | Verified |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
-| entityType | Entity Type.<br />_**Example:**_ `Robot` | String | | |
+| entityType | Entity Type.<br />_**Example:**_ `Robotics` | String | &#9745; | |
 
 ###### Response code:
 

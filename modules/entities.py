@@ -391,15 +391,15 @@ class entities():
 				# Near geospatial query
 				if geometry != "Point":
 					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								None, {}, False, accepted)
+										None, {}, False, accepted)
 
 				if georelslen < 2:
 					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								None, {}, False, accepted)
+										None, {}, False, accepted)
 
 				if coordslen > 1:
 					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								None, {}, False, accepted)
+										None, {}, False, accepted)
 
 				data = {"location.value": {
 					"$near": {
@@ -419,11 +419,11 @@ class entities():
 				# Intersects geospatial query
 				if geometry != "Polygone":
 					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								None, {}, False, accepted)
+										None, {}, False, accepted)
 
 				if coordslen > 4:
 					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								None, {}, False, accepted)
+										None, {}, False, accepted)
 
 				polygone = []
 				for poly in coords:
@@ -441,11 +441,11 @@ class entities():
 				# coveredBy geospatial query
 				if geometry != "Polygone":
 					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								None, {}, False, accepted)
+										None, {}, False, accepted)
 
 				if coordslen > 4:
 					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								None, {}, False, accepted)
+										None, {}, False, accepted)
 
 				polygone = []
 				for poly in coords:
@@ -471,11 +471,11 @@ class entities():
 			elif geotype == 'disjoint':
 				# Disjoint geospatial query
 				return self.respond(501, self.helpers.confs["errorMessages"][str(501)],
-							None, {}, False, accepted)
+									None, {}, False, accepted)
 			else:
 				# Non-supported geospatial query
 				return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-							None, {}, False, accepted)
+									None, {}, False, accepted)
 
 		# TO REMOVE
 		if arguments.get('values') is not None:
@@ -536,7 +536,7 @@ class entities():
 					self.program + " 404: " + self.helpers.confs["errorMessages"][str(404)]["Description"])
 
 				return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-							None, {}, False, accepted)
+									None, {}, False, accepted)
 			else:
 
 				# Converts data to key -> value
@@ -587,15 +587,14 @@ class entities():
 				self.helpers.logger.info(
 					self.program + " 200: " + self.helpers.confs["successMessage"][str(200)]["Description"])
 
-				return self.respond(200, entities,
-						None, headers, False, accepted)
+				return self.respond(200, entities, None, headers)
 		except Exception as e:
 			print(e)
 			self.helpers.logger.info(
 				self.program + " 404: " + self.helpers.confs["errorMessages"][str(404)]["Description"])
 
 			return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 
 	def createEntity(self, data, accepted=[]):
 		""" Creates a new HIASCDI Entity.
@@ -612,14 +611,14 @@ class entities():
 		if data["type"] not in self.mongodb.collextions:
 			data["type"] = "Thing"
 
-		_id = self.insert(self.mongodb.mongoConn.Entities, data, data["type"], None, {}, False, accepted)
+		_id = self.insert(self.mongodb.mongoConn.Entities, data, data["type"], accepted)
 
 		if str(_id) is not False:
 			return self.respond(201, {}, "v1/entities/" + data["id"] + "?type=" + data["type"],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 		else:
 			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 
 	def insert(self, collection, doc, entity, accepted=[]):
 		""" Creates an HIASCDI Entity.
@@ -735,13 +734,13 @@ class entities():
 				self.program + " 404: " + self.helpers.confs["errorMessages"][str(404)]["Description"])
 
 			return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 		elif len(entity) > 1:
 			self.helpers.logger.info(
 				self.program + " 409: " + self.helpers.confs["errorMessages"][str(409)]["Description"])
 
 			return self.respond(409, self.helpers.confs["errorMessages"][str(409)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 		else:
 			data = entity[0]
 
@@ -839,20 +838,20 @@ class entities():
 					error = True
 				else:
 					self.mongodb.mongoConn.Entities.update_one({"id" : _id},
-                                                {"$set": {update: data[update]}}, upsert=True)
+											{"$set": {update: data[update]}}, upsert=True)
 					updated = True
 		else:
 			for update in data:
 				updated = self.mongodb.mongoConn.Entities.update_one({"id" : _id},
-                                                         {"$set": {update: data[update]}}, upsert=True)
+											{"$set": {update: data[update]}}, upsert=True)
 				updated = True
 
 		if updated and error is False:
 			return self.respond(204, self.helpers.confs["successMessage"][str(204)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 		else:
 			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 
 	def updateEntityPatch(self, _id, typeof, data, options, accepted=[]):
 		""" Updates an HIASCDI Entity.
@@ -889,15 +888,15 @@ class entities():
 				error = True
 			else:
 				self.mongodb.mongoConn.Entities.update_one({"id" : _id},
-                                               {"$set": {update: data[update]}})
+												{"$set": {update: data[update]}})
 				updated = True
 
 		if updated and error is False:
 			return self.respond(204, self.helpers.confs["successMessage"][str(204)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 		else:
 			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 
 	def updateEntityPut(self, _id, typeof, data, options, accepted=[]):
 		""" Updates an HIASCDI Entity.
@@ -942,15 +941,15 @@ class entities():
 
 		for update in data:
 			self.mongodb.mongoConn.Entities.update_one({"id" : _id},
-                                              {"$set": {update: data[update]}}, upsert=True)
+									{"$set": {update: data[update]}}, upsert=True)
 			updated = True
 
 		if updated:
 			return self.respond(204, self.helpers.confs["successMessage"][str(204)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 		else:
 			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 
 	def deleteEntity(self, typeof, _id, accepted=[]):
 		""" Deletes an HIASCDI Entity.
@@ -969,19 +968,18 @@ class entities():
 			collection = self.mongodb.collextions[typeof]
 		else:
 			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 
 		deleted = False
 		result = collection.delete_one({"id": _id})
 
 		if result.deleted_count is True:
 			self.helpers.logger.info("Mongo data delete OK")
-			return self.respond(204, self.helpers.confs["successMessage"][str(204)],
-						None, {}, False, accepted)
+			return self.respond(204, {})
 		else:
 			self.helpers.logger.info("Mongo data delete FAILED")
 			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 
 	def getEntityAttribute(self, typeof, _id, _attr, metadata, is_value=False, accepted=[]):
 		""" Gets a specific HIASCDI Entity Attribute.
@@ -1019,12 +1017,12 @@ class entities():
 			self.helpers.logger.info(self.program + " 404: " + \
 							self.helpers.confs["errorMessages"][str(404)]["Description"])
 			return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 		elif len(entity) > 1:
 			self.helpers.logger.info(self.program + " 409: " + \
 							self.helpers.confs["errorMessages"][str(409)]["Description"])
 			return self.respond(409, self.helpers.confs["errorMessages"][str(409)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 		else:
 			data = entity[0]
 
@@ -1032,7 +1030,7 @@ class entities():
 				self.helpers.logger.info(self.program + " 400: " + \
 									self.helpers.confs["errorMessages"]["400b"]["Description"])
 				return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-							None, {}, False, accepted)
+									None, {}, False, accepted)
 
 			override = False
 			data = data[_attr]
@@ -1041,7 +1039,7 @@ class entities():
 					self.helpers.logger.info(self.program + " 400: " + \
 						self.helpers.confs["errorMessages"]["400b"]["Description"])
 					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								None, {}, False, accepted)
+										None, {}, False, accepted)
 
 				data = data["value"]
 				override = "text/plain"
@@ -1075,22 +1073,22 @@ class entities():
 			self.helpers.logger.info(self.program + " 404: " + \
 							self.helpers.confs["errorMessages"][str(404)]["Description"])
 			return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 		elif len(entity) > 1:
 			self.helpers.logger.info(self.program + " 409: " + \
 							self.helpers.confs["errorMessages"][str(409)]["Description"])
 			return self.respond(409, self.helpers.confs["errorMessages"][str(409)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 		elif _attr not in entity[0]:
 			self.helpers.logger.info(self.program + " 404: " + \
 				self.helpers.confs["errorMessages"][str(404)]["Description"])
 			return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 		else:
 			if is_value:
 				data = data.decode()
 				path = _attr + '.value'
-				if content_type == "text/plain; charset=utf-8":
+				if content_type == "text/plain":
 					if '"' in data:
 						data = str(data.replace('"', ""))
 					elif data == "true":
@@ -1104,22 +1102,24 @@ class entities():
 							try:
 								data = float(data)
 							except:
-								return self.respond(400, self.helpers.confs["errorMessages"]["400p"],
-											None, {}, False, accepted)
+								return self.respond(400,
+													self.helpers.confs["errorMessages"]["400p"],
+													None, {}, False, accepted)
 						else:
 							try:
 								data = int(float(data))
 							except:
-								return self.respond(400, self.helpers.confs["errorMessages"]["400p"],
-											None, {}, False, accepted)
+								return self.respond(400,
+													self.helpers.confs["errorMessages"]["400p"],
+													None, {}, False, accepted)
 
 			else:
 				path = _attr
 
 			self.mongodb.mongoConn.Entities.update_one({"id": _id},
-								{"$set": {path: data}}, upsert=True)
+										{"$set": {path: data}}, upsert=True)
 			return self.respond(204, self.helpers.confs["successMessage"][str(204)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 
 	def deleteEntityAttribute(self, _id, _attr, typeof, accepted=[]):
 		""" Updates an HIASCDI Entity Attribute.
@@ -1145,22 +1145,22 @@ class entities():
 			self.helpers.logger.info(self.program + " 404: " +
 							self.helpers.confs["errorMessages"][str(404)]["Description"])
 			return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 		elif len(entity) > 1:
 			self.helpers.logger.info(self.program + " 409: " +
 							self.helpers.confs["errorMessages"][str(409)]["Description"])
 			return self.respond(409, self.helpers.confs["errorMessages"][str(409)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 		elif _attr not in entity[0]:
 			self.helpers.logger.info(self.program + " 404: " +
 							self.helpers.confs["errorMessages"][str(404)]["Description"])
 			return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 		else:
 			self.mongodb.mongoConn.Entities.update({"id": _id},
 											{'$unset': {_attr: ""}})
 			return self.respond(204, self.helpers.confs["successMessage"][str(204)],
-						None, {}, False, accepted)
+								None, {}, False, accepted)
 
 	def respond(self, responseCode, response, location=None,
 				headers={}, override = False, accepted = []):
@@ -1170,7 +1170,7 @@ class entities():
 		if override != False:
 			if override == "application/json":
 				return_as = "json"
-			elif override == "text/plain; charset=utf-8":
+			elif override == "text/plain":
 				return_as = "text"
 		elif override == False:
 			if "application/json" in accepted:
@@ -1180,7 +1180,8 @@ class entities():
 
 		if return_as == "json":
 			response =  Response(response=json.dumps(json.loads(json_util.dumps(response)),
-								indent=4), status=responseCode, mimetype="application/json")
+											indent=4), status=responseCode,
+						mimetype="application/json")
 			headers['Content-Type'] = 'application/json'
 		elif return_as == "text":
 			if "text/plain" not in accepted:

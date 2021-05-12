@@ -33,6 +33,7 @@ Contributors:
 
 """
 
+from components.hiascdi.modules.types import types
 import json
 import psutil
 import requests
@@ -105,9 +106,14 @@ class HIASCDI():
 		self.mqtt.start()
 
 	def configureEntities(self):
-		""" Configures the Context Broker. """
+		""" Configures the HIASCDI entities. """
 
 		self.entities = entities(self.helpers, self.mongodb, self.broker)
+
+	def configureTypes(self):
+		""" Configures the HIASCDI entity types. """
+
+		self.types = types(self.helpers, self.mongodb, self.broker)
 
 	def getBroker(self):
 
@@ -533,6 +539,65 @@ def entityAttrsPutAttrValue(_id, _attr):
 
 	return HIASCDI.entities.updateEntityAttrPut(_id, _attr, typeof, query, True, accepted, content_type)
 
+@app.route('/types', methods=['GET'])
+def typesGet():
+	""" Responds to GET requests sent to the /v1/types API endpoint. """
+
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
+
+	return HIASCDI.types.getTypes(request.args, accepted)
+
+@app.route('/types', methods=['POST'])
+def typesPost():
+	""" Responds to POST requests sent to the /v1/types API endpoint. """
+
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
+
+	query = HIASCDI.checkBody(request)
+	if query is False:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"], accepted)
+
+	return HIASCDI.types.createType(query, accepted)
+
+@app.route('/types/<_type>', methods=['PATCH'])
+def typesPatch(_type):
+	""" Responds to PATCH requests sent to the /v1/types/<_types> API endpoint. """
+
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
+
+	query = HIASCDI.checkBody(request)
+	if query is False:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"], accepted)
+
+	return HIASCDI.types.updateTypePatch(_type, query, accepted)
+
+@app.route('/types/<_type>', methods=['GET'])
+def typeGet(_type):
+	""" Responds to GET requests sent to the /v1/types/<_id> API endpoint. """
+
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
+
+	if _type is None:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
+
+	return HIASCDI.types.getType(_type, accepted)
+
 def main():
 	signal.signal(signal.SIGINT, HIASCDI.signal_handler)
 	signal.signal(signal.SIGTERM, HIASCDI.signal_handler)
@@ -541,6 +606,7 @@ def main():
 	HIASCDI.mongoDbConnection()
 	HIASCDI.hiascdiConnection()
 	HIASCDI.configureEntities()
+	HIASCDI.configureTypes()
 
 	Thread(target=HIASCDI.life, args=(), daemon=True).start()
 

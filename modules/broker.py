@@ -49,6 +49,8 @@ class broker():
 
 		self.mongodb = mongodb
 
+		self.accepted = []
+
 		self.headers = {
 			"content-type": self.helpers.confs["contentType"]
 		}
@@ -59,12 +61,22 @@ class broker():
 		self.helpers.logger.info("HIASCDI initialization complete.")
 
 	def checkAcceptsType(self, headers):
-		""" Checks the request Accept type. """
+		""" Checks the request Accept types. """
 
-		response = True
-		if "Accept" not in headers or headers["Accept"] not in self.helpers.confs["contentTypes"]:
-			response = False
-		return response
+		self.accepted = headers.getlist('accept')
+		self.accepted = self.accepted[0].split(",")
+
+		if "Accept" not in headers:
+			return False
+
+		for i, ctype in enumerate(self.accepted):
+			if ctype not in self.helpers.confs["contentTypes"]:
+				self.accepted.pop(i)
+
+		if len(self.accepted):
+			return True
+		else:
+			return False
 
 	def checkContentType(self, headers):
 		""" Checks the request Content-Type. """

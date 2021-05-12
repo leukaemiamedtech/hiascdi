@@ -124,7 +124,7 @@ class HIASCDI():
 
 	def processHeaders(self, request):
 
-		if self.broker.checkAcceptsType(request.headers) is not True:
+		if self.broker.checkAcceptsType(request.headers):
 			return self.respond(406, self.confs["errorMessages"][str(406)])
 
 		if self.broker.checkContentType(request.headers) is not True:
@@ -134,11 +134,28 @@ class HIASCDI():
 
 		return self.broker.checkJSON(body)
 
-	def respond(self, responseCode, response, location=None):
+	def respond(self, responseCode, response):
 		""" Builds the request repsonse """
 
-		return Response(response=json.dumps(response, indent=4), status=responseCode,
-					mimetype="application/json")
+		headers = {}
+
+		if "application/json" in self.broker.accepted:
+			response =  Response(response=response, status=responseCode,
+							mimetype="application/json")
+			headers['Content-Type'] = 'application/json'
+		elif "text/plain" in self.broker.accepted:
+			if isinstance(response, dict):
+				response = json.dumps(response)
+			if isinstance(response, list):
+				response = json.dumps(response)
+			response = Response(response=response, status=responseCode,
+						mimetype="text/plain")
+			headers['Content-Type'] = 'text/plain; charset=utf-8'
+
+		if len(headers):
+			response.headers = headers
+
+		return response
 
 	def life(self):
 		""" Sends vital statistics to HIAS """
@@ -186,6 +203,7 @@ def entitiesPost():
 	""" Responds to POST requests sent to the /v1/entities API endpoint. """
 
 	HIASCDI.processHeaders(request)
+	print(self.broker.accepted)
 
 	query=request.json
 
@@ -430,6 +448,25 @@ def entityAttrDelete(_id,_attr):
 		typeof = request.args.get('type')
 
 	return HIASCDI.entities.deleteEntityAttribute(_id, _attr, typeof)
+
+@app.route('/entities/<_id>/attrs/<_attr>/value', methods=['GET'])
+def entityAttrsGetAttrValue(_id, _attr):
+	""" Responds to GET requests sent to the /v1/entities/<_id>/attrs/<_attr>/value API endpoint. """
+
+	HIASCDI.processHeaders(request)
+
+	if _id is None:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+
+	if _attr is None:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"])
+
+	if request.args.get('type') is None:
+		typeof = None
+	else:
+		typeof = request.args.get('type')
+
+	return HIASCDI.entities.getEntityAttribute(typeof, _id, _attr, None, True)
 
 def main():
 	signal.signal(signal.SIGINT, HIASCDI.signal_handler)

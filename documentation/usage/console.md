@@ -24,6 +24,11 @@ Choose the request method for your API call. Available methods are:
 
 To use the console first select a request method.
 
+## Content Accepts Type
+
+- application/json
+- plain/txt
+
 ### Endpoint
 Choose the endpoint for your API call. Available endpoints are:
 
@@ -32,7 +37,7 @@ Choose the endpoint for your API call. Available endpoints are:
 - Types
 - Subscriptions
 
-### ID
+### Entity ID
 If your call requires an ID and/or any other parameters you can use the Entity ID field.
 
 ### Request Parameter String

@@ -577,7 +577,7 @@ class entities():
 				self.helpers.logger.info(
 					self.program + " 200: " + self.helpers.confs["successMessage"][str(200)]["Description"])
 
-				return self.respond(200, json.loads(json_util.dumps(entities)), None, headers)
+				return self.respond(200, entities, None, headers)
 		except Exception as e:
 			print(e)
 			self.helpers.logger.info(
@@ -783,7 +783,7 @@ class entities():
 			self.helpers.logger.info(
 				self.program + " 200: " + self.helpers.confs["successMessage"][str(200)]["Description"])
 
-			return self.respond(200, json.loads(json_util.dumps(data)))
+			return self.respond(200, data)
 
 	def updateEntityPost(self, _id, typeof, data, options):
 		""" Updates an HIASCDI Entity.
@@ -957,7 +957,7 @@ class entities():
 			self.helpers.logger.info("Mongo data delete FAILED")
 			return self.respond(400, self.helpers.confs["errorMessages"]["400b"])
 
-	def getEntityAttribute(self, typeof, _id, _attr, metadata):
+	def getEntityAttribute(self, typeof, _id, _attr, metadata, is_value = False):
 		""" Gets a specific HIASCDI Entity Attribute.
 
 		References:
@@ -1001,15 +1001,28 @@ class entities():
 			data = entity[0]
 
 			if _attr not in data:
-				self.helpers.logger.info(self.program + " 409: " + \
-					self.helpers.confs["errorMessages"][str(409)]["Description"])
-				return self.respond(409, self.helpers.confs["errorMessages"][str(409)])
+				self.helpers.logger.info(self.program + " 400: " + \
+					self.helpers.confs["errorMessages"][str(400)]["Description"])
+				return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+
 			data = data[_attr]
+			if is_value:
+				if "value" not in data:
+					self.helpers.logger.info(self.program + " 400: " + \
+						self.helpers.confs["errorMessages"][str(400)]["Description"])
+					return self.respond(400, self.helpers.confs["errorMessages"][str(400)])
+
+				data = data["value"]
+
+				if isinstance(data, dict):
+					newData.append(data[attr]["value"])
+				if isinstance(data[attr], list):
+					data = {"value": data["value"]}
 
 			self.helpers.logger.info(
 				self.program + " 200: " + self.helpers.confs["successMessage"][str(200)]["Description"])
 
-			return self.respond(200, json.loads(json_util.dumps(data)))
+			return self.respond(200, data)
 
 	def updateEntityAttrPut(self, _id, _attr, typeof, data):
 		""" Updates an HIASCDI Entity Attribute.
@@ -1085,11 +1098,21 @@ class entities():
 											{'$unset': {_attr: ""}})
 			return self.respond(204, self.helpers.confs["successMessage"][str(204)])
 
-	def respond(self, responseCode, response, location=None, headers=[]):
+	def respond(self, responseCode, response, location=None, headers={}):
 		""" Builds the request repsonse """
 
-		response = Response(response=json.dumps(response, indent=4),
-						status=responseCode, mimetype="application/json")
+		if "application/json" in self.broker.accepted:
+			response =  Response(response=json.dumps(json.loads(json_util.dumps(response)), indent=4), status=responseCode,
+						mimetype="application/json")
+			headers['Content-Type'] = 'application/json'
+		elif "text/plain" in self.broker.accepted:
+			if isinstance(response, dict):
+				response = json.dumps(response)
+			if isinstance(response, list):
+				response = json.dumps(response)
+			response = Response(response=response, status=responseCode,
+						mimetype="text/plain")
+			headers['Content-Type'] = 'text/plain; charset=utf-8'
 
 		if len(headers):
 			response.headers = headers

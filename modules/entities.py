@@ -39,9 +39,6 @@ import sys
 
 from mgoquery import Parser
 
-from bson import json_util, ObjectId
-from flask import Response
-
 class entities():
 	""" HIASCDI Entities Module.
 
@@ -108,18 +105,18 @@ class entities():
 			types = arguments.get('type').split(",")
 			if len(types) == 1:
 				query.update({"type":
-						{'$in': [types[0]]}
-					})
+					{'$in': [types[0]]}
+				})
 			else:
 				for eid in types:
 					eor.append({"type":
-							{'$in': [eid]}
-						})
+						{'$in': [eid]}
+					})
 				params.append({"$or": eor})
 		elif arguments.get('typePattern') is not None:
 			query.update({"type":
-					{'$regex': arguments.get('typePattern')}
-				})
+				{'$regex': arguments.get('typePattern')}
+			})
 
 		if arguments.get('id') is not None:
 			# Sets a id query
@@ -127,18 +124,18 @@ class entities():
 			ids = arguments.get('id').split(",")
 			if len(ids) == 1:
 				query.update({"id":
-						{'$in': [ids[0]]}
-					})
+					{'$in': [ids[0]]}
+				})
 			else:
 				for eid in ids:
 					eor.append({"id":
-							{'$in': [eid]}
-						})
+						{'$in': [eid]}
+					})
 				params.append({"$or": eor})
 		elif arguments.get('idPattern') is not None:
 			query.update({"id":
-					{'$regex': arguments.get('idPattern')}
-				})
+				{'$regex': arguments.get('idPattern')}
+			})
 
 		if arguments.get('category') is not None:
 			# Sets a category query
@@ -146,13 +143,13 @@ class entities():
 			categories = arguments.get('category').split(",")
 			if len(categories) == 1:
 				query.update({"category.value":
-						{'$in': [categories[0]]}
-					})
+					{'$in': [categories[0]]}
+				})
 			else:
 				for category in categories:
 					eor.append({"category.value":
-							{'$in': [category]}
-						})
+						{'$in': [category]}
+					})
 				params.append({"$or": eor})
 
 		attribs = []
@@ -193,94 +190,38 @@ class entities():
 			for q in qs:
 				if "==" in q:
 					qp = q.split("==")
-					searcher = qp[1]
-
-					if self.broker.checkFloat(qp[1]):
-						searcher = float(searcher)
-
-					if self.broker.checkInteger(qp[1]):
-						searcher = int(searcher)
-
 					query.update({qp[0]:
-						{'$in': [searcher]}
+						{'$in': [self.broker.cast(qp[1])]}
 					})
 				elif  ":" in q:
 					qp = q.split(":")
-					searcher = qp[1]
-
-					if self.broker.checkFloat(qp[1]):
-						searcher = float(searcher)
-
-					if self.broker.checkInteger(qp[1]):
-						searcher = int(searcher)
-
 					query.update({qp[0]:
-						{'$in': [searcher]}
+						{'$in': [self.broker.cast(qp[1])]}
 					})
 				elif "!=" in q:
 					qp = q.split("!=")
-					searcher = qp[1]
-
-					if self.broker.checkFloat(qp[1]):
-						searcher = float(searcher)
-
-					if self.broker.checkInteger(qp[1]):
-						searcher = int(searcher)
-
 					query.update({qp[0]:
-						{'$ne': searcher}
+						{'$ne': self.broker.cast(qp[1])}
 					})
 				elif ">=" in q:
 					qp = q.split(">=")
-					searcher = qp[1]
-
-					if self.broker.checkFloat(qp[1]):
-						searcher = float(searcher)
-
-					if self.broker.checkInteger(qp[1]):
-						searcher = int(searcher)
-
 					query.update({qp[0]:
-						{'$gte': searcher}
+						{'$gte': self.broker.cast(qp[1])}
 					})
 				elif "<=" in q:
 					qp = q.split("<=")
-					searcher = qp[1]
-
-					if self.broker.checkFloat(qp[1]):
-						searcher = float(searcher)
-
-					if self.broker.checkInteger(qp[1]):
-						searcher = int(searcher)
-
 					query.update({qp[0]:
-						{'$lte': searcher}
+						{'$lte': self.broker.cast(qp[1])}
 					})
 				elif "<" in q:
 					qp = q.split("<")
-					searcher = qp[1]
-
-					if self.broker.checkFloat(qp[1]):
-						searcher = float(searcher)
-
-					if self.broker.checkInteger(qp[1]):
-						searcher = int(searcher)
-
 					query.update({qp[0]:
-						{'$lt': searcher}
+						{'$lt': self.broker.cast(qp[1])}
 					})
 				elif ">" in q:
 					qp = q.split(">")
-					searcher = qp[1]
-
-					if self.broker.checkFloat(qp[1]):
-						searcher = float(searcher)
-
-					if self.broker.checkInteger(qp[1]):
-						searcher = int(searcher)
-
 					query.update({qp[0]:
-						{'$gt': searcher}
+						{'$gt': self.broker.cast(qp[1])}
 					})
 
 		elif arguments.get('mq') is not None:
@@ -289,94 +230,38 @@ class entities():
 			for q in qs:
 				if "==" in q:
 					qp = q.split("==")
-					searcher = qp[1]
-
-					if self.broker.checkFloat(qp[1]):
-						searcher = float(searcher)
-
-					if self.broker.checkInteger(qp[1]):
-						searcher = int(searcher)
-
 					query.update({qp[0]:
-						{'$in': [searcher]}
+						{'$in': [self.broker.cast(qp[1])]}
 					})
 				elif  ":" in q:
 					qp = q.split(":")
-					searcher = qp[1]
-
-					if self.broker.checkFloat(qp[1]):
-						searcher = float(searcher)
-
-					if self.broker.checkInteger(qp[1]):
-						searcher = int(searcher)
-
 					query.update({qp[0]:
-						{'$in': [searcher]}
+						{'$in': [self.broker.cast(qp[1])]}
 					})
 				elif "!=" in q:
 					qp = q.split("!=")
-					searcher = qp[1]
-
-					if self.broker.checkFloat(qp[1]):
-						searcher = float(searcher)
-
-					if self.broker.checkInteger(qp[1]):
-						searcher = int(searcher)
-
 					query.update({qp[0]:
-						{'$ne': searcher}
+						{'$ne': self.broker.cast(qp[1])}
 					})
 				elif ">=" in q:
 					qp = q.split(">=")
-					searcher = qp[1]
-
-					if self.broker.checkFloat(qp[1]):
-						searcher = float(searcher)
-
-					if self.broker.checkInteger(qp[1]):
-						searcher = int(searcher)
-
 					query.update({qp[0]:
-						{'$gte': searcher}
+						{'$gte': self.broker.cast(qp[1])}
 					})
 				elif "<=" in q:
 					qp = q.split("<=")
-					searcher = qp[1]
-
-					if self.broker.checkFloat(qp[1]):
-						searcher = float(searcher)
-
-					if self.broker.checkInteger(qp[1]):
-						searcher = int(searcher)
-
 					query.update({qp[0]:
-						{'$lte': searcher}
+						{'$lte': self.broker.cast(qp[1])}
 					})
 				elif "<" in q:
 					qp = q.split("<")
-					searcher = qp[1]
-
-					if self.broker.checkFloat(qp[1]):
-						searcher = float(searcher)
-
-					if self.broker.checkInteger(qp[1]):
-						searcher = int(searcher)
-
 					query.update({qp[0]:
-						{'$lt': searcher}
+						{'$lt': self.broker.cast(qp[1])}
 					})
 				elif ">" in q:
 					qp = q.split(">")
-					searcher = qp[1]
-
-					if self.broker.checkFloat(qp[1]):
-						searcher = float(searcher)
-
-					if self.broker.checkInteger(qp[1]):
-						searcher = int(searcher)
-
 					query.update({qp[0]:
-						{'$gt': searcher}
+						{'$gt': self.broker.cast(qp[1])}
 					})
 
 		# Sets a geospatial query
@@ -390,16 +275,16 @@ class entities():
 			if geotype == 'near':
 				# Near geospatial query
 				if geometry != "Point":
-					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-										None, {}, False, accepted)
+					return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+										{}, False, accepted)
 
 				if georelslen < 2:
-					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-										None, {}, False, accepted)
+					return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+										{}, False, accepted)
 
 				if coordslen > 1:
-					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-										None, {}, False, accepted)
+					return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+										{}, False, accepted)
 
 				data = {"location.value": {
 					"$near": {
@@ -418,12 +303,12 @@ class entities():
 			elif geotype == 'intersects':
 				# Intersects geospatial query
 				if geometry != "Polygone":
-					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-										None, {}, False, accepted)
+					return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+										{}, False, accepted)
 
 				if coordslen > 4:
-					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-										None, {}, False, accepted)
+					return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+										{}, False, accepted)
 
 				polygone = []
 				for poly in coords:
@@ -440,12 +325,12 @@ class entities():
 			elif geotype == 'coveredBy':
 				# coveredBy geospatial query
 				if geometry != "Polygone":
-					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-										None, {}, False, accepted)
+					return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+										{}, False, accepted)
 
 				if coordslen > 4:
-					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-										None, {}, False, accepted)
+					return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+										{}, False, accepted)
 
 				polygone = []
 				for poly in coords:
@@ -470,12 +355,12 @@ class entities():
 				params.append({"$or": eor})
 			elif geotype == 'disjoint':
 				# Disjoint geospatial query
-				return self.respond(501, self.helpers.confs["errorMessages"][str(501)],
-									None, {}, False, accepted)
+				return self.broker.respond(501, self.helpers.confs["errorMessages"][str(501)],
+									{}, False, accepted)
 			else:
 				# Non-supported geospatial query
-				return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-									None, {}, False, accepted)
+				return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+									{}, False, accepted)
 
 		# TO REMOVE
 		if arguments.get('values') is not None:
@@ -535,8 +420,8 @@ class entities():
 				self.helpers.logger.info(
 					self.program + " 404: " + self.helpers.confs["errorMessages"][str(404)]["Description"])
 
-				return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-									None, {}, False, accepted)
+				return self.broker.respond(404, self.helpers.confs["errorMessages"][str(404)],
+									{}, False, accepted)
 			else:
 
 				# Converts data to key -> value
@@ -587,14 +472,14 @@ class entities():
 				self.helpers.logger.info(
 					self.program + " 200: " + self.helpers.confs["successMessage"][str(200)]["Description"])
 
-				return self.respond(200, entities, None, headers)
+				return self.broker.respond(200, entities, headers, False, accepted)
 		except Exception as e:
-			print(e)
 			self.helpers.logger.info(
 				self.program + " 404: " + self.helpers.confs["errorMessages"][str(404)]["Description"])
+			self.helpers.logger.info(str(e))
 
-			return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-								None, {}, False, accepted)
+			return self.broker.respond(404, self.helpers.confs["errorMessages"][str(404)],
+								{}, False, accepted)
 
 	def createEntity(self, data, accepted=[]):
 		""" Creates a new HIASCDI Entity.
@@ -611,52 +496,12 @@ class entities():
 		if data["type"] not in self.mongodb.collextions:
 			data["type"] = "Thing"
 
-		_id = self.insert(self.mongodb.mongoConn.Entities, data, data["type"], accepted)
-
+		_id = self.mongodb.mongoConn.Entities.insert(data)
 		if str(_id) is not False:
-			return self.respond(201, {}, "v1/entities/" + data["id"] + "?type=" + data["type"],
-								None, {}, False, accepted)
+			return self.broker.respond(201, {}, {"Location": "v1/entities/" + data["id"] + "?type=" + data["type"]}, False, accepted)
 		else:
-			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								None, {}, False, accepted)
-
-	def insert(self, collection, doc, entity, accepted=[]):
-		""" Creates an HIASCDI Entity.
-
-		References:
-			FIWARE-NGSI v2 Specification
-			https://fiware.github.io/specifications/ngsiv2/stable/
-
-			Reference
-				- Entities
-					- Create Entity
-						- Create Entity
-		"""
-
-		try:
-			_id = collection.insert(doc)
-			self.helpers.logger.info("Mongo data inserted OK")
-			if entity is "Device":
-				self.mongodb.Locations.find_one_and_update(
-						{"id": doc.lid.entity},
-						{'$inc': {'devices.value': 1}}
-					)
-				self.mongodb.Zones.find_one_and_update(
-						{"id": doc.zid.entity},
-						{'$inc': {'devices.value': 1}}
-					)
-			if entity is "Application":
-				self.mongodb.Locations.find_one_and_update(
-						{"id": doc.lid.entity},
-						{'$inc': {'applications.value': 1}}
-					)
-				self.helpers.logger.info("Mongo data update OK")
-			return _id
-		except:
-			e = sys.exc_info()
-			self.helpers.logger.info("Mongo data inserted FAILED!")
-			self.helpers.logger.info(str(e))
-			return False
+			return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+								{}, False, accepted)
 
 	def getEntity(self, typeof, _id, attrs, options, metadata,
 					attributes=False, accepted=[]):
@@ -733,14 +578,14 @@ class entities():
 			self.helpers.logger.info(
 				self.program + " 404: " + self.helpers.confs["errorMessages"][str(404)]["Description"])
 
-			return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-								None, {}, False, accepted)
+			return self.broker.respond(404, self.helpers.confs["errorMessages"][str(404)],
+								{}, False, accepted)
 		elif len(entity) > 1:
 			self.helpers.logger.info(
 				self.program + " 409: " + self.helpers.confs["errorMessages"][str(409)]["Description"])
 
-			return self.respond(409, self.helpers.confs["errorMessages"][str(409)],
-								None, {}, False, accepted)
+			return self.broker.respond(409, self.helpers.confs["errorMessages"][str(409)],
+								{}, False, accepted)
 		else:
 			data = entity[0]
 
@@ -799,7 +644,7 @@ class entities():
 			self.helpers.logger.info(
 				self.program + " 200: " + self.helpers.confs["successMessage"][str(200)]["Description"])
 
-			return self.respond(200, data)
+			return self.broker.respond(200, data, {}, False, accepted)
 
 	def updateEntityPost(self, _id, typeof, data, options, accepted=[]):
 		""" Updates an HIASCDI Entity.
@@ -838,20 +683,20 @@ class entities():
 					error = True
 				else:
 					self.mongodb.mongoConn.Entities.update_one({"id" : _id},
-											{"$set": {update: data[update]}}, upsert=True)
+						{"$set": {update: data[update]}}, upsert=True)
 					updated = True
 		else:
 			for update in data:
 				updated = self.mongodb.mongoConn.Entities.update_one({"id" : _id},
-											{"$set": {update: data[update]}}, upsert=True)
+								{"$set": {update: data[update]}}, upsert=True)
 				updated = True
 
 		if updated and error is False:
-			return self.respond(204, self.helpers.confs["successMessage"][str(204)],
-								None, {}, False, accepted)
+			return self.broker.respond(204, self.helpers.confs["successMessage"][str(204)],
+								{}, False, accepted)
 		else:
-			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								None, {}, False, accepted)
+			return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+								{}, False, accepted)
 
 	def updateEntityPatch(self, _id, typeof, data, options, accepted=[]):
 		""" Updates an HIASCDI Entity.
@@ -888,15 +733,15 @@ class entities():
 				error = True
 			else:
 				self.mongodb.mongoConn.Entities.update_one({"id" : _id},
-												{"$set": {update: data[update]}})
+					{"$set": {update: data[update]}})
 				updated = True
 
 		if updated and error is False:
-			return self.respond(204, self.helpers.confs["successMessage"][str(204)],
-								None, {}, False, accepted)
+			return self.broker.respond(204, self.helpers.confs["successMessage"][str(204)],
+								{}, False, accepted)
 		else:
-			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								None, {}, False, accepted)
+			return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+								{}, False, accepted)
 
 	def updateEntityPut(self, _id, typeof, data, options, accepted=[]):
 		""" Updates an HIASCDI Entity.
@@ -941,15 +786,15 @@ class entities():
 
 		for update in data:
 			self.mongodb.mongoConn.Entities.update_one({"id" : _id},
-									{"$set": {update: data[update]}}, upsert=True)
+				{"$set": {update: data[update]}}, upsert=True)
 			updated = True
 
 		if updated:
-			return self.respond(204, self.helpers.confs["successMessage"][str(204)],
-								None, {}, False, accepted)
+			return self.broker.respond(204, self.helpers.confs["successMessage"][str(204)],
+								{}, False, accepted)
 		else:
-			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								None, {}, False, accepted)
+			return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+								{}, False, accepted)
 
 	def deleteEntity(self, typeof, _id, accepted=[]):
 		""" Deletes an HIASCDI Entity.
@@ -967,19 +812,19 @@ class entities():
 		if typeof in self.mongodb.collextions:
 			collection = self.mongodb.collextions[typeof]
 		else:
-			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								None, {}, False, accepted)
+			return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+								{}, False, accepted)
 
 		deleted = False
 		result = collection.delete_one({"id": _id})
 
 		if result.deleted_count is True:
 			self.helpers.logger.info("Mongo data delete OK")
-			return self.respond(204, {})
+			return self.broker.respond(204, {}, {}, False, accepted)
 		else:
 			self.helpers.logger.info("Mongo data delete FAILED")
-			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								None, {}, False, accepted)
+			return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+								{}, False, accepted)
 
 	def getEntityAttribute(self, typeof, _id, _attr, metadata, is_value=False, accepted=[]):
 		""" Gets a specific HIASCDI Entity Attribute.
@@ -1016,21 +861,21 @@ class entities():
 		if not entity:
 			self.helpers.logger.info(self.program + " 404: " + \
 							self.helpers.confs["errorMessages"][str(404)]["Description"])
-			return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-								None, {}, False, accepted)
+			return self.broker.respond(404, self.helpers.confs["errorMessages"][str(404)],
+								{}, False, accepted)
 		elif len(entity) > 1:
 			self.helpers.logger.info(self.program + " 409: " + \
 							self.helpers.confs["errorMessages"][str(409)]["Description"])
-			return self.respond(409, self.helpers.confs["errorMessages"][str(409)],
-								None, {}, False, accepted)
+			return self.broker.respond(409, self.helpers.confs["errorMessages"][str(409)],
+								{}, False, accepted)
 		else:
 			data = entity[0]
 
 			if _attr not in data:
 				self.helpers.logger.info(self.program + " 400: " + \
 									self.helpers.confs["errorMessages"]["400b"]["Description"])
-				return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-									None, {}, False, accepted)
+				return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+									{}, False, accepted)
 
 			override = False
 			data = data[_attr]
@@ -1038,8 +883,8 @@ class entities():
 				if "value" not in data:
 					self.helpers.logger.info(self.program + " 400: " + \
 						self.helpers.confs["errorMessages"]["400b"]["Description"])
-					return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
-										None, {}, False, accepted)
+					return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+										{}, False, accepted)
 
 				data = data["value"]
 				override = "text/plain"
@@ -1047,7 +892,7 @@ class entities():
 			self.helpers.logger.info(
 				self.program + " 200: " + self.helpers.confs["successMessage"][str(200)]["Description"])
 
-			return self.respond(200, data, None, {}, override, accepted)
+			return self.broker.respond(200, data, None, {}, override, accepted)
 
 	def updateEntityAttrPut(self, _id, _attr, typeof, data, is_value, accepted = None, content_type = None):
 		""" Updates an HIASCDI Entity Attribute.
@@ -1072,18 +917,18 @@ class entities():
 		if not entity:
 			self.helpers.logger.info(self.program + " 404: " + \
 							self.helpers.confs["errorMessages"][str(404)]["Description"])
-			return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-								None, {}, False, accepted)
+			return self.broker.respond(404, self.helpers.confs["errorMessages"][str(404)],
+								{}, False, accepted)
 		elif len(entity) > 1:
 			self.helpers.logger.info(self.program + " 409: " + \
 							self.helpers.confs["errorMessages"][str(409)]["Description"])
-			return self.respond(409, self.helpers.confs["errorMessages"][str(409)],
-								None, {}, False, accepted)
+			return self.broker.respond(409, self.helpers.confs["errorMessages"][str(409)],
+								{}, False, accepted)
 		elif _attr not in entity[0]:
 			self.helpers.logger.info(self.program + " 404: " + \
 				self.helpers.confs["errorMessages"][str(404)]["Description"])
-			return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-								None, {}, False, accepted)
+			return self.broker.respond(404, self.helpers.confs["errorMessages"][str(404)],
+								{}, False, accepted)
 		else:
 			if is_value:
 				data = data.decode()
@@ -1102,24 +947,23 @@ class entities():
 							try:
 								data = float(data)
 							except:
-								return self.respond(400,
-													self.helpers.confs["errorMessages"]["400p"],
-													None, {}, False, accepted)
+								return self.broker.respond(400,
+											self.helpers.confs["errorMessages"]["400p"],
+											{}, False, accepted)
 						else:
 							try:
 								data = int(float(data))
 							except:
-								return self.respond(400,
-													self.helpers.confs["errorMessages"]["400p"],
-													None, {}, False, accepted)
-
+								return self.broker.respond(400,
+											self.helpers.confs["errorMessages"]["400p"],
+											{}, False, accepted)
 			else:
 				path = _attr
 
 			self.mongodb.mongoConn.Entities.update_one({"id": _id},
-										{"$set": {path: data}}, upsert=True)
-			return self.respond(204, self.helpers.confs["successMessage"][str(204)],
-								None, {}, False, accepted)
+				{"$set": {path: data}}, upsert=True)
+			return self.broker.respond(204, self.helpers.confs["successMessage"][str(204)],
+								{}, False, accepted)
 
 	def deleteEntityAttribute(self, _id, _attr, typeof, accepted=[]):
 		""" Updates an HIASCDI Entity Attribute.
@@ -1144,55 +988,20 @@ class entities():
 		if not entity:
 			self.helpers.logger.info(self.program + " 404: " +
 							self.helpers.confs["errorMessages"][str(404)]["Description"])
-			return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-								None, {}, False, accepted)
+			return self.broker.respond(404, self.helpers.confs["errorMessages"][str(404)],
+								{}, False, accepted)
 		elif len(entity) > 1:
 			self.helpers.logger.info(self.program + " 409: " +
 							self.helpers.confs["errorMessages"][str(409)]["Description"])
-			return self.respond(409, self.helpers.confs["errorMessages"][str(409)],
-								None, {}, False, accepted)
+			return self.broker.respond(409, self.helpers.confs["errorMessages"][str(409)],
+								{}, False, accepted)
 		elif _attr not in entity[0]:
 			self.helpers.logger.info(self.program + " 404: " +
 							self.helpers.confs["errorMessages"][str(404)]["Description"])
-			return self.respond(404, self.helpers.confs["errorMessages"][str(404)],
-								None, {}, False, accepted)
+			return self.broker.respond(404, self.helpers.confs["errorMessages"][str(404)],
+								{}, False, accepted)
 		else:
 			self.mongodb.mongoConn.Entities.update({"id": _id},
-											{'$unset': {_attr: ""}})
-			return self.respond(204, self.helpers.confs["successMessage"][str(204)],
-								None, {}, False, accepted)
-
-	def respond(self, responseCode, response, location=None,
-				headers={}, override = False, accepted = []):
-		""" Builds the request repsonse """
-
-		return_as = "json"
-		if override != False:
-			if override == "application/json":
-				return_as = "json"
-			elif override == "text/plain":
-				return_as = "text"
-		elif override == False:
-			if "application/json" in accepted:
-				return_as = "json"
-			elif "text/plain" in accepted:
-				return_as = "text"
-
-		if return_as == "json":
-			response =  Response(response=json.dumps(json.loads(json_util.dumps(response)),
-											indent=4), status=responseCode,
-						mimetype="application/json")
-			headers['Content-Type'] = 'application/json'
-		elif return_as == "text":
-			if "text/plain" not in accepted:
-				response = Response(response=self.helpers.confs["errorMessages"]["400b"],
-								status=400, mimetype="application/json")
-				headers['Content-Type'] = 'application/json'
-			else:
-				response = self.broker.prepareResponse(response)
-				response = Response(response=response, status=responseCode,
-								mimetype="text/plain")
-				headers['Content-Type'] = 'text/plain; charset=utf-8'
-		response.headers = headers
-
-		return response
+						{'$unset': {_attr: ""}})
+			return self.broker.respond(204, self.helpers.confs["successMessage"][str(204)],
+								{}, False, accepted)

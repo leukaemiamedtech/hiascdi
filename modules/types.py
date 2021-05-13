@@ -38,6 +38,7 @@ import os
 from bson import json_util, ObjectId
 
 from flask import Response
+
 class types():
 	""" HIASCDI Types Module.
 
@@ -85,7 +86,8 @@ class types():
 		}
 
 		# Processes the options parameter
-		options = arguments.get('options') if arguments.get('options') is not None else None
+		options = arguments.get('options') if arguments.get(
+			'options') is not None else None
 		if options is not None:
 			options = options.split(",")
 			for option in options:
@@ -120,9 +122,9 @@ class types():
 			newData = []
 			for i, typ in enumerate(types):
 				newData.append(typ["type"])
-			entities = newData
+			types = newData
 
-		return self.respond(200, entities, headers, False, accepted)
+		return self.broker.respond(200, types, headers, False, accepted)
 
 	def createType(self, data, accepted=[]):
 		""" Creates a new HIASCDI Entity Type.
@@ -137,36 +139,16 @@ class types():
 						- Create Entity types (Custom)
 		"""
 
-		_id = self.insert(self.mongodb.mongoConn.Types, data, accepted)
-
-		if str(_id) is not False:
-			return self.respond(201, {}, {"Location": "v1/types/" + data["type"]},
-								False, accepted)
-		else:
-			return self.respond(400, self.helpers.confs["errorMessages"]["400b"], {},
-								False, accepted)
-
-	def insert(self, collection, doc, accepted=[]):
-		""" Creates a new HIASCDI Entity Type.
-
-		References:
-			FIWARE-NGSI v2 Specification
-			https://fiware.github.io/specifications/ngsiv2/stable/
-
-			Reference
-				- Types
-					- Entity types
-						- Create Entity types (Custom)
-		"""
-
 		try:
-			_id = collection.insert(doc)
-			return _id
+			_id = self.mongodb.mongoConn.Types.insert(data)
+			return self.broker.respond(201, {}, {"Location": "v1/types/" + data["type"]},
+								False, accepted)
 		except:
 			e = sys.exc_info()
 			self.helpers.logger.info("Mongo data inserted FAILED!")
 			self.helpers.logger.info(str(e))
-			return False
+			return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"], {},
+								False, accepted)
 
 	def updateTypePatch(self, _id, data, accepted=[]):
 		""" Updates an HIASCDI Entity.
@@ -190,10 +172,10 @@ class types():
 			updated = True
 
 		if updated and error is False:
-			return self.respond(204, self.helpers.confs["successMessage"][str(204)],
+			return self.broker.respond(204, self.helpers.confs["successMessage"][str(204)],
 								{}, False, accepted)
 		else:
-			return self.respond(400, self.helpers.confs["errorMessages"]["400b"],
+			return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
 								{}, False, accepted)
 
 	def getType(self, _type, accepted=[]):
@@ -225,40 +207,5 @@ class types():
 		_type = self.mongodb.mongoConn.Types.find(
 				query, fields)
 
-		return self.respond(200, _type, headers, False, accepted)
-
-	def respond(self, responseCode, response, headers={},
-				override = False, accepted = []):
-		""" Builds the request repsonse """
-
-		return_as = "json"
-		if override != False:
-			if override == "application/json":
-				return_as = "json"
-			elif override == "text/plain":
-				return_as = "text"
-		elif override == False:
-			if "application/json" in accepted:
-				return_as = "json"
-			elif "text/plain" in accepted:
-				return_as = "text"
-
-		if return_as == "json":
-			response =  Response(response=json.dumps(json.loads(json_util.dumps(response)),
-											indent=4), status=responseCode,
-						mimetype="application/json")
-			headers['Content-Type'] = 'application/json'
-		elif return_as == "text":
-			if "text/plain" not in accepted:
-				response = Response(response=self.helpers.confs["errorMessages"]["400b"],
-								status=400, mimetype="application/json")
-				headers['Content-Type'] = 'application/json'
-			else:
-				response = self.broker.prepareResponse(response)
-				response = Response(response=response, status=responseCode,
-								mimetype="text/plain")
-				headers['Content-Type'] = 'text/plain; charset=utf-8'
-		response.headers = headers
-
-		return response
+		return self.broker.respond(200, _type, headers, False, accepted)
 

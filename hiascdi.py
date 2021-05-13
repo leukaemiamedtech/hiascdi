@@ -33,7 +33,6 @@ Contributors:
 
 """
 
-from components.hiascdi.modules.types import types
 import json
 import psutil
 import requests
@@ -55,6 +54,8 @@ from modules.mqtt import mqtt
 from components.hiascdi.modules.helpers import helpers
 from components.hiascdi.modules.broker import broker
 from components.hiascdi.modules.entities import entities
+from components.hiascdi.modules.types import types
+from components.hiascdi.modules.subscriptions import subscriptions
 
 class HIASCDI():
 	""" HIASCDI NGSIV2 Context Broker.
@@ -115,27 +116,34 @@ class HIASCDI():
 
 		self.types = types(self.helpers, self.mongodb, self.broker)
 
+	def configureSubscriptions(self):
+		""" Configures the HIASCDI subscriptions. """
+
+		self.subscriptions = subscriptions(self.helpers, self.mongodb, self.broker)
+
 	def getBroker(self):
 
 		return {
-				"entities_url": self.confs["endpoints"]["entities_url"],
-				"types_url": self.confs["endpoints"]["types_url"],
-				"subscriptions_url": self.confs["endpoints"]["subscriptions_url"],
-				"registrations_url": self.confs["endpoints"]["registrations_url"],
-				"CPU": psutil.cpu_percent(),
-				"Memory": psutil.virtual_memory()[2],
-				"Diskspace": psutil.disk_usage('/').percent,
-				"Temperature": psutil.sensors_temperatures()['coretemp'][0].current
-			}
+			"entities_url": self.confs["endpoints"]["entities_url"],
+			"types_url": self.confs["endpoints"]["types_url"],
+			"subscriptions_url": self.confs["endpoints"]["subscriptions_url"],
+			"registrations_url": self.confs["endpoints"]["registrations_url"],
+			"CPU": psutil.cpu_percent(),
+			"Memory": psutil.virtual_memory()[2],
+			"Diskspace": psutil.disk_usage('/').percent,
+			"Temperature": psutil.sensors_temperatures()['coretemp'][0].current
+		}
 
 	def processHeaders(self, request):
+		""" Processes the request headers """
 
 		accepted = self.broker.checkAcceptsType(request.headers)
 		content_type = self.broker.checkContentType(request.headers)
 
 		return accepted, content_type
 
-	def checkBody(self, body, text = False):
+	def checkBody(self, body, text=False):
+		""" Checks the request body """
 
 		return self.broker.checkBody(body, text)
 
@@ -145,12 +153,12 @@ class HIASCDI():
 		headers = {}
 		if "application/json" in accepted:
 			response =  Response(response=response, status=responseCode,
-							mimetype="application/json")
+					mimetype="application/json")
 			headers['Content-Type'] = 'application/json'
 		elif "text/plain" in accepted:
 			response = self.broker.prepareResponse(response)
 			response = Response(response=response, status=responseCode,
-							mimetype="text/plain")
+					mimetype="text/plain")
 			headers['Content-Type'] = 'text/plain; charset=utf-8'
 		response.headers = headers
 		return response
@@ -163,7 +171,7 @@ class HIASCDI():
 		hdd = psutil.disk_usage('/').percent
 		tmp = psutil.sensors_temperatures()['coretemp'][0].current
 		r = requests.get('http://ipinfo.io/json?token=' +
-					self.helpers.credentials["iotJumpWay"]["ipinfo"])
+				self.helpers.credentials["iotJumpWay"]["ipinfo"])
 		data = r.json()
 		location = data["loc"].split(',')
 
@@ -205,10 +213,6 @@ def entitiesPost():
 	""" Responds to POST requests sent to the /v1/entities API endpoint. """
 
 	accepted, content_type = HIASCDI.processHeaders(request)
-	if accepted is False:
-		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
-	if content_type is False:
-		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
 	query = HIASCDI.checkBody(request)
 	if query is False:
@@ -598,6 +602,49 @@ def typeGet(_type):
 
 	return HIASCDI.types.getType(_type, accepted)
 
+@app.route('/subscriptions', methods=['GET'])
+def subscriptionsGet():
+	""" Responds to GET requests sent to the /v1/subscriptions API endpoint. """
+
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
+
+	return HIASCDI.subscriptions.getSubscriptions(request.args, accepted)
+
+@app.route('/subscriptions', methods=['POST'])
+def subscriptionsPost():
+	""" Responds to POST requests sent to the /v1/subscriptions API endpoint. """
+
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
+
+	query = HIASCDI.checkBody(request)
+	if query is False:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"], accepted)
+
+	return HIASCDI.subscriptions.createSubscription(query, accepted)
+
+@app.route('/subscriptions/<_subscription>', methods=['GET'])
+def subscriptionGet(_subscription):
+	""" Responds to GET requests sent to the /v1/types/<_id> API endpoint. """
+
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
+
+	if _subscription is None:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
+
+	return HIASCDI.subscriptions.getSubscription(_subscription, accepted)
+
 def main():
 	signal.signal(signal.SIGINT, HIASCDI.signal_handler)
 	signal.signal(signal.SIGTERM, HIASCDI.signal_handler)
@@ -607,6 +654,7 @@ def main():
 	HIASCDI.hiascdiConnection()
 	HIASCDI.configureEntities()
 	HIASCDI.configureTypes()
+	HIASCDI.configureSubscriptions()
 
 	Thread(target=HIASCDI.life, args=(), daemon=True).start()
 

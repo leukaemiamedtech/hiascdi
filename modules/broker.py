@@ -35,6 +35,9 @@ import requests
 
 import pandas as pd
 
+from bson import json_util, ObjectId
+from flask import Response
+
 class broker():
 	""" HIASCDI Context Broker Module.
 
@@ -123,6 +126,16 @@ class broker():
 
 		return True if value.isdigit() else False
 
+	def cast(self, val):
+		""" Casts relevant values as float or int. """
+
+		if self.checkFloat(val):
+			val = float(val)
+		elif self.checkInteger(val):
+			val = int(val)
+
+		return val
+
 	def prepareResponse(self, response):
 		""" Converts response to bytes. """
 
@@ -138,6 +151,41 @@ class broker():
 			response = response.encode(encoding='UTF-8')
 		elif isinstance(response, bool):
 			response = response.encode(encoding='UTF-8')
+
+		return response
+
+	def respond(self, responseCode, response, headers={},
+				override = False, accepted = []):
+		""" Builds the request repsonse """
+
+		return_as = "json"
+		if override != False:
+			if override == "application/json":
+				return_as = "json"
+			elif override == "text/plain":
+				return_as = "text"
+		elif override == False:
+			if "application/json" in accepted:
+				return_as = "json"
+			elif "text/plain" in accepted:
+				return_as = "text"
+
+		if return_as == "json":
+			response =  Response(response=json.dumps(json.loads(json_util.dumps(response)),
+											indent=4), status=responseCode,
+						mimetype="application/json")
+			headers['Content-Type'] = 'application/json'
+		elif return_as == "text":
+			if "text/plain" not in accepted:
+				response = Response(response=self.helpers.confs["errorMessages"]["400b"],
+								status=400, mimetype="application/json")
+				headers['Content-Type'] = 'application/json'
+			else:
+				response = self.broker.prepareResponse(response)
+				response = Response(response=response, status=responseCode,
+								mimetype="text/plain")
+				headers['Content-Type'] = 'text/plain; charset=utf-8'
+		response.headers = headers
 
 		return response
 

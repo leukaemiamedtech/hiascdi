@@ -172,13 +172,12 @@ class broker():
 
 		if return_as == "json":
 			response =  Response(response=json.dumps(json.loads(json_util.dumps(response)),
-											indent=4), status=responseCode,
-						mimetype="application/json")
+                                            indent=4), status=responseCode, mimetype="application/json")
 			headers['Content-Type'] = 'application/json'
 		elif return_as == "text":
 			if "text/plain" not in accepted:
 				response = Response(response=self.helpers.confs["errorMessages"]["400b"],
-								status=400, mimetype="application/json")
+                        status=400, mimetype="application/json")
 				headers['Content-Type'] = 'application/json'
 			else:
 				response = self.broker.prepareResponse(response)

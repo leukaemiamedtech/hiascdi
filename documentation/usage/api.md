@@ -724,6 +724,10 @@ Cancels subscription.
 
 `DELETE` https://YourHIAS/hiascdi/v1/subscriptions/subscriptionId
 
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| NA |  |  | &#9745; | |
+
 ###### Response:
 
 - Successful operation uses 204 No Content

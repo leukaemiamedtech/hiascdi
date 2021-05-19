@@ -205,3 +205,28 @@ class subscriptions():
 		else:
 			return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
 								{}, False, accepted)
+
+	def deleteSubscription(self, subscription, accepted=[]):
+		""" Updates subscription data in MongoDB.
+
+		References:
+			FIWARE-NGSI v2 Specification
+			https://fiware.github.io/specifications/ngsiv2/stable/
+
+			Reference
+				- Subscriptions
+					- Subscription List
+						- Subscription By ID
+							- Update Subscription
+		"""
+
+		deleted = False
+		result = self.mongodb.mongoConn.Subscriptions.delete_one({"id": subscription})
+
+		if result.deleted_count is True:
+			self.helpers.logger.info("Mongo data delete OK")
+			return self.broker.respond(204, {}, {}, False, accepted)
+		else:
+			self.helpers.logger.info("Mongo data delete FAILED")
+			return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
+								{}, False, accepted)

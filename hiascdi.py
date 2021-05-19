@@ -667,6 +667,21 @@ def subscriptionPatch(_subscription):
 
 	return HIASCDI.subscriptions.updateSubscription(_subscription, query, accepted)
 
+@app.route('/subscriptions/<_subscription>', methods=['DELETE'])
+def subscriptionDelete(_subscription):
+	""" Responds to DELETE requests sent to the /v1/subscriptions/<_subscription> API endpoint. """
+
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
+
+	if _subscription is None:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
+
+	return HIASCDI.subscriptions.deleteSubscription(_subscription, accepted)
+
 def main():
 	signal.signal(signal.SIGINT, HIASCDI.signal_handler)
 	signal.signal(signal.SIGTERM, HIASCDI.signal_handler)

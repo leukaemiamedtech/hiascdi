@@ -635,7 +635,7 @@ def subscriptionsPost():
 
 @app.route('/subscriptions/<_subscription>', methods=['GET'])
 def subscriptionGet(_subscription):
-	""" Responds to GET requests sent to the /v1/types/<_id> API endpoint. """
+	""" Responds to GET requests sent to the /v1/subscriptions/<_subscription> API endpoint. """
 
 	accepted, content_type = HIASCDI.processHeaders(request)
 	if accepted is False:
@@ -650,7 +650,7 @@ def subscriptionGet(_subscription):
 
 @app.route('/subscriptions/<_subscription>', methods=['PATCH'])
 def subscriptionPatch(_subscription):
-	""" Responds to GET requests sent to the /v1/types/<_id> API endpoint. """
+	""" Responds to PATCH requests sent to the /v1/subscriptions/<_subscription> API endpoint. """
 
 	accepted, content_type = HIASCDI.processHeaders(request)
 	if accepted is False:

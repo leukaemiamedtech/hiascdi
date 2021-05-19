@@ -179,7 +179,7 @@ class subscriptions():
 		return self.broker.respond(200, sub, headers, False, accepted)
 
 	def updateSubscription(self, subscription, data, accepted=[]):
-		""" Gets subscription data from the MongoDB.
+		""" Updates subscription data in MongoDB.
 
 		References:
 			FIWARE-NGSI v2 Specification

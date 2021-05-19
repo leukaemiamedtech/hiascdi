@@ -654,9 +654,9 @@ Returns a list of all the subscriptions present in the system.
 
 | Parameters  |  |  | Compliant | Verified |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
-| limit | Limit the number of subscriptions to be retrieved.<br />_**Example:**_ `10` | Number | | |
-| offset | Skip a number of records.<br />_**Example:**_ `20` | Number | | |
-| Options | Options dictionary.<br />_**Possible values:**_ `count`, `values`. | String | | |
+| limit | Limit the number of subscriptions to be retrieved.<br />_**Example:**_ `10` | Number | &#9745; | |
+| offset | Skip a number of records.<br />_**Example:**_ `20` | Number | &#9745; | |
+| Options | Options dictionary.<br />_**Possible values:**_ `count`, `values`. | String | &#9745; | |
 
 ###### Response:
 
@@ -670,6 +670,10 @@ Returns a list of all the subscriptions present in the system.
 Creates a new subscription. The subscription is represented by a JSON object as described at the beginning of this section.
 
 `POST` https://YourHIAS/hiascdi/v1/subscriptions
+
+| Parameters  |  |  | Compliant | Verified |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| NA |  |  | &#9745; | |
 
 ###### Response:
 
@@ -688,7 +692,7 @@ The response is the subscription represented by a JSON object as described at th
 
 | Parameters  |  |  | Compliant | Verified |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
-| subscriptionId | Subscription Id.<br />_**Example:**_ `abcdef` | String | | |
+| subscriptionId | Subscription Id.<br />_**Example:**_ `abcdef` | String | &#9745; | |
 
 ###### Response:
 
@@ -705,7 +709,7 @@ Only the fields included in the request are updated in the subscription.
 
 | Parameters  |  |  | Compliant | Verified |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
-| subscriptionId | Subscription Id.<br />_**Example:**_ `abcdef` | String | | |
+| subscriptionId | Subscription Id.<br />_**Example:**_ `abcdef` | String | &#9745; | |
 
 ###### Response:
 

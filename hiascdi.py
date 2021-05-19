@@ -216,10 +216,13 @@ def entitiesPost():
 
 	query = HIASCDI.checkBody(request)
 	if query is False:
+		print("HERE1")
 		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"], accepted)
 
 	if query["id"] is None:
+		print("HERE2")
 		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
+	print("ok")
 
 	return HIASCDI.entities.createEntity(query, accepted)
 
@@ -268,7 +271,7 @@ def entityGet(_id):
 	else:
 		metadata = request.args.get('metadata')
 
-	return HIASCDI.entities.getEntity(typeof, _id, attrs, options, metadata, accepted)
+	return HIASCDI.entities.getEntity(typeof, _id, attrs, options, metadata, False, accepted)
 
 @app.route('/entities/<_id>/attrs', methods=['GET'])
 def entityAttrsGet(_id):
@@ -644,6 +647,25 @@ def subscriptionGet(_subscription):
 		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
 	return HIASCDI.subscriptions.getSubscription(_subscription, accepted)
+
+@app.route('/subscriptions/<_subscription>', methods=['PATCH'])
+def subscriptionPatch(_subscription):
+	""" Responds to GET requests sent to the /v1/types/<_id> API endpoint. """
+
+	accepted, content_type = HIASCDI.processHeaders(request)
+	if accepted is False:
+		return HIASCDI.respond(406, HIASCDI.confs["errorMessages"][str(406)], "application/json")
+	if content_type is False:
+		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
+
+	if _subscription is None:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
+
+	query = HIASCDI.checkBody(request)
+	if query is False:
+		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"], accepted)
+
+	return HIASCDI.subscriptions.updateSubscription(_subscription, query, accepted)
 
 def main():
 	signal.signal(signal.SIGINT, HIASCDI.signal_handler)

@@ -77,9 +77,9 @@ With the support and guidance of CEF and FIWARE, we are working towards a full f
 
 Read the CEF (Connecting Europe Facility) [success story](https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/2021/06/15/Context+Broker%27s+contribution+in+the+fight+against+leukemia) on HIAS and the HIASCDI Context Broker.
 
-[![CEF Context Broker in action webinar June 2021](assets/images/cef-contex-broker-webinar-june-2021.jpg)](https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/Context+Broker+in+action+-+Explore+the+implementation+journey)
+[![CEF Context Broker in action webinar June 2021](assets/images/cef-contex-broker-webinar-june-2021.jpg)](https://www.youtube.com/watch?v=ewuIzWcsPK4&t=694s)
 
-Watch Association President - [Adam Milton-Barker](https://www.leukemiaairesearch.com/association/volunteers/adam-milton-barker "Adam Milton-Barker")'s presentation at the [CEF Context Broker in action webinar June 2021](https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/Context+Broker+in+action+-+Explore+the+implementation+journey) on the HIAS and the HIASCDI Context Broker.
+Watch Association President - [Adam Milton-Barker](https://www.leukemiaairesearch.com/association/volunteers/adam-milton-barker "Adam Milton-Barker")'s presentation at the [CEF Context Broker in action webinar June 2021](https://www.youtube.com/watch?v=ewuIzWcsPK4&t=694s) on the HIAS and the HIASCDI Context Broker.
 
 **Thank you to CEF for the opportunity to speak at this event. Special thanks to Erbil Kop, Regina dela Eva and Caroline Corneau**
 

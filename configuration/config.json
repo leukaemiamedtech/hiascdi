@@ -1,21 +1,13 @@
 {
-    "identifier": "",
-    "auth": "",
     "program": "HIASCDI",
     "version": "v1",
-    "address": "context/v2",
+    "address": "hiascdi/v1",
     "host": "",
     "port": 3524,
     "acceptTypes": [
         "application/json",
         "text/plain"
     ],
-    "brokerDetails": {
-        "entities_url": "/v1/entities",
-        "types_url": "/v1/types",
-        "subscriptions_url": "/v1/subscriptions",
-        "registrations_url": "/v1/registrations"
-    },
     "contentType": "application/json",
     "contentTypes": [
         "application/json",
@@ -36,40 +28,51 @@
     ],
     "successMessage": {
         "200": {
-            "Description": "OK"
+            "Description": "200 OK: Request successful"
+        },
+        "201": {
+            "Description": "200 Created: Resource Created"
         },
         "204": {
-            "Description": "No content"
+            "Description": "204: Request successful, no content"
         }
     },
     "errorMessages": {
-        "400": {
-            "Error": "Bad Request",
-            "Description": "Request not supported!"
+        "400b": {
+            "Error": "ParseError",
+            "Description": "400 Parse Error: Incoming JSON payload cannot be parsed"
+        },
+        "400p": {
+            "Error": "BadRequest",
+            "Description": "400 Bad Request: Error in URL parameters or payload"
         },
         "404": {
-            "Error": "Not Found",
-            "Description": "Resource not found!"
+            "Error": "NotFound",
+            "Description": "404 Not Found: Resource identified by the request is not found"
         },
         "405": {
-            "Error": "Method Not Allowed",
-            "Description": "Requested method not supported!"
+            "Error": "MethodNotAlowed",
+            "Description": "405 Method Not Allowed: Requested method not supported"
         },
         "406": {
-            "Error": "Not Acceptable",
-            "Description": "Accepted content type not supported!"
+            "Error": "NotAcceptable",
+            "Description": "406 Not Acceptable: Accepted MIME types: application/json, text/plain"
         },
         "409": {
-            "Error": "Conflict",
-            "Description": "The request could not be completed due to a conflict with the current state of the resource."
+            "Error": "TooManyResults",
+            "Description": "409 Too Many Results: Request may refer to several resources"
+        },
+        "413": {
+            "Error": "NoResourceAvailable",
+            "Description": "413 No Resource Available: Attemp to exceed spatial index limit results"
         },
         "415": {
-            "Error": "Unsupported Media Type",
-            "Description": "Request content type not supported!"
+            "Error": "UnsupportedMediaType",
+            "Description": "415 Unsupported Media Type: Request media type not supported"
         },
         "501": {
-            "Error": "Not Implemented",
-            "Description": "Request not supported!"
+            "Error": "NotImplemented",
+            "Description": "501 Not Implemented: Request not supported"
         }
     }
 }

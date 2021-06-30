@@ -42,7 +42,9 @@ import sys
 import threading
 import urllib
 
-sys.path.append('../..')
+import os.path
+sys.path.append(
+	os.path.abspath(os.path.join(__file__,  "..", "..", "..")))
 
 from bson import json_util, ObjectId
 from flask import Flask, request, Response
@@ -148,7 +150,7 @@ class HIASCDI():
 		return self.broker.checkBody(body, text)
 
 	def respond(self, responseCode, response, accepted):
-		""" Builds the request repsonse """
+		""" Builds the request response """
 
 		headers = {}
 		if "application/json" in accepted:
@@ -206,7 +208,7 @@ def about():
 	if content_type is False:
 		return HIASCDI.respond(415, HIASCDI.confs["errorMessages"][str(415)], "application/json")
 
-	return HIASCDI.respond(200, HIASCDI.getBroker(), accepted)
+	return HIASCDI.respond(200, json.dumps(json.loads(json_util.dumps(HIASCDI.getBroker())), indent=4), accepted)
 
 @app.route('/entities', methods=['POST'])
 def entitiesPost():
@@ -216,13 +218,10 @@ def entitiesPost():
 
 	query = HIASCDI.checkBody(request)
 	if query is False:
-		print("HERE1")
 		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"], accepted)
 
 	if query["id"] is None:
-		print("HERE2")
 		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
-	print("ok")
 
 	return HIASCDI.entities.createEntity(query, accepted)
 
@@ -351,6 +350,7 @@ def entityPatch(_id):
 		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400b"], accepted)
 
 	query = HIASCDI.checkBody(request)
+	print(query)
 	if query is False:
 		return HIASCDI.respond(400, HIASCDI.helpers.confs["errorMessages"]["400p"], accepted)
 

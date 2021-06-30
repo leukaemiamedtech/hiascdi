@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """ HIASCDI Global Helper Module.
 
 The HIASCDI Global Helper Module provides global helper

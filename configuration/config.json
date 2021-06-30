@@ -1,16 +1,14 @@
 {
     "program": "HIASCDI",
     "version": "v1",
-    "address": "context/v2",
+    "address": "hiascdi/v1",
     "host": "",
     "port": 3524,
     "acceptTypes": [
         "application/json",
         "text/plain"
     ],
-    "contentType": [
-        "application/json"
-    ],
+    "contentType": "application/json",
     "contentTypes": [
         "application/json",
         "text/plain"

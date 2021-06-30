@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """ HIASCDI Entities Module.
 
 This module provides the functionality to create, retrieve
@@ -38,6 +38,8 @@ import os
 import sys
 
 from mgoquery import Parser
+
+from subscriptions import subscriptions
 
 class entities():
 	""" HIASCDI Entities Module.
@@ -674,10 +676,10 @@ class entities():
 			options = options.split(",")
 			for option in options:
 				_append = True if option == "append" else _append
-				_keyValues = True if option == "keyValues" else keyValues
+				_keyValues = True if option == "keyValues" else _keyValues
 
+		entity = list(self.mongodb.mongoConn.Entities.find({'id': _id}))
 		if _append:
-			entity = list(self.mongodb.mongoConn.Entities.find({'id': _id}))
 			for update in data:
 				if update in entity[0]:
 					error = True
@@ -777,7 +779,7 @@ class entities():
 		if options is not None:
 			options = options.split(",")
 			for option in options:
-				_keyValues = True if option == "keyValues" else keyValues
+				_keyValues = True if option == "keyValues" else _keyValues
 
 		entity = list(self.mongodb.mongoConn.Entities.find({"id": _id}, fields))
 
@@ -818,7 +820,7 @@ class entities():
 		deleted = False
 		result = collection.delete_one({"id": _id})
 
-		if result.deleted_count is True:
+		if result.deleted_count == 1:
 			self.helpers.logger.info("Mongo data delete OK")
 			return self.broker.respond(204, {}, {}, False, accepted)
 		else:

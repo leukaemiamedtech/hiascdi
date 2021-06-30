@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """ HIASCDI Subscriptions Module.
 
 This module provides the functionality to retrieve, create, update

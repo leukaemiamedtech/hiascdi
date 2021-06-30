@@ -1,91 +1,15 @@
-# Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss
-# HIAS - Hospital Intelligent Automation Server
-## HIASCDI - HIAS Contextual Data Interface
-### HIASCDI API Usage Guide
+# API Usage
 
-![HIASCDI - HIAS Contextual Data Interface](../../assets/images/HIASCDI.jpg)
-
-&nbsp;
-
-# Table Of Contents
-
-- [Introduction](#introduction)
-- [API Documentation](#api-documentation)
-	- [Overview](#overview)
-	- [Secure HTTP Requests](#secure-http-requests)
-		- [HTTP Responses](#http-responses)
-			- [HTTP Success Response](#http-success-response)
-			- [HTTP Success Codes](#http-success-codes)
-			- [HTTP Error Response](#http-error-response)
-			- [HTTP Error Codes](#http-error-codes)
-	- [Authentication](#authentication)
-	- [API Reference](#api-reference)
-		- [API Entry Point](#api-entry-point)
-			- [Retrieve API Resources](#retrieve-api-resources)
-		- [Entities](#entities)
-			- [List Entities](#list-entities)
-			- [Create Entity](#create-entity)
-			- [Entity by ID](#entity-by-id)
-				- [Retrieve Entity](#retrieve-entity)
-				- [Retrieve Entity Attributes](#retrieve-entity-attributes)
-				- [Update or Append Entity Attributes](#update-or-append-entity-attributes)
-				- [Replace All Entity Attributes](#replace-all-entity-attributes)
-				- [Remove Entity](#remove-entity)
-		- [Attributes](#attributes)
-			- [Get Attribute Data](#get-attribute-data)
-			- [Update Attribute Data](#update-attribute-data)
-			- [Remove A Single Attribute](#remove-a-single-attribute)
-		- [Attribute Value](#attributes-value)
-			- [Get Attribute Value](#get-attribute-value)
-			- [Update Attribute Value](#update-attribute-value)
-		- [Types](#types)
-			- [Entity Types](#entity-types)
-				- [List Entity Types](#list-entity-types)
-			- [Entity Type](#entity-type)
-				- [Retrieve Entity Type](#retrieve-entity-type)
-		- [Subscriptions](#subscriptions)
-			- [Subscription List](#subscription-list)
-				- [List Subscriptions](#list-subscriptions)
-				- [Create Subscription](#create-subscription)
-			- [Subscription By ID](#subscription-by-id)
-				- [Retrieve Subscripton](#retrieve-subscription)
-				- [Update Subscripton](#update-subscription)
-				- [Delete Subscripton](#delete-subscription)
-		- [Registrations](#registrations)
-			- [Registration list](#registration-list)
-				- [List Registrations](#list-registrations)
-				- [Create Registrations](#create-registrations)
-			- [Registration By ID](#registration-by-id)
-				- [Retrieve Registration](#retrieve-registration)
-				- [Update Registration](#update-registration)
-				- [Delete Registration](#delete-registration)
-		- [Batch Operations](#batch-operations)
-			- [Update](#update)
-			- [Notify](#notify)
-- [Contributing](#contributing)
-  - [Contributors](#contributors)
-- [Versioning](#versioning)
-- [License](#license)
-- [Bugs/Issues](#bugs-issues)
+![HIAS TassAI Facial Recognition Agent](../img/project-banner.jpg)
 
 &nbsp;
 
 # Introduction
-
-The HIASCDI Console is a REST API client for HIASCDI that is built in to the HIAS UI. The console has been designed to provide the functionalty required to interact with HIASCDI using the methods provided in the [FIWARE-NGSI v2 Specification](https://fiware.github.io/specifications/ngsiv2/stable/).
-
-&nbsp;
-
-# API Documentation
-
-Version: 1.0.0
-
-## Overview
 The following is the API Documentation for the HIASCDI API. This API is based on the specifications provided in the [FIWARE-NGSI v2 Specification](https://fiware.github.io/specifications/ngsiv2/stable/).
 
 &nbsp;
 
-## Secure HTTP Requests
+# Secure HTTP Requests
 
 API calls to the HIASCDI API are made using secure HTTP requests. The HIAS server protects the API endpoints with strong SSL encryption, a firewall and Basic AUTH authentication.
 
@@ -97,26 +21,26 @@ The following HTTP request methods are available:
 - PUT
 - DELETE
 
-### HTTP Responses
+## HTTP Responses
 
-#### HTTP Success Response
+## HTTP Success Response
 
 - `description` (string): additional information about the response.
 
-#### HTTP Success Codes
+## HTTP Success Codes
 
 - `200` `OK` - Request successful
 - `201` `Created` - Resource created
 - `204` `No Content` - Request succeeded, client doesn't need to navigate away from current page
 
-#### HTTP Error Response
+## HTTP Error Response
 
 The error payload is a JSON response including the following fields:
 
 - `error` (required, string): a textual description of the error.
 - `description` (optional, string): additional information about the error.
 
-#### HTTP Error Codes
+## HTTP Error Codes
 
 - `400` `ParseError` - Incoming JSON payload cannot be parsed
 - `400` `BadRequest` - Error in URL parameters or payload
@@ -132,7 +56,7 @@ The error payload is a JSON response including the following fields:
 
 &nbsp;
 
-## Authentication
+# Authentication
 
 Authentication is handled using the HIAS server security. Calls to HIASCDI must provide a HIAS user's key (YourKey below) in the Authorization header, authorization type **Basic**. A HIAS user's key is generated by joining the username and password with a **:** separating them, and then Base64 encoding the key.
 
@@ -145,11 +69,9 @@ headers = {
 
 &nbsp;
 
-## API Resources
+# API Entry Point
 
-### API Entry Point
-
-#### Retrieve API Resources
+## Retrieve API Resources
 
 This resource does not have any attributes. Instead it offers the initial API affordances in the form of the links in the JSON body.
 
@@ -157,7 +79,7 @@ It is recommended to follow the “url” link values, Link or Location headers 
 
 `GET` https://YourHIAS/hiascdi/v1
 
-##### Response
+### Response
 
 | Attributes  |  |
 | ------------- | ------------- |
@@ -168,9 +90,9 @@ It is recommended to follow the “url” link values, Link or Location headers 
 
 &nbsp;
 
-### Entities
+# Entities
 
-#### List Entities
+## List Entities
 
 Retrieves a list of entities that match different criteria by id, type, pattern matching (either id or type) and/or those which match a query or geographical query (see Simple Query Language and Geographical Queries). A given entity has to match all the criteria to be retrieved (i.e., the criteria is combined in a logical AND way). Note that pattern matching query parameters are incompatible (i.e. mutually exclusive) with their corresponding exact matching parameters, i.e. idPattern with id and typePattern with type.
 
@@ -196,14 +118,14 @@ The response payload is an array containing one object per matching entity. Each
 | orderBy | Criteria for ordering results. See "Ordering Results" section of specifications for details.<br />_**Example:**_ `temperature,!speed`. | String | &#9745; | |
 | Options | Options dictionary.<br />_**Possible values:**_ `count`, `keyValues` , `values` , `unique`. | String | &#9745; | |
 
-##### Response
+### Response
 
 - Successful operation uses 200 OK
 - Errors use a non-2xx and (optionally) an error payload.
 
 &nbsp;
 
-#### Create Entity
+## Create Entity
 
 The payload is an object representing the entity to be created. The object follows the JSON entity representation format (described in a "JSON Entity Representation" section).
 
@@ -213,7 +135,7 @@ The payload is an object representing the entity to be created. The object follo
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | Options | Options dictionary.<br />_**Possible values:**_ `keyValues`, `upsert`. | String | | |
 
-##### Response:
+### Response:
 
 - Successful operation uses 201 Created (if upsert option is not used) or 204 No Content (if upsert option is used). Response includes a Location header with the URL of the created entity.
 
@@ -221,9 +143,9 @@ The payload is an object representing the entity to be created. The object follo
 
 &nbsp;
 
-#### Entity by ID
+# Entity by ID
 
-##### Retrieve Entity
+## Retrieve Entity
 
 The response is an object representing the entity identified by the ID. The object follows the JSON entity representation format (described in "JSON Entity Representation" section).
 
@@ -239,7 +161,7 @@ This operation must return one entity element only, but there may be more than o
 | metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `cpuUsage` | String | &#9745; | |
 | Options | Options dictionary.<br />_**Possible values:**_ `keyValues`, `value`, `unique`. | String | &#9745; | |
 
-##### Response:
+### Response:
 
 - Successful operation uses 200 OK
 
@@ -247,7 +169,7 @@ This operation must return one entity element only, but there may be more than o
 
 &nbsp;
 
-#### Retrieve Entity Attributes
+## Retrieve Entity Attributes
 
 This request is similar to retreiving the whole entity, however this one omits the id and type fields.
 
@@ -263,14 +185,14 @@ Just like the general request of getting an entire entity, this operation must r
 | metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `cpuUsage` | String | &#9745; | |
 | Options | Options dictionary.<br />_**Possible values:**_ `keyValues`, `value`, `unique`. | String | &#9745; | |
 
-##### Response:
+### Response:
 
 - Successful operation uses 200 OK
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-#### Update or Append Entity Attributes
+## Update or Append Entity Attributes
 
 The request payload is an object representing the attributes to append or update. The object follows the JSON entity representation format (described in "JSON Entity Representation" section), except that id and type are not allowed.
 
@@ -287,14 +209,14 @@ The entity attributes are updated with the ones in the payload, depending on whe
 | type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
 | Options | Options dictionary.<br />_**Possible values:**_ `keyValues`, `append`. | String | | |
 
-##### Response:
+### Response:
 
 - Successful operation uses 204 No Content
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-#### Update Existing Entity Attributes
+## Update Existing Entity Attributes
 
 The entity attributes are updated with the ones in the payload. In addition to that, if one or more attributes in the payload doesn't exist in the entity, an error is returned.
 
@@ -306,14 +228,14 @@ The entity attributes are updated with the ones in the payload. In addition to t
 | type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
 | Options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | | |
 
-##### Response:
+### Response:
 
 - Successful operation uses 204 No Content
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-#### Replace All Entity Attributes
+## Replace All Entity Attributes
 
 The request payload is an object representing the new entity attributes. The object follows the JSON entity representation format (described in a "JSON Entity Representation" above), except that id and type are not allowed.
 
@@ -327,14 +249,14 @@ The attributes previously existing in the entity are removed and replaced by the
 | type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
 | Options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | | |
 
-##### Response:
+### Response:
 
 - Successful operation uses 204 No Content
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-#### Remove Entity
+## Remove Entity
 
 Delete the entity.
 
@@ -345,18 +267,18 @@ Delete the entity.
 | entityId | Id of the entity to be updated. **(REQUIRED)** | String | &#9745; |
 | type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
 
-##### Response:
+### Response:
 
 - Successful operation uses 204 No Content
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-### Attributes
+# Attributes
 
-#### Attribute by Entity ID
+## Attribute by Entity ID
 
-##### Get Attribute Data
+### Get Attribute Data
 
 Returns a JSON object with the attribute data of the attribute. The object follows the JSON representation for attributes (described in "JSON Attribute Representation" section).
 
@@ -369,14 +291,14 @@ Returns a JSON object with the attribute data of the attribute. The object follo
 | attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | &#9745; | |
 | metadata | A list of metadata names to include in the response. See "Filtering out attributes and metadata" section for more detail.<br />_**Example:**_ `cpuUsage` | String | &#9745; | |
 
-###### Response:
+#### Response:
 
 - Successful operation uses 200 OK.
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-##### Update Attribute Data
+## Update Attribute Data
 
 The request payload is an object representing the new attribute data. Previous attribute data is replaced by the one in the request. The object follows the JSON representation for attributes (described in "JSON Attribute Representation" section).
 
@@ -388,14 +310,14 @@ The request payload is an object representing the new attribute data. Previous a
 | type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
 | attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | &#9745; | |
 
-###### Response:
+### Response:
 
 - Successful operation uses 204 No Content
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-##### Remove A Single Attribute
+## Remove A Single Attribute
 
 Removes an entity attribute.
 
@@ -407,18 +329,18 @@ Removes an entity attribute.
 | type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
 | attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | &#9745; | |
 
-###### Response:
+#### Response:
 
 - Successful operation uses 204 No Content
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-### Attribute Value
+## Attribute Value
 
-#### By Entity ID
+## By Entity ID
 
-##### Get Attribute Value
+### Get Attribute Value
 
 This operation returns the value property with the value of the attribute.
 
@@ -442,14 +364,14 @@ This operation returns the value property with the value of the attribute.
 | type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
 | attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | &#9745; | |
 
-###### Response:
+#### Response:
 
 - Successful operation uses 200 OK.
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-##### Update Attribute Value
+## Update Attribute Value
 
 The request payload is the new attribute value.
 
@@ -472,18 +394,18 @@ The payload MIME type in the request is specified in the Content-Type HTTP heade
 | type | Entity type, to avoid ambiguity in case there are several entities with the same entity id. | String | &#9745; | |
 | attrName | Name of the attribute to be retrieved. **(REQUIRED)** | String | &#9745; | |
 
-###### Response:
+### Response:
 
 - Successful operation uses 204 No Content
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-### Types
+# Types
 
-#### Entity types
+## Entity types
 
-##### List Entity Types
+### List Entity Types
 
 If the values option is not in use, this operation returns a JSON array with the entity types. Each element is a JSON object with information about the type:
 
@@ -503,14 +425,14 @@ Results are ordered by entity type in alphabetical order.
 | offset | Skip a number of records.<br />_**Example:**_ `20` | Number | &#9745; | |
 | Options | Options dictionary.<br />_**Possible values:**_ `count`, `values`. | String | &#9745; | |
 
-###### Response code:
+#### Response code:
 
 - Successful operation uses 201 OK
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-##### Create Entity Types (CUSTOM)
+## Create Entity Types (CUSTOM)
 
 The request payload is a JSON object with the `type` type with information about the entity type:
 
@@ -520,14 +442,14 @@ The request payload is a JSON object with the `type` type with information about
 
 `POST` https://YourHIAS/hiascdi/v1/types/
 
-###### Response code:
+### Response code:
 
 - Successful operation uses 201 Created
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-##### Update Entity Types (CUSTOM)
+#### Update Entity Types (CUSTOM)
 
 The request payload is a JSON object with the `type` type with information about the entity type:
 
@@ -537,16 +459,16 @@ The request payload is a JSON object with the `type` type with information about
 
 `PATCH` https://YourHIAS/hiascdi/v1/types/
 
-###### Response code:
+## Response code:
 
 - Successful operation uses 204 No Content
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-#### Entity Type
+## Entity Type
 
-##### Retrieve Entity Type
+### Retrieve Entity Type
 
 This operation returns a JSON object with information about the type:
 
@@ -560,14 +482,14 @@ This operation returns a JSON object with information about the type:
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | entityType | Entity Type.<br />_**Example:**_ `Robotics` | String | &#9745; | |
 
-###### Response code:
+#### Response code:
 
 - Successful operation uses 200 OK
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-### Subscriptions
+# Subscriptions
 
 A `subscription` is represented by a JSON object with the following fields:
 
@@ -644,9 +566,9 @@ Notification rules are as follow:
 
 &nbsp;
 
-#### Subscription List
+## Subscription List
 
-##### List Subscriptions
+### List Subscriptions
 
 Returns a list of all the subscriptions present in the system.
 
@@ -658,14 +580,14 @@ Returns a list of all the subscriptions present in the system.
 | offset | Skip a number of records.<br />_**Example:**_ `20` | Number | &#9745; | |
 | Options | Options dictionary.<br />_**Possible values:**_ `count`, `values`. | String | &#9745; | |
 
-###### Response:
+#### Response:
 
 - Successful operation uses 200 OK
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-##### Create Subscription
+## Create Subscription
 
 Creates a new subscription. The subscription is represented by a JSON object as described at the beginning of this section.
 
@@ -675,16 +597,16 @@ Creates a new subscription. The subscription is represented by a JSON object as 
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | NA |  |  | &#9745; | |
 
-###### Response:
+### Response:
 
 - Successful operation uses 201 Created
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-#### Subscription By ID
+## Subscription By ID
 
-##### Retrieve Subscription
+### Retrieve Subscription
 
 The response is the subscription represented by a JSON object as described at the beginning of this section.
 
@@ -694,14 +616,14 @@ The response is the subscription represented by a JSON object as described at th
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | subscriptionId | Subscription Id.<br />_**Example:**_ `abcdef` | String | &#9745; | |
 
-###### Response:
+#### Response:
 
 - Successful operation uses 200 OK
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-##### Update Subscription
+## Update Subscription
 
 Only the fields included in the request are updated in the subscription.
 
@@ -711,14 +633,14 @@ Only the fields included in the request are updated in the subscription.
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | subscriptionId | Subscription Id.<br />_**Example:**_ `abcdef` | String | &#9745; | |
 
-###### Response:
+#### Response:
 
 - Successful operation uses 204 No Content
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-##### Delete Subscription
+## Delete Subscription
 
 Cancels subscription.
 
@@ -728,14 +650,14 @@ Cancels subscription.
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | NA |  |  | &#9745; | |
 
-###### Response:
+#### Response:
 
 - Successful operation uses 204 No Content
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-### Registrations
+# Registrations
 
 A Context Registration allows to bind external context information sources so that they can play the role of providers of certain subsets (entities, attributes) of the context information space, including those located at specific geographical areas.
 
@@ -806,9 +728,9 @@ The provider field contains the following subfields:
 
 &nbsp;
 
-#### Registration list
+## Registration list
 
-##### List Registrations
+### List Registrations
 
 Lists all the context provider registrations present in the system.
 
@@ -820,29 +742,29 @@ Lists all the context provider registrations present in the system.
 | offset | Skip a number of records.<br />_**Example:**_ `20` | Number | |
 | Options | Options dictionary.<br />_**Possible values:**_ `count`. | String | |
 
-###### Response:
+#### Response:
 
 - Successful operation uses 200 OK
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-##### Create Registration
+## Create Registration
 
 Creates a new context provider registration. This is typically used for binding context sources as providers of certain data. The registration is represented by a JSON object as described at the beginning of this section.
 
 `POST` https://YourHIAS/hiascdi/v1/registrations
 
-###### Response:
+#### Response:
 
 - Successful operation uses 201 Created
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-#### Registration By ID
+## Registration By ID
 
-##### Retrieve Registration
+### Retrieve Registration
 
 The response is the registration represented by a JSON object as described at the beginning of this section.
 
@@ -852,14 +774,14 @@ The response is the registration represented by a JSON object as described at th
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | registrationId | Registration Id.<br />_**Example:**_ `abcdef` | String | |
 
-###### Response:
+#### Response:
 
 - Successful operation uses 200 OK
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-##### Update Registration
+## Update Registration
 
 Only the fields included in the request are updated in the registration.
 
@@ -869,14 +791,14 @@ Only the fields included in the request are updated in the registration.
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | registrationId | Registration Id.<br />_**Example:**_ `abcdef` | String | |
 
-###### Response:
+### Response:
 
 - Successful operation uses 204 No Content
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-##### Delete Registration
+## Delete Registration
 
 Cancels a context provider registration.
 
@@ -886,16 +808,16 @@ Cancels a context provider registration.
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | registrationId | Registration Id.<br />_**Example:**_ `abcdef` | String | |
 
-###### Response:
+#### Response:
 
 - Successful operation uses 204 No Content
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-### Batch Operations
+## Batch Operations
 
-#### Update
+### Update
 
 This operation allows to create, update and/or delete several entities in a single batch operation. The payload is an object with two properties:
 
@@ -920,14 +842,14 @@ This operation is split in as many individual operations as entities in the `ent
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | | |
 
-##### Response:
+### Response:
 
 - Successful operation uses 204 No Content.
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-#### Query
+## Query
 
 The response payload is an Array containing one object per matching entity, or an empty array [] if no entities are found. The entities follow the JSON entity representation format (described in the section "JSON Entity Representation").
 
@@ -950,14 +872,14 @@ The payload may contain the following elements (all of them optional):
 | offset | Criteria for ordering results. See "Ordering Results" section for details. <br />_**Example:**_ `temperature,!speed` | String | | |
 | Options | Options dictionary.<br />_**Possible values:**_ `count`, `values`, `keyValues`, `unique`. | String | | |
 
-##### Response code:
+### Response code:
 
 - Successful operation uses 200 OK
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
 
 &nbsp;
 
-#### Notify
+## Notify
 
 This operation is intended to consume a notification payload so that all the entity data included by such notification is persisted, overwriting if necessary. This operation is useful when one NGSIv2 endpoint is subscribed to another NGSIv2 endpoint (federation scenarios). The request payload must be an NGSIv2 notification payload. The behaviour must be exactly the same as `POST /hiascdi/v1/op/update` with `actionType` equal to append.
 
@@ -967,7 +889,7 @@ This operation is intended to consume a notification payload so that all the ent
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | Options | Options dictionary.<br />_**Possible values:**_ `keyValues`. | String | | |
 
-##### Response code:
+### Response code:
 
 - Successful operation uses 200 OK
 - Errors use a non-2xx and (optionally) an error payload. See subsection on "Error Responses" for more details.
@@ -975,29 +897,39 @@ This operation is intended to consume a notification payload so that all the ent
 &nbsp;
 
 # Contributing
+Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss encourages and welcomes code contributions, bug fixes and enhancements from the Github community.
 
-The Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research project encourages and youlcomes code contributions, bug fixes and enhancements from the Github.
+## Ways to contribute
 
-Please read the [CONTRIBUTING](../CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will also find information about our code of conduct on this page.
+The following are ways that you can contribute to this project:
+
+- [Bug Report](https://github.com/AIIAL/HIASCDI/issues/new?assignees=&labels=&template=bug_report.md&title=)
+- [Feature Request](https://github.com/AIIAL/HIASCDI/issues/new?assignees=&labels=&template=feature_request.md&title=)
+- [Feature Proposal](https://github.com/AIIAL/HIASCDI/issues/new?assignees=&labels=&template=feature-proposal.md&title=)
+- [Report Vulnerabillity](https://github.com/AIIAL/HIASCDI/issues/new?assignees=&labels=&template=report-a-vulnerability.md&title=)
+
+Please read the [CONTRIBUTING](https://github.com/AIIAL/HIASCDI/blob/main/CONTRIBUTING.md "CONTRIBUTING") document for a contribution guide.
+
+You can also join in with, or create, a discussion in our [Github Discussions](https://github.com/AIIAL/HIASCDI/discussions) area.
 
 ## Contributors
 
-- [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai/team/adam-milton-barker "Adam Milton-Barker") - [Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss](https://www.leukemiaresearchassociation.ai "Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss") President/Founder & Lead Developer, Sabadell, Spain
+All contributors to this project are listed below.
+
+- [Adam Milton-Barker](https://www.leukemiaairesearch.com/association/volunteers/adam-milton-barker "Adam Milton-Barker") - [Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss](https://www.leukemiaresearchassociation.ai "Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss") President/Founder & Lead Developer, Sabadell, Spain
 
 &nbsp;
 
 # Versioning
-
-You use SemVer for versioning. For the versions available, see [Releases](../releases "Releases").
+We use [SemVer](https://semver.org/) for versioning.
 
 &nbsp;
 
 # License
-
-This project is licensed under the **MIT License** - see the [LICENSE](../LICENSE "LICENSE") file for details.
+This project is licensed under the **MIT License** - see the [LICENSE](https://github.com/AIIAL/HIASCDI/blob/main/LICENSE "LICENSE") file for details.
 
 &nbsp;
 
 # Bugs/Issues
 
-You use the [repo issues](../issues "repo issues") to track bugs and general requests related to using this project. See [CONTRIBUTING](../CONTRIBUTING.md "CONTRIBUTING") for more info on how to submit bugs, feature requests and proposals.
+You use the [repo issues](https://github.com/AIIAL/HIASCDI/issues/new/choose "repo issues") to track bugs and general requests related to using this project. See [CONTRIBUTING](https://github.com/AIIAL/HIASCDI/blob/main/CONTRIBUTING.md "CONTRIBUTING") for more info on how to submit bugs, feature requests and proposals.

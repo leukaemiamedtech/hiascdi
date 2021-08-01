@@ -57,9 +57,6 @@ class broker():
 			"content-type": self.helpers.confs["contentType"]
 		}
 
-		self.auth = (self.helpers.credentials["identifier"],
-					self.helpers.credentials["auth"])
-
 		self.helpers.logger.info("HIASCDI initialization complete.")
 
 	def checkAcceptsType(self, headers):
@@ -113,6 +110,14 @@ class broker():
 
 		return response
 
+	def checkBool(self, value):
+		""" Checks if a value is a bool. """
+
+		boolList = ['True', 'False', 'true', 'false']
+		if value in boolList:
+			return True
+		return False
+
 	def checkFloat(self, value):
 		""" Checks if a value is a float. """
 
@@ -130,7 +135,9 @@ class broker():
 	def cast(self, val):
 		""" Casts relevant values as float or int. """
 
-		if self.checkFloat(val):
+		if self.checkBool(val):
+			val = True if val.lower() == "true" else False
+		elif self.checkFloat(val):
 			val = float(val)
 		elif self.checkInteger(val):
 			val = int(val)

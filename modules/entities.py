@@ -39,7 +39,7 @@ import sys
 
 from mgoquery import Parser
 
-from subscriptions import subscriptions
+from modules.subscriptions import subscriptions
 
 class entities():
 	""" HIASCDI Entities Module.
@@ -56,6 +56,8 @@ class entities():
 
 		self.mongodb = mongodb
 		self.broker = broker
+
+		self.subscriptions = subscriptions(self.helpers, self.mongodb, self.broker)
 
 		self.helpers.logger.info(self.program + " initialization complete.")
 
@@ -660,6 +662,8 @@ class entities():
 					- Entity by ID
 						- Update or Append Entity Attributes
 		"""
+
+		#self.subscriptions.checkForSubscription(_id)
 
 		updated = False
 		error = False

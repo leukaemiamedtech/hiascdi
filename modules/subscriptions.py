@@ -38,7 +38,6 @@ import uuid
 import sys
 
 from bson import json_util, ObjectId
-
 from flask import Response
 
 
@@ -230,3 +229,13 @@ class subscriptions():
 			self.helpers.logger.info("Mongo data delete FAILED")
 			return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
 								{}, False, accepted)
+
+	def checkForSubscription(self, subscription):
+		""" Checks for subscriptions in an list """
+
+		self.helpers.logger.info("Checking for subscriptions")
+		subscriptions = self.mongodb.mongoConn.Subscriptions.find()
+
+		for sub in subscriptions:
+			cursub = self.getSubscription(sub)
+			print(cursub)

@@ -65,17 +65,17 @@ class helpers():
 			'%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 		allLogHandler = handlers.TimedRotatingFileHandler(
-			os.path.dirname(os.path.abspath(__file__)) + '/../../../logs/all.log', when='H', interval=1, backupCount=0)
+			os.path.dirname(os.path.abspath(__file__)) + '/../logs/all.log', when='H', interval=1, backupCount=0)
 		allLogHandler.setLevel(logging.INFO)
 		allLogHandler.setFormatter(formatter)
 
 		errorLogHandler = handlers.TimedRotatingFileHandler(
-			os.path.dirname(os.path.abspath(__file__)) + '/../../../logs/error.log', when='H', interval=1, backupCount=0)
+			os.path.dirname(os.path.abspath(__file__)) + '/../logs/error.log', when='H', interval=1, backupCount=0)
 		errorLogHandler.setLevel(logging.ERROR)
 		errorLogHandler.setFormatter(formatter)
 
 		warningLogHandler = handlers.TimedRotatingFileHandler(
-			os.path.dirname(os.path.abspath(__file__)) + '/../../../logs/warning.log', when='H', interval=1, backupCount=0)
+			os.path.dirname(os.path.abspath(__file__)) + '/../logs/warning.log', when='H', interval=1, backupCount=0)
 		warningLogHandler.setLevel(logging.WARNING)
 		warningLogHandler.setFormatter(formatter)
 
@@ -99,6 +99,3 @@ class helpers():
 
 		with open(os.path.dirname(os.path.abspath(__file__)) + '/../configuration/credentials.json') as confs:
 			self.credentials = json.loads(confs.read())
-
-		with open(os.path.dirname(os.path.abspath(__file__)) + '/../../../configuration/config.json') as confs:
-			self.confs_core = json.loads(confs.read())

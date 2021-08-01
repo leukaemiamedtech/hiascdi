@@ -1,20 +1,21 @@
 # Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss
-# HIAS - Hospital Intelligent Automation Server
-## HIASCDI - HIAS Contextual Data Interface
+# HIASCDI - HIAS Contextual Data Interface
 
 ![HIAS - Hospital Intelligent Automation Server](assets/images/project-banner.jpg)
 
-[![CURRENT RELEASE](https://img.shields.io/badge/CURRENT%20RELEASE-0.1.0-blue.svg)](https://github.com/AIIAL/HIASCDI/tree/0.1.0)
-[![UPCOMING RELEASE](https://img.shields.io/badge/CURRENT%20DEV%20BRANCH-1.0.0-blue.svg)](https://github.com/AIIAL/HIASCDI/tree/1.0.0)  [![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE) ![SemVer](https://img.shields.io/badge/semver-2.0.0-blue)
+[![CURRENT RELEASE](https://img.shields.io/badge/CURRENT%20RELEASE-1.0.0-blue.svg)](https://github.com/AIIAL/HIASCDI/tree/1.0.0)
+[![UPCOMING RELEASE](https://img.shields.io/badge/CURRENT%20DEV%20BRANCH-2.0.0-blue.svg)](https://github.com/AIIAL/HIASCDI/tree/2.0.0) ![SemVer](https://img.shields.io/badge/semver-2.0.0-blue) [![Contributions Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md) [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues)
+
+[![Documentation Status](https://readthedocs.org/projects/hiascdi/badge/?version=latest)](https://hiascdi.readthedocs.io/en/latest/?badge=latest)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5002/badge)](https://bestpractices.coreinfrastructure.org/projects/5002) [![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
 
 ![Compliance Tests](https://img.shields.io/badge/Compliance%20Tests-TODO-red)
 ![Unit Tests](https://img.shields.io/badge/Unit%20Tests-TODO-red)
 ![Functional Tests](https://img.shields.io/badge/Functional%20Tests-TODO-red)
 
-[![Documentation Status](https://readthedocs.org/projects/hiascdi/badge/?version=latest)](https://hiascdi.readthedocs.io/en/latest/?badge=latest)
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5002/badge)](https://bestpractices.coreinfrastructure.org/projects/5002) [![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/) [![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
+[![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
 
-[![Contributions Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md) [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues)
+
 
 &nbsp;
 

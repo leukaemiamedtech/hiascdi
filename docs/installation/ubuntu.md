@@ -12,15 +12,7 @@ For this project you will need to ensure you have the following prerequisites in
 
 ## HIAS Core
 
-**HIASCDI** is a core component of the [HIAS - Hospital Intelligent Automation Server](https://github.com/AIIAL/HIAS-Core). Before beginning this tutorial you should complete the HIAS installation guide and have your HIAS server online. The HIAS Core installation installs the core components of the HIAS server: [HIASBCH](https://github.com/AIIAL/HIASBCH), [HIASHDI](https://github.com/AIIAL/HIASHDI) and [HIASCDI](https://github.com/AIIAL/HIASCDI).
-
-## HIAS IoT Agent
-
-You will need a [HIAS MQTT IoT Agent](https://github.com/AIIAL/HIAS-MQTT-IoT-Agent) installed on your HIAS Network. IoT Agents receive data sent from HIAS Network devices and applications and store the data in HIASCDI and HIASHDI.
-
-## HIASBCH Blockchain Agent
-
-You will need a [HIASBCH MQTT Blockchain Agent](https://github.com/AIIAL/HIASBCH-MQTT-Blockchain-Agent) installed on your HIAS Network. Blockchain Agents receive data from the IoT Agents and store immutable hashes of the data they receive. Please note, there is currently no Blockchain Agent for the AMQP protocol.
+**HIASCDI** is a core component of the [HIAS - Hospital Intelligent Automation Server](https://github.com/AIIAL/HIAS-Core). Before beginning this tutorial you should complete the HIAS installation guide and have your HIAS server online.
 
 &nbsp;
 

@@ -1,9 +1,4 @@
 {
-    "program": "HIASCDI",
-    "version": "v1",
-    "address": "hiascdi/v1",
-    "host": "",
-    "port": 3524,
     "acceptTypes": [
         "application/json",
         "text/plain"

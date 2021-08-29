@@ -37,49 +37,50 @@ import sys
 from pymongo import MongoClient
 
 class mongodb():
-	""" HIASCDI MongoDB Helper Module.
+    """ HIASCDI MongoDB Helper Module.
 
-	The HIASCDI MongoDB Helper Module provides MongoDB helper
-	functions to the HIASCDI application.
-	"""
+    The HIASCDI MongoDB Helper Module provides MongoDB helper
+    functions to the HIASCDI application.
+    """
 
-	def __init__(self, helpers):
-		""" Initializes the class. """
+    def __init__(self, helpers):
+        """ Initializes the class. """
 
-		self.program = "MongoDB Helper Module"
+        self.program = "MongoDB Helper Module"
 
-		self.helpers = helpers
-		self.confs = self.helpers.confs
-		self.credentials = self.helpers.credentials
+        self.helpers = helpers
+        self.confs = self.helpers.confs
+        self.credentials = self.helpers.credentials
 
-		self.helpers.logger.info(self.program + " initialization complete.")
+        self.helpers.logger.info(self.program + " initialization complete.")
 
-	def start(self):
-		""" Connects to HIAS MongoDB database. """
+    def start(self):
+        """ Connects to HIAS MongoDB database. """
 
-		self.mongoCon = MongoClient(
-			self.credentials["mongodb"]["host"])
+        self.mongoCon = MongoClient(
+            self.credentials["mongodb"]["host"])
 
-		self.mongoConn = self.mongoCon[self.credentials["mongodb"]["db"]]
+        self.mongoConn = self.mongoCon[
+            self.credentials["mongodb"]["db"]]
 
-		self.mongoConn.authenticate(self.credentials["mongodb"]["un"],
-									self.credentials["mongodb"]["up"])
+        self.mongoConn.authenticate(self.credentials["mongodb"]["un"],
+                                    self.credentials["mongodb"]["up"])
 
-		self.collextions = {
-			"Actuator": self.mongoConn.Actuators,
-			"Agent": self.mongoConn.Entities,
-			"Application": self.mongoConn.Entities,
-			"ApplicationZone": self.mongoConn.ApplicationZones,
-			"Automation": self.mongoConn.Automation,
-			"HIASCDI": self.mongoConn.Entities,
-			"HIASHDI": self.mongoConn.Entities,
-			"Device": self.mongoConn.Entities,
-			"Location": self.mongoConn.Entities,
-			"Model": self.mongoConn.Entities,
-			"Robotics": self.mongoConn.Entities,
-			"Patient": self.mongoConn.Entities,
-			"Sensors": self.mongoConn.Sensors,
-			"Staff": self.mongoConn.Entities,
-			"Thing": self.mongoConn.Entities,
-			"Zone": self.mongoConn.Entities
-		}
+        self.collextions = {
+            "Actuator": self.mongoConn.Actuators,
+            "Agent": self.mongoConn.Entities,
+            "Application": self.mongoConn.Entities,
+            "ApplicationZone": self.mongoConn.ApplicationZones,
+            "Automation": self.mongoConn.Automation,
+            "HIASCDI": self.mongoConn.Entities,
+            "HIASHDI": self.mongoConn.Entities,
+            "Device": self.mongoConn.Entities,
+            "Location": self.mongoConn.Entities,
+            "Model": self.mongoConn.Entities,
+            "Robotics": self.mongoConn.Entities,
+            "Patient": self.mongoConn.Entities,
+            "Sensors": self.mongoConn.Sensors,
+            "Staff": self.mongoConn.Entities,
+            "Thing": self.mongoConn.Entities,
+            "Zone": self.mongoConn.Entities
+        }

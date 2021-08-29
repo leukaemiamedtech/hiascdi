@@ -122,7 +122,7 @@ class mqtt():
 		self.mClient.on_publish = self.on_publish
 		self.mClient.on_subscribe = self.on_subscribe
 		self.mClient.username_pw_set(str(self.configs['un']), str(self.configs['up']))
-		self.mClient.connect(self.mqtt_config["host"], self.mqtt_config["port"], 10)
+		self.mClient.connect(self.mqtt_config["host"], self.mqtt_config["port"], 120)
 		self.mClient.loop_start()
 
 		self.helpers.logger.info(
@@ -140,9 +140,9 @@ class mqtt():
 			self.helpers.logger.info("iotJumpWay " + self.client_type + " connection successful.")
 			self.helpers.logger.info("rc: " + str(rc))
 
-			self.statusPublish("ONLINE")
+			self.status_publish("ONLINE")
 
-	def statusPublish(self, data):
+	def status_publish(self, data):
 		""" Status publish
 
 		Publishes a status.
@@ -277,6 +277,6 @@ class mqtt():
 		Disconnects from the HIAS iotJumpWay MQTT Broker.
 		"""
 
-		self.statusPublish("OFFLINE")
+		self.status_publish("OFFLINE")
 		self.mClient.disconnect()
 		self.mClient.loop_stop()

@@ -40,159 +40,165 @@ from bson import json_util, ObjectId
 from flask import Response
 
 class broker():
-	""" HIASCDI Context Broker Module.
+    """ HIASCDI Context Broker Module.
 
-	This module provides core helper functions for HIASCDI.
-	"""
+    This module provides core helper functions for HIASCDI.
+    """
 
-	def __init__(self, helpers, mongodb):
-		""" Initializes the class. """
+    def __init__(self, helpers, mongodb):
+        """ Initializes the class. """
 
-		self.helpers = helpers
-		self.program = "HIASCDI Helper Module"
+        self.helpers = helpers
+        self.program = "HIASCDI Helper Module"
 
-		self.mongodb = mongodb
+        self.mongodb = mongodb
 
-		self.headers = {
-			"content-type": self.helpers.confs["contentType"]
-		}
+        self.headers = {
+            "content-type": self.helpers.confs["contentType"]
+        }
 
-		self.helpers.logger.info("HIASCDI initialization complete.")
+        self.helpers.logger.info("HIASCDI initialization complete.")
 
-	def checkAcceptsType(self, headers):
-		""" Checks the request Accept types. """
+    def check_accepts_type(self, headers):
+        """ Checks the request Accept types. """
 
-		accepted = headers.getlist('accept')
-		accepted = accepted[0].split(",")
+        accepted = headers.getlist('accept')
+        accepted = accepted[0].split(",")
 
-		if "Accept" not in headers:
-			return False
+        if "Accept" not in headers:
+            return False
 
-		for i, ctype in enumerate(accepted):
-			if ctype not in self.helpers.confs["acceptTypes"]:
-				accepted.pop(i)
+        for i, ctype in enumerate(accepted):
+            if ctype not in self.helpers.confs["acceptTypes"]:
+                accepted.pop(i)
 
-		if len(accepted):
-			return accepted
-		else:
-			return False
+        if len(accepted):
+            return accepted
+        else:
+            return False
 
-	def checkContentType(self, headers):
-		""" Checks the request Content-Type. """
+    def check_content_type(self, headers):
+        """ Checks the request Content-Type. """
 
-		content_type = headers["Content-Type"]
+        content_type = headers["Content-Type"]
 
-		if "Content-Type" not in headers or content_type not in self.helpers.confs["contentTypes"]:
-			return False
-		return content_type
+        if ("Content-Type" not in headers or content_type not in
+                self.helpers.confs["contentTypes"]):
+            return False
+        return content_type
 
-	def checkBody(self, payload, text=False):
-		""" Checks the request body is valid. """
+    def check_body(self, payload, text=False):
+        """ Checks the request body is valid. """
 
-		response = False
-		message = "valid"
+        response = False
+        message = "valid"
 
-		if text is False:
-			try:
-				json_object = json.loads(json.dumps(payload.json))
-				response = json_object
-			except TypeError as e:
-				response = False
-				message = "invalid"
-		else:
-			if payload.data == "":
-				response = False
-				message = "invalid"
-			else:
-				response = payload.data
+        if text is False:
+            try:
+                json_object = json.loads(json.dumps(
+                    payload.json))
+                response = json_object
+            except TypeError as e:
+                response = False
+                message = "invalid"
+        else:
+            if payload.data == "":
+                response = False
+                message = "invalid"
+            else:
+                response = payload.data
 
-		self.helpers.logger.info("Request data " + message)
+        self.helpers.logger.info("Request data " + message)
 
-		return response
+        return response
 
-	def checkBool(self, value):
-		""" Checks if a value is a bool. """
+    def check_bool(self, value):
+        """ Checks if a value is a bool. """
 
-		boolList = ['True', 'False', 'true', 'false']
-		if value in boolList:
-			return True
-		return False
+        boolList = ['True', 'False', 'true', 'false']
+        if value in boolList:
+            return True
+        return False
 
-	def checkFloat(self, value):
-		""" Checks if a value is a float. """
+    def check_float(self, value):
+        """ Checks if a value is a float. """
 
-		try:
-			float(value)
-			return True
-		except ValueError:
-			return False
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
 
-	def checkInteger(self, value):
-		""" Checks if a value is a int. """
+    def check_integer(self, value):
+        """ Checks if a value is a int. """
 
-		return True if value.isdigit() else False
+        return True if value.isdigit() else False
 
-	def cast(self, val):
-		""" Casts relevant values as float or int. """
+    def cast(self, val):
+        """ Casts relevant values as float or int. """
 
-		if self.checkBool(val):
-			val = True if val.lower() == "true" else False
-		elif self.checkFloat(val):
-			val = float(val)
-		elif self.checkInteger(val):
-			val = int(val)
+        if self.check_bool(val):
+            val = True if val.lower() == "true" else False
+        elif self.check_float(val):
+            val = float(val)
+        elif self.check_integer(val):
+            val = int(val)
 
-		return val
+        return val
 
-	def prepareResponse(self, response):
-		""" Converts response to bytes. """
+    def prepare_response(self, response):
+        """ Converts response to bytes. """
 
-		if isinstance(response, dict):
-			response = json.dumps(response)
-		elif isinstance(response, list):
-			response = json.dumps(response)
-		elif isinstance(response, int):
-			response = str(response).encode(encoding='UTF-8')
-		elif isinstance(response, float):
-			response = str(response).encode(encoding='UTF-8')
-		elif isinstance(response, str):
-			response = response.encode(encoding='UTF-8')
-		elif isinstance(response, bool):
-			response = response.encode(encoding='UTF-8')
+        if isinstance(response, dict):
+            response = json.dumps(response)
+        elif isinstance(response, list):
+            response = json.dumps(response)
+        elif isinstance(response, int):
+            response = str(response).encode(encoding='UTF-8')
+        elif isinstance(response, float):
+            response = str(response).encode(encoding='UTF-8')
+        elif isinstance(response, str):
+            response = response.encode(encoding='UTF-8')
+        elif isinstance(response, bool):
+            response = response.encode(encoding='UTF-8')
 
-		return response
+        return response
 
-	def respond(self, responseCode, response, headers={},
-				override = False, accepted = []):
-		""" Builds the request repsonse """
+    def respond(self, responseCode, response, headers={},
+                override = False, accepted = []):
+        """ Builds the request repsonse """
 
-		return_as = "json"
-		if override != False:
-			if override == "application/json":
-				return_as = "json"
-			elif override == "text/plain":
-				return_as = "text"
-		elif override == False:
-			if "application/json" in accepted:
-				return_as = "json"
-			elif "text/plain" in accepted:
-				return_as = "text"
+        return_as = "json"
+        if override != False:
+            if override == "application/json":
+                return_as = "json"
+            elif override == "text/plain":
+                return_as = "text"
+        elif override == False:
+            if "application/json" in accepted:
+                return_as = "json"
+            elif "text/plain" in accepted:
+                return_as = "text"
 
-		if return_as == "json":
-			response =  Response(response=json.dumps(json.loads(json_util.dumps(response)),
-											indent=4), status=responseCode, mimetype="application/json")
-			headers['Content-Type'] = 'application/json'
-		elif return_as == "text":
-			if "text/plain" not in accepted:
-				response = Response(response=self.helpers.confs["errorMessages"]["400b"],
-						status=400, mimetype="application/json")
-				headers['Content-Type'] = 'application/json'
-			else:
-				response = self.broker.prepareResponse(response)
-				response = Response(response=response, status=responseCode,
-								mimetype="text/plain")
-				headers['Content-Type'] = 'text/plain; charset=utf-8'
-		response.headers = headers
+        if return_as == "json":
+            response =  Response(
+                response=json.dumps(json.loads(
+                    json_util.dumps(response)), indent=4),
+                status=responseCode, mimetype="application/json")
+            headers['Content-Type'] = 'application/json'
+        elif return_as == "text":
+            if "text/plain" not in accepted:
+                response = Response(
+                    response=self.helpers.confs["errorMessages"]["400b"],
+                    status=400, mimetype="application/json")
+                headers['Content-Type'] = 'application/json'
+            else:
+                response = self.broker.prepare_response(response)
+                response = Response(response=response,
+                                    status=responseCode,
+                                    mimetype="text/plain")
+                headers['Content-Type'] = 'text/plain; charset=utf-8'
+        response.headers = headers
 
-		return response
+        return response
 

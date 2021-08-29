@@ -42,200 +42,203 @@ from flask import Response
 
 
 class subscriptions():
-	""" HIASCDI Subscriptions Module.
+    """ HIASCDI Subscriptions Module.
 
-	This module provides the functionality to retrieve, create, update
-	and deletec HIASCDI subscriptions.
-	"""
+    This module provides the functionality to retrieve, create, update
+    and deletec HIASCDI subscriptions.
+    """
 
-	def __init__(self, helpers, mongodb, broker):
-		""" Initializes the class. """
+    def __init__(self, helpers, mongodb, broker):
+        """ Initializes the class. """
 
-		self.helpers = helpers
-		self.program = "HIASCDI Subscriptions Module"
+        self.helpers = helpers
+        self.program = "HIASCDI Subscriptions Module"
 
-		self.mongodb = mongodb
-		self.broker = broker
+        self.mongodb = mongodb
+        self.broker = broker
 
-		self.helpers.logger.info(self.program + " initialization complete.")
+        self.helpers.logger.info(self.program + " initialization complete.")
 
-	def getSubscriptions(self, arguments, accepted=[]):
-		""" Gets subscription data from the MongoDB.
+    def get_subscriptions(self, arguments, accepted=[]):
+        """ Gets subscription data from the MongoDB.
 
-		You can access this endpoint by naviating your browser to https://YourServer/hiascdi/v1/types
-		If you are not logged in to the HIAS network you will be shown an authentication pop up
-		where you should provide your HIAS network user and password.
+        You can access this endpoint by naviating your
+        browser to https://YourServer/hiascdi/v1/subscriptions
+        If you are not logged in to the HIAS network you
+        will be shown an authentication pop up where you
+        should provide your HIAS network user and password.
 
-		References:
-			FIWARE-NGSI v2 Specification
-			https://fiware.github.io/specifications/ngsiv2/stable/
+        References:
+            FIWARE-NGSI v2 Specification
+            https://fiware.github.io/specifications/ngsiv2/stable/
 
-			Reference
-				- Subscriptions
-					- Subscription List
-						- List Subscriptions
-		"""
+            Reference
+                - Subscriptions
+                    - Subscription List
+                        - List Subscriptions
+        """
 
-		count_opt = False
+        count_opt = False
 
-		query = {}
-		headers = {}
+        query = {}
+        headers = {}
 
-		# Removes the MongoDB ID
-		fields = {
-			'_id': False
-		}
+        # Removes the MongoDB ID
+        fields = {
+            '_id': False
+        }
 
-		# Processes the options parameter
-		options = arguments.get('options') if arguments.get(
-			'options') is not None else None
-		if options is not None:
-			options = options.split(",")
-			for option in options:
-				count_opt = True if option == "count" else count_opt
+        # Processes the options parameter
+        options = arguments.get('options') if arguments.get(
+            'options') is not None else None
+        if options is not None:
+            options = options.split(",")
+            for option in options:
+                count_opt = True if option == "count" else count_opt
 
-		# Prepares the offset
-		if arguments.get('offset') is None:
-			offset = False
-		else:
-			offset = int(arguments.get('offset'))
+        # Prepares the offset
+        if arguments.get('offset') is None:
+            offset = False
+        else:
+            offset = int(arguments.get('offset'))
 
-		# Prepares the query limit
-		if arguments.get('limit') is None:
-			limit = 0
-		else:
-			limit = int(arguments.get('limit'))
+        # Prepares the query limit
+        if arguments.get('limit') is None:
+            limit = 0
+        else:
+            limit = int(arguments.get('limit'))
 
-		if offset:
-			subscriptions = self.mongodb.mongoConn.Subscriptions.find(
-				query, fields).skip(offset).limit(limit)
-		else:
-			subscriptions = self.mongodb.mongoConn.Subscriptions.find(
-				query, fields).limit(limit)
+        if offset:
+            subscriptions = self.mongodb.mongoConn.Subscriptions.find(
+                query, fields).skip(offset).limit(limit)
+        else:
+            subscriptions = self.mongodb.mongoConn.Subscriptions.find(
+                query, fields).limit(limit)
 
-		if count_opt:
-			# Sets count header
-			headers["Count"] = subscriptions.count()
+        if count_opt:
+            # Sets count header
+            headers["Count"] = subscriptions.count()
 
-		return self.broker.respond(200, subscriptions, headers, False, accepted)
+        return self.broker.respond(200, subscriptions, headers, False, accepted)
 
-	def createSubscription(self, data, accepted=[]):
-		""" Creates a new HIASCDI Subscription.
+    def create_subscription(self, data, accepted=[]):
+        """ Creates a new HIASCDI Subscription.
 
-		References:
-			FIWARE-NGSI v2 Specification
-			https://fiware.github.io/specifications/ngsiv2/stable/
+        References:
+            FIWARE-NGSI v2 Specification
+            https://fiware.github.io/specifications/ngsiv2/stable/
 
-			Reference
-				- Subscriptions
-					- Subscription List
-						- List Subscriptions
-		"""
+            Reference
+                - Subscriptions
+                    - Subscription List
+                        - List Subscriptions
+        """
 
-		nuuid = str(uuid.uuid4())
-		newData = {"id": nuuid}
-		newData.update(data)
-		data = newData
+        nuuid = str(uuid.uuid4())
+        newData = {"id": nuuid}
+        newData.update(data)
+        data = newData
 
-		try:
-			_id = self.mongodb.mongoConn.Subscriptions.insert(data)
-			return self.broker.respond(201, {}, {"Location": "v1/subscription/" + data["id"]},
-								False, accepted)
-		except:
-			e = sys.exc_info()
-			self.helpers.logger.info("Mongo data inserted FAILED!")
-			self.helpers.logger.info(str(e))
-			return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"], {},
-								False, accepted)
+        try:
+            _id = self.mongodb.mongoConn.Subscriptions.insert(data)
+            return self.broker.respond(
+                201, {}, {"Location": "v1/subscription/" + data["id"]},
+                False, accepted)
+        except:
+            e = sys.exc_info()
+            self.helpers.logger.info(
+                "Mongo data inserted FAILED!")
+            self.helpers.logger.info(str(e))
+            return self.broker.respond(
+                400, self.helpers.confs["errorMessages"]["400b"], {},
+                False, accepted)
 
-	def getSubscription(self, subscription, accepted=[]):
-		""" Gets subscription data from the MongoDB.
+    def get_subscription(self, subscription, accepted=[]):
+        """ Gets subscription data from the MongoDB.
 
-		References:
-			FIWARE-NGSI v2 Specification
-			https://fiware.github.io/specifications/ngsiv2/stable/
+        References:
+            FIWARE-NGSI v2 Specification
+            https://fiware.github.io/specifications/ngsiv2/stable/
 
-			Reference
-				- Subscriptions
-					- Subscription List
-						- Subscription By ID
-							- Retrieve Subscription
-		"""
+            Reference
+                - Subscriptions
+                    - Subscription List
+                        - Subscription By ID
+                            - Retrieve Subscription
+        """
 
-		query = {'id': subscription}
-		headers = {}
+        query = {'id': subscription}
+        headers = {}
 
-		# Removes the MongoDB ID
-		fields = {
-			'_id': False
-		}
+        # Removes the MongoDB ID
+        fields = {
+            '_id': False
+        }
 
-		sub = self.mongodb.mongoConn.Subscriptions.find(
-				query, fields)
+        sub = self.mongodb.mongoConn.Subscriptions.find(
+                query, fields)
 
-		sub = sub[0]
+        sub = sub[0]
 
-		return self.broker.respond(200, sub, headers, False, accepted)
+        return self.broker.respond(200, sub, headers, False, accepted)
 
-	def updateSubscription(self, subscription, data, accepted=[]):
-		""" Updates subscription data in MongoDB.
+    def update_subscription(self, subscription, data, accepted=[]):
+        """ Updates subscription data in MongoDB.
 
-		References:
-			FIWARE-NGSI v2 Specification
-			https://fiware.github.io/specifications/ngsiv2/stable/
+        References:
+            FIWARE-NGSI v2 Specification
+            https://fiware.github.io/specifications/ngsiv2/stable/
 
-			Reference
-				- Subscriptions
-					- Subscription List
-						- Subscription By ID
-							- Update Subscription
-		"""
+            Reference
+                - Subscriptions
+                    - Subscription List
+                        - Subscription By ID
+                            - Update Subscription
+        """
 
-		updated = False
+        updated = False
 
-		for update in data:
-			self.mongodb.mongoConn.Subscriptions.update_one({"id" : subscription},
-						{"$set": {update: data[update]}}, upsert=True)
-			updated = True
+        for update in data:
+            self.mongodb.mongoConn.Subscriptions.update_one(
+                {"id" : subscription},
+                {"$set": {update: data[update]}}, upsert=True)
+            updated = True
 
-		if updated:
-			return self.broker.respond(204, self.helpers.confs["successMessage"][str(204)],
-								{}, False, accepted)
-		else:
-			return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								{}, False, accepted)
+        if updated:
+            return self.broker.respond(
+                204, self.helpers.confs["successMessage"][str(204)],
+                {}, False, accepted)
+        else:
+            return self.broker.respond(
+                400, self.helpers.confs["errorMessages"]["400b"],
+                {}, False, accepted)
 
-	def deleteSubscription(self, subscription, accepted=[]):
-		""" Updates subscription data in MongoDB.
+    def delete_subscription(self, subscription, accepted=[]):
+        """ Updates subscription data in MongoDB.
 
-		References:
-			FIWARE-NGSI v2 Specification
-			https://fiware.github.io/specifications/ngsiv2/stable/
+        References:
+            FIWARE-NGSI v2 Specification
+            https://fiware.github.io/specifications/ngsiv2/stable/
 
-			Reference
-				- Subscriptions
-					- Subscription List
-						- Subscription By ID
-							- Update Subscription
-		"""
+            Reference
+                - Subscriptions
+                    - Subscription List
+                        - Subscription By ID
+                            - Update Subscription
+        """
 
-		deleted = False
-		result = self.mongodb.mongoConn.Subscriptions.delete_one({"id": subscription})
+        deleted = False
+        result = self.mongodb.mongoConn.Subscriptions.delete_one(
+            {"id": subscription})
 
-		if result.deleted_count is True:
-			self.helpers.logger.info("Mongo data delete OK")
-			return self.broker.respond(204, {}, {}, False, accepted)
-		else:
-			self.helpers.logger.info("Mongo data delete FAILED")
-			return self.broker.respond(400, self.helpers.confs["errorMessages"]["400b"],
-								{}, False, accepted)
-
-	def checkForSubscription(self, subscription):
-		""" Checks for subscriptions in an list """
-
-		self.helpers.logger.info("Checking for subscriptions")
-		subscriptions = self.mongodb.mongoConn.Subscriptions.find()
-
-		for sub in subscriptions:
-			cursub = self.getSubscription(sub)
-			print(cursub)
+        if result.deleted_count is True:
+            self.helpers.logger.info(
+                "Mongo data delete OK")
+            return self.broker.respond(
+                204, {}, {}, False, accepted)
+        else:
+            self.helpers.logger.info(
+                "Mongo data delete FAILED")
+            return self.broker.respond(
+                400, self.helpers.confs["errorMessages"]["400b"],
+                {}, False, accepted)

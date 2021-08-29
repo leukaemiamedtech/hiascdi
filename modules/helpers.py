@@ -36,6 +36,7 @@ import logging
 import logging.handlers as handlers
 import json
 import os
+import socket
 import sys
 import time
 
@@ -55,7 +56,7 @@ class helpers():
 		# Loads system configs
 		self.confs_core = {}
 		self.confs = {}
-		self.loadConfs()
+		self.load_confs()
 
 		# Sets system logging
 		self.logger = logging.getLogger(ltype)
@@ -91,7 +92,7 @@ class helpers():
 			self.logger.info("Configuration and credentials loaded.")
 			self.logger.info("Helpers class initialization complete.")
 
-	def loadConfs(self):
+	def load_confs(self):
 		""" Load the configuration. """
 
 		with open(os.path.dirname(os.path.abspath(__file__)) + '/../configuration/config.json') as confs:
@@ -99,3 +100,13 @@ class helpers():
 
 		with open(os.path.dirname(os.path.abspath(__file__)) + '/../configuration/credentials.json') as confs:
 			self.credentials = json.loads(confs.read())
+
+	def get_ip_addr(self):
+		""" Load the configuration. """
+
+		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		s.connect(("8.8.8.8", 80))
+		ipaddr = s.getsockname()[0]
+		s.close()
+
+		return ipaddr

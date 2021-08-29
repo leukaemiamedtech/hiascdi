@@ -3,38 +3,17 @@
 
 ![HIAS - Hospital Intelligent Automation Server](assets/images/project-banner.jpg)
 
-[![CURRENT RELEASE](https://img.shields.io/badge/CURRENT%20RELEASE-1.0.0-blue.svg)](https://github.com/AIIAL/HIASCDI/tree/1.0.0)
-[![UPCOMING RELEASE](https://img.shields.io/badge/CURRENT%20DEV%20BRANCH-2.0.0-blue.svg)](https://github.com/AIIAL/HIASCDI/tree/2.0.0) ![SemVer](https://img.shields.io/badge/semver-2.0.0-blue) [![Contributions Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md) [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues)
+[![CURRENT RELEASE](https://img.shields.io/badge/CURRENT%20RELEASE-1.1.0-blue.svg)](https://github.com/AIIAL/HIASCDI/tree/1.1.0)
+[![UPCOMING RELEASE](https://img.shields.io/badge/DEV%20BRANCH-develop-blue.svg)](https://github.com/AIIAL/HIASCDI/tree/develop)  [![Contributions Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md) [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues)
 
 [![Documentation Status](https://readthedocs.org/projects/hiascdi/badge/?version=latest)](https://hiascdi.readthedocs.io/en/latest/?badge=latest)
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5002/badge)](https://bestpractices.coreinfrastructure.org/projects/5002) [![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5002/badge)](https://bestpractices.coreinfrastructure.org/projects/5002) [![DOI](https://zenodo.org/badge/325891855.svg)](https://zenodo.org/badge/latestdoi/325891855)
 
 ![Compliance Tests](https://img.shields.io/badge/Compliance%20Tests-TODO-red)
 ![Unit Tests](https://img.shields.io/badge/Unit%20Tests-TODO-red)
 ![Functional Tests](https://img.shields.io/badge/Functional%20Tests-TODO-red)
 
-[![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE)
-
-
-
-&nbsp;
-
-# Table Of Contents
-
-- [Introduction](#introduction)
-	- [About](#about)
-	- [Project Status](#project-status)
-- [HIAS](#hias)
-- [Connecting Europe Facility](#connecting-europe-facility)
-- [FIWARE](#fiware)
-- [GETTING STARTED](#getting-started)
-- [Documentation](#documentation)
-- [Contributing](#contributing)
-  - [Ways to contribute](#ways-to-contribute)
-  - [Contributors](#contributors)
-- [Versioning](#versioning)
-- [License](#license)
-- [Bugs/Issues](#bugs-issues)
+[![LICENSE](https://img.shields.io/badge/LICENSE-MIT-blue.svg)](LICENSE) ![SemVer](https://img.shields.io/badge/semver-2.0.0-blue)  [![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
 
 &nbsp;
 
@@ -117,7 +96,7 @@ The following are ways that you can contribute to this project:
 - [Feature Proposal](https://github.com/AIIAL/HIASCDI/issues/new?assignees=&labels=&template=feature-proposal.md&title=)
 - [Report Vulnerabillity](https://github.com/AIIAL/HIASCDI/issues/new?assignees=&labels=&template=report-a-vulnerability.md&title=)
 
-Please read the [CONTRIBUTING](CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will also find information about our code of conduct on this page.
+Please read the [CONTRIBUTING](CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will find information about our code of conduct on the [Code of Conduct page](CODE-OF-CONDUCT.md).
 
 You can also join in with, or create, a discussion in our [Github Discussions](https://github.com/AIIAL/HIASCDI/discussions) area.
 

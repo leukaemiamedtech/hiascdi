@@ -198,7 +198,49 @@ class entities():
             # Sets a q query
             qs = arguments.get('q').split(";")
             for q in qs:
-                if "==" in q:
+                if "||" in q:
+                    qor = q.split("||")
+                    ors = {}
+                    for qori in qor:
+                        if "==" in qori:
+                            qp = qori.split("==")
+                            ors.update({qp[0]:
+                                {'$in': [self.broker.cast(qp[1])]}
+                            })
+                        elif  ":" in qori:
+                            qp = qori.split(":")
+                            ors.update({qp[0]:
+                                {'$in': [self.broker.cast(qp[1])]}
+                            })
+                        elif "!=" in qori:
+                            qp = qori.split("!=")
+                            ors.update({qp[0]:
+                                {'$ne': self.broker.cast(qp[1])}
+                            })
+                        elif ">=" in qori:
+                            qp = qori.split(">=")
+                            ors.update({qp[0]:
+                                {'$gte': self.broker.cast(qp[1])}
+                            })
+                        elif "<=" in qori:
+                            qp = qori.split("<=")
+                            ors.update({qp[0]:
+                                {'$lte': self.broker.cast(qp[1])}
+                            })
+                        elif "<" in qori:
+                            qp = qori.split("<")
+                            ors.update({qp[0]:
+                                {'$lt': self.broker.cast(qp[1])}
+                            })
+                        elif ">" in qori:
+                            qp = qori.split(">")
+                            ors.update({qp[0]:
+                                {'$gt': self.broker.cast(qp[1])}
+                            })
+
+                        query.update({'$or': ors })
+
+                elif "==" in q:
                     qp = q.split("==")
                     query.update({qp[0]:
                         {'$in': [self.broker.cast(qp[1])]}

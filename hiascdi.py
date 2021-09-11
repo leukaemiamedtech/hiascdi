@@ -174,7 +174,11 @@ class hiascdi():
         r = requests.get('http://ipinfo.io/json?token=' +
                 self.credentials["iotJumpWay"]["ipinfo"])
         data = r.json()
-        location = data["loc"].split(',')
+
+        if "loc" in data:
+            location = data["loc"].split(',')
+        else:
+            location = ["0.0", "0.0"]
 
         # Send iotJumpWay notification
         self.mqtt.publish("Life", {

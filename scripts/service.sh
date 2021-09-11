@@ -11,13 +11,12 @@ if [ "$proceed" = "Y" -o "$proceed" = "y" ]; then
     echo "[Unit]" | sudo tee -a /lib/systemd/system/HIASCDI.service
     echo "Description=HIASCDI service" | sudo tee -a /lib/systemd/system/HIASCDI.service
     echo "After=multi-user.target" | sudo tee -a /lib/systemd/system/HIASCDI.service
-    echo "After=HIASCDI.service" | sudo tee -a /lib/systemd/system/HIASCDI.service
     echo "" | sudo tee -a /lib/systemd/system/HIASCDI.service
     echo "[Service]" | sudo tee -a /lib/systemd/system/HIASCDI.service
     echo "User=$USER" | sudo tee -a /lib/systemd/system/HIASCDI.service
     echo "Type=simple" | sudo tee -a /lib/systemd/system/HIASCDI.service
     echo "Restart=on-failure" | sudo tee -a /lib/systemd/system/HIASCDI.service
-    echo "ExecStart=/home/$USER/HIAS-Core/components/HIASCDI/scripts/run.sh" | sudo tee -a /lib/systemd/system/HIASCDI.service
+    echo "ExecStart=/home/$USER/HIAS-Core/components/hiascdi/scripts/run.sh" | sudo tee -a /lib/systemd/system/HIASCDI.service
     echo "" | sudo tee -a /lib/systemd/system/HIASCDI.service
     echo "[Install]" | sudo tee -a /lib/systemd/system/HIASCDI.service
     echo "WantedBy=multi-user.target" | sudo tee -a /lib/systemd/system/HIASCDI.service

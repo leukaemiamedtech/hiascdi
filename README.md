@@ -3,7 +3,7 @@
 
 ![HIAS - Hospital Intelligent Automation Server](assets/images/project-banner.jpg)
 
-[![CURRENT RELEASE](https://img.shields.io/badge/CURRENT%20RELEASE-1.1.0-blue.svg)](https://github.com/AIIAL/HIASCDI/tree/1.1.0)
+[![CURRENT RELEASE](https://img.shields.io/badge/CURRENT%20RELEASE-1.1.1-blue.svg)](https://github.com/AIIAL/HIASCDI/tree/release-1.1.1)
 [![UPCOMING RELEASE](https://img.shields.io/badge/DEV%20BRANCH-develop-blue.svg)](https://github.com/AIIAL/HIASCDI/tree/develop)  [![Contributions Welcome!](https://img.shields.io/badge/Contributions-Welcome-lightgrey.svg)](CONTRIBUTING.md) [![Issues](https://img.shields.io/badge/Issues-Welcome-lightgrey.svg)](issues)
 
 [![Documentation Status](https://readthedocs.org/projects/hiascdi/badge/?version=latest)](https://hiascdi.readthedocs.io/en/latest/?badge=latest)

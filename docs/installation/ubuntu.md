@@ -7,6 +7,12 @@ This installation guide provides a step by step guide that takes you through the
 
 &nbsp;
 
+# Please Note
+
+HIASCDI is installed during the installation of HIAS Core v3 this documentation is solely for reference
+
+&nbsp;
+
 # Prerequisites
 For this project you will need to ensure you have the following prerequisites installed and running.
 
@@ -19,7 +25,7 @@ For this project you will need to ensure you have the following prerequisites in
 # Operating System
 The **HIASCDI** supports the following operating system(s):
 
-- Ubuntu 18.04
+- Ubuntu 20.04 LTS
 
 &nbsp;
 
@@ -57,10 +63,10 @@ Navigate to the **HIAS/components/hiascdi/** directory in your HIAS project root
 Developers from the Github community that would like to contribute to the development of this project should first create a fork, and clone that repository. For detailed information please view the [CONTRIBUTING](../../CONTRIBUTING.md "CONTRIBUTING") guide. You should pull the latest code from the development branch.
 
 ``` bash
- git clone -b "1.0.0" https://github.com/AIIAL/HIASCDI.git
+ git clone -b "develop" https://github.com/AIIAL/HIASCDI.git
 ```
 
-The **-b "1.0.0"** parameter ensures you get the code from the latest master branch. Before using the below command please check our latest master branch in the button at the top of the project README.
+The **-b "develop"** parameter ensures you get the code from the develpo branch.
 
 # Start The Service
 You will now create a service that will run and manage your HIASCDI installation. Making sure you are in the HIAS project root, use the following command:
